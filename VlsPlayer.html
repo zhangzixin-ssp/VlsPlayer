@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VlsPlayer</title>
+<style>
+  .lang-version { display: none; }
+  .lang-version.active { display: block; }
+  .lang-switcher {
+    margin: 10px 0 20px 0;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .lang-switcher button {
+    padding: 6px 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .lang-switcher button:hover { background: #e0e0e0; }
+  .lang-switcher button.active-lang {
+    background: #2c3e50;
+    color: white;
+    border-color: #2c3e50;
+  }
+  .lang-switcher .detected-info {
+    color: #888;
+    font-size: 13px;
+    margin-left: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== 语言切换栏 ====== -->
+<div class="lang-switcher">
+  <span style="font-weight:bold; font-size:15px;">🌐 Language / 语言 / 言語 :</span>
+  <button data-lang="en">English</button>
+  <button data-lang="zh-cn">简体中文</button>
+  <button data-lang="zh-tw">繁體中文</button>
+  <button data-lang="ja">日本語</button>
+  <span class="detected-info" id="detectedInfo"></span>
+</div>
+
+<!-- ====== 英语版 ====== -->
+<div class="lang-version" id="lang-en">
+<p><span style="font-size: 36pt;"><strong>VlsPlayer</strong></span></p>
+<h1>I. Overview</h1>
+<p>VlsPlayer is a video subtitle player built specifically for language learning. It brings together audio/video playback, subtitle editing and proofreading, automatic timeline alignment, subtitle notes, shadowing, dictation, and AI-assisted analysis in one place. Based on SRT subtitles, it works with either the MPV or VLC playback engine and ships with a rich set of batch tools for SRT files. On ordinary PCs, it runs NVIDIA's Parakeet-TDT-0.6B-V2 model for fast and accurate speech recognition with automatic timeline alignment — a capable companion for learning languages through TV series and films, as well as for subtitle creation and proofreading.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>A carefully designed, friendly interface with polished details — suited to long-term learners.</li>
+<li>Notes, dictation, shadowing, and AI-assisted analysis — the essentials every learner needs.</li>
+<li>Audio waveform visualization for intuitive timeline positioning and free selection of playback ranges.</li>
+<li>Multiple playback modes: single-sentence playback, role-play dialogue, selection playback, and variable-speed playback.</li>
+<li>Automatic Speech Recognition (ASR) for pronunciation-similarity scoring against subtitles, subtitle generation, and precise timeline calibration.</li>
+<li>Recording and shadowing — record your own pronunciation and compare it with the original audio.</li>
+<li>Optional background-noise mixing.</li>
+<li>AI assistance: one-click activation of AI for sentence analysis or translation.</li>
+<li>Annotate and tag subtitles, then filter and screen by tag or note.</li>
+<li>SRT Toolbox: batch operations including merge, split, export, convert, and video segmentation.</li>
+<li>TXT Toolbox: convert TXT to SRT for note-taking.</li>
+<li>ASR Toolbox: generate high-accuracy SRT from scratch, or recalibrate the timeline of an existing SRT.</li>
+<li>Export Anki cards, supporting both the Sentences and Series deck formats.</li>
+<li>Multiple UI themes, fully customizable.</li>
+</ul>
+<h1>II. Interface Layout</h1>
+<ul>
+<li>Top toolbar: shortcut buttons for SRT folder management, playback control, subtitle editing, the toolbox, and settings.</li>
+<li>Left file list: an SRT folder path dropdown on top; a list of SRT files in the current folder below. Click to load.</li>
+<li>Subtitle table (upper-center): index, start time, end time, main subtitle text, secondary subtitle text, and tag bits of the current subtitle file. Click a row to jump the playback position.</li>
+<li>Video area (lower-left center): displays the video with the same name as the subtitle. Fullscreen playback supported.</li>
+<li>Subtitle editing area (lower-right center): shows the main subtitle of the current sentence (upper edit box) and notes/annotations/proofreading content (lower area). Text is directly editable.</li>
+<li>Tag area (below the note editing area): seven colored tag bits. Click to toggle on/off for classifying sentences.</li>
+<li>Recording waveform area: displays the recording waveform, with selection playback.</li>
+<li>Bottom waveform editor: displays the audio waveform. Click to position, drag to select a playback range, add or delete subtitles, and fine-tune the timeline by hand.</li>
+</ul>
+<h1>III. Quick Start</h1>
+<p>Unlike a general media player, this software is designed specifically for language learners. Before using it, you must have an SRT subtitle file and a video file with the same name.</p>
+<p>Unless your subtitles are of exceptionally high quality, we strongly recommend using this software's ASR Toolbox (large model) to generate a high-quality SRT, and using the original or official subtitles as a proofreading reference. Alternatively, use the ASR Toolbox to automatically recalibrate the timeline of your existing subtitles. You can also download SRT subtitles from subtitle websites — or subtitles in other formats and convert them to SRT — as a proofreading reference. Or extract subtitles from the video: many MKV files carry embedded text subtitles that can be exported with ffmpeg.</p>
+<p>SRT files and video files must share the same name. Usually, you will need to organize and rename your video and subtitle files; many tools can do this for you. (Note: if you plan to export to Anki, we strongly recommend naming files in the form <code>XXX_nn</code> or <code>YYY_SmmEnn</code>, where <code>mm</code> is the season and <code>nn</code> the episode, numbered from 01 upward.)</p>
+<p>The software ships with two playback engines, MPV and VLC. If one performs poorly, switch to the other. MPV is generally recommended. Note also that when using Bluetooth headphones, Bluetooth latency will affect the play/pause position in single-sentence mode.</p>
+<p>Regarding ASR models: Win32 can only use the small and medium models, while the large model is only available on Win64. The large model is far more accurate, but the first load typically takes a dozen seconds or so. In addition, you must install Python and the following modules:<br>
+pip install numpy<br>
+pip install websockets</p>
+<p>Notes, waveforms, and dictation files are generated in the same folder as the SRT file, under the same name. When you first open an SRT file, waveform generation usually takes a few seconds. Recording files are saved in the software's Record folder and can be large; delete them promptly when no longer needed.</p>
+<p>Each subtitle supports seven color tags. Make good use of these tags — you can filter at any time by tag or note. Be aware that in filter mode, editing is limited: only the current row's subtitle content can be partially edited.</p>
+<p>You can export Anki notes from the SRT Toolbox. You need to install the <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect add-on</a>. Two carefully crafted Anki templates are built in: one for single-sentence notes, and one full series player.</p>
+<p>About Anki media files: on Windows, Anki can only play video in the WebM format, while on other platforms Anki supports MP4. Because Anki cannot sync files larger than 100 MB, we recommend turning off Anki's media sync. Use ffmpeg to batch-convert media files, and try to keep each file under 100 MB. For AnkiMobile, you can create a small helper deck (for example, a deck named FriendsResource) and put contents like <code>[sound:xx_s01e01.mp4][sound:xxx_s01e02.mp4]...</code> on the front or back of a card, then export it — this packs the media files in one go. You can then import the resulting apkg into AnkiMobile. If FriendsResource already exists in AnkiMobile, delete it first, then import; the same approach lets you overwrite an individual media file.</p>
+<p>On AnkiMobile, for both Anki templates, we recommend turning off the Top Bar and setting the Top Left tap to return to Decks — the layout looks better that way. In the Anki Series player, never tap Answer. If you tap it by mistake, Undo immediately.</p>
+<p>Feel free to explore the other built-in features boldly — there's no need to list them all here.</p>
+
+<h1>IV. Keyboard Shortcuts</h1>
+<ul>
+<li>Ctrl + P: Play / Pause</li>
+<li>Ctrl + S: Save subtitle file</li>
+<li>Ctrl + N: Insert new subtitle line</li>
+<li>Ctrl + L: Delete current subtitle line</li>
+<li>Ctrl + M: Merge selected subtitle lines</li>
+<li>Ctrl + Enter: Fullscreen / Exit fullscreen</li>
+<li>Esc: Exit fullscreen (while in fullscreen mode)</li>
+</ul>
+<h1>V. Copyright and Developer</h1>
+<p>This software is free and may be freely distributed. Enjoy learning!</p>
+<p>Developer contact: <a href="mailto:zhangzixin.ssp@gmail.com">zhangzixin.ssp@gmail.com</a></p>
+<p>Date: 2026/06/29</p>
+</div>
+
+<!-- ====== 简体中文版 ====== -->
+<div class="lang-version" id="lang-zh-cn">
+<p><span style="font-size: 36pt;"><strong>VlsPlayer</strong></span></p>
+<h1>一、软件概述</h1>
+<p>VlsPlayer 是一款专为语言学习设计的视频字幕播放器，集成了<b>音视频播放、字幕编辑、字幕校对、时间轴自动校正、字幕笔记、跟读、听写、AI辅助</b>等多种功能。VlsPlayer以SRT字幕为基础，可配合 MPV 或 VLC 播放引擎使用，提供了丰富的 SRT 字幕批量处理工具，并在普通PC机上使用英伟达的Parakeet-TDT-0.6B-V2大模型，可快速精准识别语音并能自动对齐时间轴，它是影视剧语言学习、字幕制作与字幕校对的得力助手。</p>
+<p><strong>主要功能：</strong></p>
+<ul>
+<li>精心设计的友好界面，无微不致的细节打磨，适合长期学习者使用。</li>
+<li>提供学习者所必需的笔记、听写、跟读、AI辅助分析功能。</li>
+<li>音频波形可视化操作，可直观定位句子时间轴，可随意选择播放区间。</li>
+<li>多种播放模式：单句播放、角色对话、选区播放、变速播放。</li>
+<li>自动语音识别（ASR），可对照字幕进行发音相似度评分，可生成字幕，可精校时间轴。</li>
+<li>录音跟读功能，录制自己的发音并与原声对比。</li>
+<li>可混入背景噪音。</li>
+<li>AI 辅助：一键唤醒 AI 对句子进行分析或翻译。</li>
+<li>支持对字幕进行批注、标记，并可对其进行过滤、筛选。</li>
+<li>SRT工具箱：合并、拆分、导出、转换、视频分割等批量操作。</li>
+<li>TXT工具箱：可以将TXT转为SRT格式用于进行笔记。</li>
+<li>ASR工具箱：自动生成高精度的SRT，或对当前SRT进行时间轴校正。</li>
+<li>导出Anki卡片，支持 Sentences 和 Series 牌组格式。</li>
+<li>多种界面风格并可自定义</li>
+</ul>
+<h1>二、界面布局</h1>
+<ul>
+<li>顶部工具栏：包含SRT文件夹管理、播放控制、字幕编辑、工具箱、设置等全部快捷按钮。</li>
+<li>左侧文件列表：上方为 SRT 文件夹路径下拉框；下方为当前文件夹内的 SRT 字幕文件列表，点击即可加载。</li>
+<li>字幕表格（中上部）：显示当前字幕文件的序号、开始时间、结束时间、主字幕文本、副字幕文本和标记位。点击行即可切换播放位置。</li>
+<li>视频播放区（中左下）：显示与字幕同名的视频文件画面。支持全屏播放。</li>
+<li>字幕编辑区（中右下）：显示当前句的主字幕（上方编辑框）和笔记/批注/校对内容（下方区域）。可直接修改文本。</li>
+<li>标记区（笔记编辑区下方）：7 个彩色标记位，点击可切换开关，用于给句子做分类标记。</li>
+<li>录音波形区：显示录音波形，支持选区播放。</li>
+<li>底部波形编辑器：显示音频波形，可点击定位、拖拽选取播放范围，可增加字幕、删除字幕、直观精调时间轴。</li>
+</ul>
+<h1>三、快速入门</h1>
+<p>与一般播放器不同，这款软件专为语言学习者所设计，所以在使用之前，必须要有SRT字幕及同名的视频文件。</p>
+<p>除非你的字幕质量非常高，否则强烈建议你用本软件的ASR工具箱（大模型）来生成高质量的SRT字幕，并将原始字幕或官方字幕作用于校对参考。或者用ASR工具箱来自动校正原始字幕的时间轴。你也可以去字幕网站下载SRT字幕或其它格式的字幕作为SRT字幕作为校对参考。或者你也可以从视频中导出字幕，例如很多MKV格式就内置了文本字幕，可以用ffmpeg导出字幕。</p>
+<p>SRT文件与视频文件要同名，通常，你需要组织一下你的视频文件及字幕文件，并重新命名，这有很多工具可实现。（注：如果要导出到Anki则 强烈建议用XXX_nn或YYY_SmmEnn这种格式来命名，其中mm代表Season, nn代表Episode, 它们从01开始累加编号。）</p>
+<p>软件内置了两套播放引擎MPV和VLC，如果一套表现不好，可换用另一个，推荐使用MPV引擎。另外需要注意的是，如果使用蓝牙耳机，在单句模式下，蓝牙延时会影响到声音的播放与暂停位置。</p>
+<p>软件所用的ASR模型， Win32通常只能使用中、小模型，大模型只适用于Win64, 当然大模型非常精准，初次加载通常需要十几秒钟。除此之外，你还要安装Python并安装如下模块：<br>
+pip install numpy<br>
+pip install websockets</p>
+<p>笔记、波形、听写都会在SRT所在文件夹下生成同名的文件，如果初次打开SRT, 通常需要几秒钟来生成波形。录音文件会保存在本软件的Record文件夹下，它们的体积可能比较大，不需要时可及时删除。</p>
+<p>对于每条字幕，支持7种颜色标记，应当善加利用这些标记，随时可以根据不同的标记或笔记来进行筛选。注意，在筛选模式下，编辑功能有限，只能部分编辑当前行字幕内容。</p>
+<p>对于AI工具及词典，如果内置不适用，可以在INI文件中自行添加。如果不小心弄坏了INI文件，可直接删除，系统会自动生成新的。</p>
+<p>听写时，点击听写区下方的按钮，可以对照字幕文本。</p>
+<p>可以在“SRT工具箱”中导出Anki笔记，需要安装<a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect插件</a>。内置了两套精心制作的Anki模板，一是单句笔记，一是完整的剧集播放器。</p>
+<p>关于Anki的媒体文件的说明：Anki windows播放视频仅支持webm格式，其它平台下Anki支持mp4，由于Anki不支持100M以上文件的同步，所以建议关闭Anki的媒体同步功能。 你需要使用ffmpeg来批量转换媒体文件，建议单个文件不要超过100M。对于AnkiMobile，你需要通过建立辅助的简单卡片(比如牌组名为FriendsResource)，并在卡片的正面或背面的内容中填写[sound:xx_s01e01.mp4][sound:xxx_s01e02.mp4]...，然后导出，即可一次性将媒体文件打包，之后可在AnkiMobile中导入此apkg包，如果FriendsResource已存在于AnkiMobile中，需要先删除再导入；同理，如果想覆盖某个媒体文件，也可以这样操作。</p>
+<p>在AnkiMobile上，对于这两套Anki模板，为了更美观，建议关闭顶部工具条(Top Bar), 并将左上角(Top Left)点击设置为返回牌组(Decks)。在Anki Series播放器中，应该永远不要点击Answer，如果误击了，应该即时Undo。</p>
+<p>系统其它内置功能，尽可能大胆地尝试，不再赘述。</p>
+
+<h1>四、快捷键一览</h1>
+<ul>
+<li>Ctrl + P：播放 / 暂停</li>
+<li>Ctrl + S：保存字幕文件</li>
+<li>Ctrl + N：插入新字幕行</li>
+<li>Ctrl + L：删除当前字幕行</li>
+<li>Ctrl + M：合并选中的字幕行</li>
+<li>Ctrl + Enter：全屏 / 退出全屏</li>
+<li>Esc：退出全屏（全屏模式下）</li>
+</ul>
+<h1>五、版权及开发者</h1>
+<p>本软件为免费软件，可随意分享，祝您学习愉快！</p>
+<p>开发者联系：<a href="mailto:zhangzixin.ssp@gmail.com">zhangzixin.ssp@gmail.com</a></p>
+<p>日期：2026年6月29日</p>
+</div>
+
+<!-- ====== 繁體中文版 ====== -->
+<div class="lang-version" id="lang-zh-tw">
+<p><span style="font-size: 36pt;"><strong>VlsPlayer</strong></span></p>
+<h1>一、軟體概述</h1>
+<p>VlsPlayer 是一款專為語言學習設計的影片字幕播放器，整合了<b>影音播放、字幕編輯、字幕校對、時間軸自動校正、字幕筆記、跟讀、聽寫、AI 輔助</b>等多種功能。VlsPlayer 以 SRT 字幕為基礎，可搭配 MPV 或 VLC 播放引擎使用，提供豐富的 SRT 字幕批次處理工具，並在一般 PC 上使用輝達的 Parakeet-TDT-0.6B-V2 大模型，能快速精準辨識語音並自動對齊時間軸，是影視劇語言學習、字幕製作與字幕校對的得力助手。</p>
+<p><strong>主要功能：</strong></p>
+<ul>
+<li>精心設計的友善介面，無微不至的細節打磨，適合長期學習者使用。</li>
+<li>提供學習者所必需的筆記、聽寫、跟讀、AI 輔助分析功能。</li>
+<li>音訊波形視覺化操作，可直觀定位句子時間軸，可隨意選擇播放區間。</li>
+<li>多種播放模式：單句播放、角色對話、選區播放、變速播放。</li>
+<li>自動語音辨識（ASR），可對照字幕進行發音相似度評分，可生成字幕，可精校時間軸。</li>
+<li>錄音跟讀功能，錄製自己的發音並與原聲對比。</li>
+<li>可混入背景噪音。</li>
+<li>AI 輔助：一鍵喚醒 AI 對句子進行分析或翻譯。</li>
+<li>支援對字幕進行批註、標記，並可對其進行過濾、篩選。</li>
+<li>SRT 工具箱：合併、拆分、匯出、轉換、影片分割等批次操作。</li>
+<li>TXT 工具箱：可以將 TXT 轉為 SRT 格式，用於進行筆記。</li>
+<li>ASR 工具箱：自動生成高精度的 SRT，或對當前 SRT 進行時間軸校正。</li>
+<li>匯出 Anki 卡片，支援 Sentences 和 Series 牌組格式。</li>
+<li>多種介面風格並可自訂。</li>
+</ul>
+<h1>二、介面佈局</h1>
+<ul>
+<li>頂部工具列：包含 SRT 資料夾管理、播放控制、字幕編輯、工具箱、設定等全部快捷按鈕。</li>
+<li>左側檔案列表：上方為 SRT 資料夾路徑下拉框；下方為當前資料夾內的 SRT 字幕檔案列表，點擊即可載入。</li>
+<li>字幕表格（中上部）：顯示當前字幕檔案的序號、開始時間、結束時間、主字幕文字、副字幕文字和標記位。點擊列即可切換播放位置。</li>
+<li>影片播放區（中左下）：顯示與字幕同名的影片檔案畫面。支援全螢幕播放。</li>
+<li>字幕編輯區（中右下）：顯示當前句的主字幕（上方編輯框）和筆記／批註／校對內容（下方區域）。可直接修改文字。</li>
+<li>標記區（筆記編輯區下方）：7 個彩色標記位，點擊可切換開關，用於給句子做分類標記。</li>
+<li>錄音波形區：顯示錄音波形，支援選區播放。</li>
+<li>底部波形編輯器：顯示音訊波形，可點擊定位、拖曳選取播放範圍，可增加字幕、刪除字幕、直觀精調時間軸。</li>
+</ul>
+<h1>三、快速入門</h1>
+<p>與一般播放器不同，這款軟體專為語言學習者所設計，所以在使用之前，必須要有 SRT 字幕及同名的影片檔案。</p>
+<p>除非你的字幕品質非常高，否則強烈建議你用本軟體的 ASR 工具箱（大模型）來生成高品質的 SRT 字幕，並將原始字幕或官方字幕作為校對參考。或者用 ASR 工具箱來自動校正原始字幕的時間軸。你也可以去字幕網站下載 SRT 字幕或其它格式的字幕作為 SRT 字幕的校對參考。或者你也可以從影片中匯出字幕，例如很多 MKV 格式就內建了文字字幕，可以用 ffmpeg 匯出字幕。</p>
+<p>SRT 檔案與影片檔案要同名，通常，你需要組織一下你的影片檔案及字幕檔案，並重新命名，這有很多工具可實現。（註：如果要匯出到 Anki 則強烈建議用 <code>XXX_nn</code> 或 <code>YYY_SmmEnn</code> 這種格式來命名，其中 <code>mm</code> 代表 Season、<code>nn</code> 代表 Episode，它們從 01 開始累加編號。）</p>
+<p>軟體內建了兩套播放引擎 MPV 和 VLC，如果一套表現不好，可換用另一個，推薦使用 MPV 引擎。另外需要注意的是，如果使用藍牙耳機，在單句模式下，藍牙延時會影響到聲音的播放與暫停位置。</p>
+<p>軟體所用的 ASR 模型，Win32 通常只能使用中、小模型，大模型只適用於 Win64，當然大模型非常精準，初次載入通常需要十幾秒鐘。除此之外，你還要安裝 Python 並安裝如下模組：<br>
+pip install numpy<br>
+pip install websockets</p>
+<p>筆記、波形、聽寫都會在 SRT 所在資料夾下生成同名的檔案，如果初次打開 SRT，通常需要幾秒鐘來生成波形。錄音檔案會保存在本軟體的 Record 資料夾下，它們的體積可能比較大，不需要時可及時刪除。</p>
+<p>對於每條字幕，支援 7 種顏色標記，應當善加利用這些標記，隨時可以根據不同的標記或筆記來進行篩選。注意，在篩選模式下，編輯功能有限，只能部分編輯當前行字幕內容。</p>
+<p>對於 AI 工具及詞典，如果內建不適用，可以在 INI 檔案中自行新增。如果不小心弄壞了 INI 檔案，可直接刪除，系統會自動生成新的。</p>
+<p>聽寫時，點擊聽寫區下方的按鈕，可以對照字幕文字。</p>
+<p>可以在「SRT 工具箱」中匯出 Anki 筆記，需要安裝 <a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect 外掛</a>。內建了兩套精心製作的 Anki 模板，一是單句筆記，一是完整的劇集播放器。</p>
+<p>關於 Anki 媒體檔案的說明：Anki Windows 播放影片僅支援 webm 格式，其它平台下 Anki 支援 mp4，由於 Anki 不支援 100M 以上檔案的同步，所以建議關閉 Anki 的媒體同步功能。你需要使用 ffmpeg 來批次轉換媒體檔案，建議單個檔案不要超過 100M。對於 AnkiMobile，你需要透過建立輔助的簡單卡片（比如牌組名為 FriendsResource），並在卡片的正面或背面的內容中填寫 <code>[sound:xx_s01e01.mp4][sound:xxx_s01e02.mp4]...</code>，然後匯出，即可一次性將媒體檔案打包，之後可在 AnkiMobile 中匯入此 apkg 包，如果 FriendsResource 已存在於 AnkiMobile 中，需要先刪除再匯入；同理，如果想覆蓋某個媒體檔案，也可以這樣操作。</p>
+<p>在 AnkiMobile 上，對於這兩套 Anki 模板，為了更美觀，建議關閉頂部工具條（Top Bar），並將左上角（Top Left）點擊設定為返回牌組（Decks）。在 Anki Series 播放器中，應該永遠不要點擊 Answer，如果誤擊了，應該即時 Undo。</p>
+<p>系統其它內建功能，盡可能大膽地嘗試，不再贅述。</p>
+
+<h1>四、快速鍵一覽</h1>
+<ul>
+<li>Ctrl + P：播放 / 暫停</li>
+<li>Ctrl + S：儲存字幕檔案</li>
+<li>Ctrl + N：插入新字幕行</li>
+<li>Ctrl + L：刪除當前字幕行</li>
+<li>Ctrl + M：合併選取的字幕行</li>
+<li>Ctrl + Enter：全螢幕 / 退出全螢幕</li>
+<li>Esc：退出全螢幕（全螢幕模式下）</li>
+</ul>
+<h1>五、版權及開發者</h1>
+<p>本軟體為免費軟體，可隨意分享，祝您學習愉快！</p>
+<p>開發者聯繫：<a href="mailto:zhangzixin.ssp@gmail.com">zhangzixin.ssp@gmail.com</a></p>
+<p>日期：2026 年 6 月 29 日</p>
+</div>
+
+<!-- ====== 日语版 ====== -->
+<div class="lang-version" id="lang-ja">
+<p><span style="font-size: 36pt;"><strong>VlsPlayer</strong></span></p>
+<h1>一、ソフトウェア概要</h1>
+<p>VlsPlayer は、語学学習のために設計された動画字幕プレーヤーです。<b>音声・動画の再生、字幕の編集、字幕校正、タイムラインの自動校正、字幕ノート、シャドーイング、ディクテーション、AI 支援</b>など、多彩な機能を一つに統合しています。VlsPlayer は SRT 字幕を基盤とし、MPV または VLC の再生エンジンと組み合わせて使用できます。SRT 字幕の一括処理ツールを豊富に備え、一般的な PC 上で NVIDIA の Parakeet-TDT-0.6B-V2 モデルを用いて、高速かつ高精度な音声認識と自動タイムライン調整を実現します。ドラマや映画を通じた語学学習、および字幕の作成・校正における強力な相棒です。</p>
+<p><strong>主な機能：</strong></p>
+<ul>
+<li>丁寧に設計された親しみやすいインターフェースと、細部まで磨き上げられた操作性。長期的な学習に最適です。</li>
+<li>学習者に必須のノート、ディクテーション、シャドーイング、AI 支援分析機能を提供します。</li>
+<li>音声波形の可視化により、文中のタイムラインを直感的に定位し、再生区間を自由に選択できます。</li>
+<li>多彩な再生モード：単文再生、キャラクター対話、選択区間再生、可変速再生。</li>
+<li>自動音声認識（ASR）により、字幕との発音類似度をスコアリング、字幕生成、タイムラインの精密校正が可能です。</li>
+<li>録音シャドーイング機能。自分の発音を録音し、原音と比較できます。</li>
+<li>背景ノイズのミキシングに対応。</li>
+<li>AI 支援：ワンクリックで AI を呼び出し、文の分析や翻訳を行えます。</li>
+<li>字幕への注釈・マーク付けに対応し、マークやノートによる絞り込み・フィルタリングが可能です。</li>
+<li>SRT ツールボックス：結合、分割、エクスポート、変換、動画分割などの一括操作。</li>
+<li>TXT ツールボックス：TXT を SRT 形式に変換し、ノートとして使用できます。</li>
+<li>ASR ツールボックス：高精度な SRT を自動生成、または現在の SRT のタイムラインを校正します。</li>
+<li>Anki カードのエクスポートに対応。Sentences および Series デッキ形式をサポートします。</li>
+<li>多彩なインターフェーススタイルとカスタマイズ機能。</li>
+</ul>
+<h1>二、インターフェース構成</h1>
+<ul>
+<li>上部ツールバー：SRT フォルダ管理、再生制御、字幕編集、ツールボックス、設定など、すべてのショートカットボタンを配置しています。</li>
+<li>左側ファイルリスト：上部は SRT フォルダパスのドロップダウン。下部は現在のフォルダ内の SRT 字幕ファイル一覧で、クリックで読み込みます。</li>
+<li>字幕テーブル（中央上部）：現在の字幕ファイルの番号、開始時刻、終了時刻、主字幕テキスト、副字幕テキスト、マークビットを表示します。行をクリックすると再生位置を切り替えます。</li>
+<li>動画再生エリア（中央左下）：字幕と同名の動画ファイルの映像を表示します。フルスクリーン再生に対応。</li>
+<li>字幕編集エリア（中央右下）：現在の文の主字幕（上部の編集ボックス）と、ノート・注釈・校正内容（下部エリア）を表示します。テキストは直接編集できます。</li>
+<li>マークエリア（ノート編集エリアの下）：7 色のカラーマークビット。クリックでオン／オフを切り替え、文の分類マークとして使用します。</li>
+<li>録音波形エリア：録音波形を表示し、選択区間の再生に対応しています。</li>
+<li>下部波形エディター：音声波形を表示。クリックで定位、ドラッグで再生範囲を選択、字幕の追加・削除、タイムラインの直感的な精密調整が可能です。</li>
+</ul>
+<h1>三、クイックスタート</h1>
+<p>一般的なメディアプレーヤーとは異なり、本ソフトウェアは語学学習者専用に設計されています。使用する前に、SRT 字幕と同名の動画ファイルが必要です。</p>
+<p>字幕の品質が極めて高い場合を除き、本ソフトウェアの ASR ツールボックス（大モデル）を使って高品質な SRT 字幕を生成し、元の字幕または公式字幕を校正の参考にすることを強くお勧めします。あるいは、ASR ツールボックスで既存字幕のタイムラインを自動校正することもできます。字幕サイトから SRT 字幕、または他形式の字幕をダウンロードして SRT に変換し、校正の参考にすることもできます。動画から字幕を抽出する方法もあります（例：多くの MKV 形式にはテキスト字幕が埋め込まれており、ffmpeg で抽出できます）。</p>
+<p>SRT ファイルと動画ファイルは同名である必要があります。通常、動画ファイルと字幕ファイルを整理し、リネームする必要があります。これを支援するツールは多数あります。（注：Anki へエクスポートする場合は、<code>XXX_nn</code> または <code>YYY_SmmEnn</code> という形式で命名することを強くお勧めします。<code>mm</code> は Season、<code>nn</code> は Episode を表し、01 から順に番号を付けます。）</p>
+<p>ソフトウェアには MPV と VLC の 2 つの再生エンジンが内蔵されています。一方の動作が良くない場合は、もう一方に切り替えてください。MPV エンジンの使用を推奨します。また、Bluetooth イヤホンを使用する場合、単文モードでは Bluetooth の遅延が音声の再生・一時停止位置に影響することに注意してください。</p>
+<p>ASR モデルについて：Win32 では通常、中・小モデルのみが使用可能で、大モデルは Win64 専用です。大モデルは非常に高精度ですが、初回の読み込みには通常十数秒かかります。さらに、Python をインストールし、以下のモジュールを導入する必要があります：<br>
+pip install numpy<br>
+pip install websockets</p>
+<p>ノート、波形、ディクテーションは、SRT ファイルと同じフォルダに同名のファイルとして生成されます。SRT を初めて開く際は、波形の生成に通常数秒かかります。録音ファイルは本ソフトウェアの Record フォルダに保存され、サイズが大きくなることがあります。不要になったら適時削除してください。</p>
+<p>各字幕は 7 色のマークに対応しています。これらのマークを有効に活用し、マークやノートでいつでも絞り込みを行えます。なお、フィルターモードでは編集機能が制限され、現在の行の字幕内容のみ部分的に編集できます。</p>
+<p>AI ツールや辞書について、内蔵のものが適さない場合は、INI ファイルに独自に追加できます。INI ファイルを誤って壊してしまった場合は、削除すればシステムが自動的に新しいものを生成します。</p>
+<p>ディクテーション時には、ディクテーションエリアの下にあるボタンをクリックすると、字幕テキストと照合できます。</p>
+<p>「SRT ツールボックス」から Anki ノートをエクスポートできます。<a href="https://ankiweb.net/shared/info/2055492159">AnkiConnect アドオン</a>のインストールが必要です。丁寧に作り込まれた 2 種類の Anki テンプレート（単文ノート用と、完全なシリーズプレーヤー用）が内蔵されています。</p>
+<p>Anki のメディアファイルについて：Anki の Windows 版では動画は webm 形式のみ再生可能で、他のプラットフォームでは mp4 に対応しています。Anki は 100M を超えるファイルの同期をサポートしていないため、Anki のメディア同期機能をオフにすることを推奨します。メディアファイルの一括変換には ffmpeg を使用し、1 ファイルあたり 100M 以下に抑えることをお勧めします。AnkiMobile の場合は、補助的な簡単なカード（例えば FriendsResource という名前のデッキ）を作成し、カードの表か裏に <code>[sound:xx_s01e01.mp4][sound:xxx_s01e02.mp4]...</code> のように記述してエクスポートすると、メディアファイルを一括でパッケージ化できます。その後、この apkg を AnkiMobile にインポートします。FriendsResource が既に AnkiMobile に存在する場合は、一度削除してからインポートしてください。同様に、特定のメディアファイルを上書きしたい場合もこの方法が使えます。</p>
+<p>AnkiMobile では、これら 2 種類の Anki テンプレートを見栄え良くするために、上部ツールバー（Top Bar）をオフにし、左上（Top Left）のタップをデッキに戻る（Decks）に設定することをお勧めします。Anki Series プレーヤーでは、Answer を絶対にタップしないでください。誤ってタップした場合は、すぐに Undo してください。</p>
+<p>その他の内蔵機能については、ぜひ大胆に試してみてください。ここでは割愛します。</p>
+
+<h1>四、ショートカット一覧</h1>
+<ul>
+<li>Ctrl + P：再生／一時停止</li>
+<li>Ctrl + S：字幕ファイルを保存</li>
+<li>Ctrl + N：新しい字幕行を挿入</li>
+<li>Ctrl + L：現在の字幕行を削除</li>
+<li>Ctrl + M：選択した字幕行を結合</li>
+<li>Ctrl + Enter：フルスクリーン／フルスクリーン解除</li>
+<li>Esc：フルスクリーン解除（フルスクリーンモード時）</li>
+</ul>
+<h1>五、著作権と開発者</h1>
+<p>本ソフトウェアはフリーソフトウェアです。自由に共有していただけます。楽しい学習を！</p>
+<p>開発者連絡先：<a href="mailto:zhangzixin.ssp@gmail.com">zhangzixin.ssp@gmail.com</a></p>
+<p>日付：2026 年 6 月 29 日</p>
+</div>
+
+<script type="text/javascript">
+  (function() {
+    var LANGUAGES = ['en', 'zh-cn', 'zh-tw', 'ja'];
+    var DEFAULT_LANG = 'en';
+
+    function getBrowserLanguage() {
+      var lang = navigator.language || navigator.userLanguage || 'en';
+      lang = lang.toLowerCase();
+      if (lang.startsWith('zh')) {
+        if (lang.startsWith('zh-tw') || lang.startsWith('zh-hk') || 
+            lang.startsWith('zh-mo') || lang.startsWith('zh-hant')) {
+          return 'zh-tw';
+        }
+        return 'zh-cn';
+      }
+      if (lang.startsWith('ja')) return 'ja';
+      return 'en';
+    }
+
+    function switchLanguage(lang) {
+      document.querySelectorAll('.lang-version').forEach(function(el) {
+        el.classList.remove('active');
+      });
+      var target = document.getElementById('lang-' + lang);
+      if (target) { target.classList.add('active'); }
+      else { document.getElementById('lang-en').classList.add('active'); }
+      document.querySelectorAll('.lang-switcher button').forEach(function(btn) {
+        btn.classList.toggle('active-lang', btn.getAttribute('data-lang') === lang);
+      });
+      try { localStorage.setItem('vlsplayer-lang', lang); } catch(e) {}
+    }
+
+    function initLanguage() {
+      var savedLang = null;
+      try { savedLang = localStorage.getItem('vlsplayer-lang'); } catch(e) {}
+      if (savedLang && LANGUAGES.indexOf(savedLang) !== -1) {
+        switchLanguage(savedLang);
+        var langNames = { 'en': 'English', 'zh-cn': '简体中文', 'zh-tw': '繁體中文', 'ja': '日本語' };
+        document.getElementById('detectedInfo').textContent = '用户偏好: ' + (langNames[savedLang] || savedLang);
+        return;
+      }
+      var detected = getBrowserLanguage();
+      switchLanguage(detected);
+      var langNames = {
+        'en': 'English (auto-detected)',
+        'zh-cn': '简体中文 (自动检测)',
+        'zh-tw': '繁體中文 (自動檢測)',
+        'ja': '日本語 (自動検出)'
+      };
+      document.getElementById('detectedInfo').textContent = langNames[detected] || detected;
+    }
+
+    document.querySelectorAll('.lang-switcher button').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var lang = this.getAttribute('data-lang');
+        switchLanguage(lang);
+        var langNames = {
+          'en': '已切换: English',
+          'zh-cn': '已切换: 简体中文',
+          'zh-tw': '已切换: 繁體中文',
+          'ja': '已切换: 日本語'
+        };
+        document.getElementById('detectedInfo').textContent = langNames[lang] || lang;
+      });
+    });
+
+    initLanguage();
+  })();
+</script>
+</body>
+</html>

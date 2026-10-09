@@ -1,0 +1,184 @@
+================================================================================
+THIRD-PARTY LICENSES AND NOTICES
+================================================================================
+
+This software incorporates, bundles, or depends on the following
+third-party libraries, tools, components, and models. Their respective
+copyright holders and licenses are listed below. Users and distributors
+must comply with the terms of each license.
+
+================================================================================
+1. MPV / libmpv
+================================================================================
+
+MPV base player classes
+Author: Edward G. (nbuyer@gmail.com)
+
+MPV Player & libmpv client library
+Project: https://mpv.io/
+Repository: https://github.com/mpv-player/mpv
+
+mpv is free software; you can redistribute it and/or modify it under the
+terms of the GNU Lesser General Public License as published by the Free
+Software Foundation; either version 2.1 of the License, or (at your option)
+any later version, or under the GNU General Public License version 2 or
+later.
+
+See https://github.com/mpv-player/mpv/blob/master/Copyright for full details.
+
+================================================================================
+2. VLC / libvlc (VideoLAN)
+================================================================================
+
+libvlc is part of project VideoLAN
+
+Copyright (c) 1996-2024 VideoLAN Team
+
+For more information about VideoLAN:
+https://www.videolan.org/
+
+VLC media player and libvlc are licensed primarily under the
+GNU Lesser General Public License version 2.1 or later (LGPL-2.1+),
+and partly under the GNU General Public License version 2 or later (GPL-2.0+).
+
+See https://www.videolan.org/legal.html for full license text.
+
+================================================================================
+3. BASS audio library
+================================================================================
+
+BASS 2.4
+Copyright (c) 1999-2025 Un4seen Developments Ltd. 
+See https://www.un4seen.com/  for full license text.
+
+================================================================================
+4. TDiff Component
+================================================================================
+
+Component:         TDiff
+Version:           3.1
+Date:              7 November 2009
+Compilers:         Delphi 7 - Delphi2009
+Author:            Angus Johnson
+                   angusj-AT-myrealbox-DOT-com
+Copyright:         2001-2009 Angus Johnson
+
+The original copyright and authorship notice are preserved as found in the
+source distribution. Please refer to the original author's documentation for
+applicable license terms.
+
+================================================================================
+5. sherpa-onnx
+================================================================================
+
+Package: sherpa-onnx-v1.13.3-win-x86-shared-MD-MinSizeRel
+Package: sherpa-onnx-v1.13.3-win-x64-shared-MD-MinSizeRel
+Project: https://github.com/k2-fsa/sherpa-onnx
+
+sherpa-onnx is licensed under the Apache License, Version 2.0.
+
+Copyright (c) 2022-2024 k2-fsa authors (https://github.com/k2-fsa)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+================================================================================
+6. FFmpeg
+================================================================================
+
+Project: https://ffmpeg.org/
+Repository: https://git.ffmpeg.org/ffmpeg.git
+
+FFmpeg is licensed under the GNU Lesser General Public License version 2.1
+or later (LGPL-2.1+), or the GNU General Public License version 2 or later
+(GPL-2.0+), depending on the build configuration and enabled components.
+
+Copyright (c) FFmpeg contributors
+
+See https://ffmpeg.org/legal.html for full license text and compliance
+instructions. The specific license of the bundled FFmpeg binary depends on
+how it was compiled (shared libraries used by this project typically use
+the LGPL variant).
+
+================================================================================
+7. NVIDIA Parakeet-TDT-0.6B-V2 ASR Model (sherpa-onnx packaged)
+================================================================================
+
+Model family: NVIDIA Parakeet-TDT-0.6B-V2 (referred to as "062B" in the project)
+Origin: NVIDIA NeMo / Riva Parakeet family
+
+Pre-packaged sherpa-onnx variants used by this project:
+  - sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000
+  - sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000-int8 (int8 quantized)
+
+These model checkpoints are provided by NVIDIA. Usage and redistribution are
+subject to the NVIDIA tensor/model license terms and/or the NeMo toolkit
+license.
+
+Please refer to the official NVIDIA documentation for the exact license
+applicable to these specific model checkpoints:
+https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/parakeet-tdt-0.6b
+
+================================================================================
+8. Microsoft Edge WebView2 Runtime
+================================================================================
+
+Microsoft Edge WebView2 Runtime
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* The name of Microsoft Corporation, or the names of its contributors may not
+  be used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+================================================================================
+9. Vimium 2.4.2 (Chrome Extension)
+================================================================================
+
+Vimium
+
+Project:    https://github.com/philc/vimium
+Homepage:   https://vimium.github.io/
+
+Copyright (c) 2010 Phil Crosby, Ilya Sukhar.
+
+Vimium is licensed under the MIT License (also known as the Expat License).
+See the project repository for the full license text:
+
+    https://github.com/philc/vimium/blob/master/MIT-LICENSE.txt
+================================================================================
+DISCLAIMER
+================================================================================
+
+This file is provided for informational purposes only. It does not constitute
+legal advice. If you intend to redistribute this software or any of its
+bundled binaries, you are responsible for verifying that you comply with all
+applicable third-party licenses, including attribution and copyleft
+requirements where applicable.
