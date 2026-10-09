@@ -73,7 +73,7 @@ See **Help → User Guide** (`VlsPlayer.html`) inside the program for details.
 
 ### 💻 Requirements
 
-- Windows 7 / 10 / 11 (64-bit recommended)
+- Windows 10 / 11 (64-bit recommended)
 
 ### 🧩 What You Need to Prepare
 
@@ -192,7 +192,7 @@ VlsPlayer\
 
 ### 💻 系统要求
 
-- Windows 7 / 10 / 11（64 位推荐）
+- Windows 10 / 11（64 位推荐）
 
 ### 🧩 你需要自行准备的东西
 
