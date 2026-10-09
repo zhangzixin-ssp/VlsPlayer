@@ -64,10 +64,9 @@ VlsPlayer\
 
 ### 🚀 Quick Start
 
-1. Prepare a **video file** and a **same-named SRT subtitle file** (e.g. `Friends_S01E01.mp4` + `Friends_S01E01.srt`)
-2. Unzip the program and double-click `VlsPlayer.exe`
-3. Move the mouse to the left edge to reveal the file list, add the folder containing your SRT, then click the SRT file
-4. For high-quality subtitles, use the **ASR Toolbox** to generate SRT automatically
+1. Unzip the program and double-click `VlsPlayer.exe`
+2. Move the mouse to the left edge to reveal the file list, add the folder containing your SRT, then click the SRT file
+3. For high-quality subtitles, use the **ASR Toolbox** to generate SRT automatically
 
 See **Help → User Guide** (`VlsPlayer.html`) inside the program for details.
 
@@ -183,10 +182,9 @@ VlsPlayer\
 
 ### 🚀 快速上手
 
-1. 准备一个 **视频文件** 和 **同名的 SRT 字幕文件**（如 `Friends_S01E01.mp4` + `Friends_S01E01.srt`）
-2. 解压程序，双击 `VlsPlayer.exe`
-3. 鼠标移到左侧边缘，显示文件列表，添加 SRT 所在文件夹，然后点击 SRT 文件
-4. 若需要高质量字幕：用 **ASR 工具箱** 自动生成 SRT
+1. 解压程序，双击 `VlsPlayer.exe`
+2. 鼠标移到左侧边缘，显示文件列表，添加 SRT 所在文件夹，然后点击 SRT 文件
+3. 若需要高质量字幕：用 **ASR 工具箱** 自动生成 SRT
 
 详细说明见程序内置的 **帮助 → 使用说明**（`VlsPlayer.html`）。
 
