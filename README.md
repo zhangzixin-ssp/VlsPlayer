@@ -28,7 +28,7 @@
 
 ![Main UI](docs/main.jpg)
 ![SRT Toolbox](docs/srt0.jpg)
-![SRT Toolbox detail](docs/srt1.jpg)
+![SRT Toolbox detail](docs/srt.jpg)
 ![Anki export](docs/anki.jpg)
 
 ### ⬇️ Download
@@ -146,7 +146,7 @@ Full third-party license texts are in [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NO
 
 ![主界面](docs/main.jpg)
 ![SRT 工具箱](docs/srt0.jpg)
-![SRT 工具箱细节](docs/srt1.jpg)
+![SRT 工具箱细节](docs/srt.jpg)
 ![Anki 导出](docs/anki.jpg)
 
 ### ⬇️ 下载
