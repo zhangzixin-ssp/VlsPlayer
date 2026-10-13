@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT 工具箱 操作说明书</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+    --warn-bg: #fff8e6;
+    --warn-border: #e8a200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 16px; margin: 22px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.5;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .cmd {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 14px 18px; margin: 14px 0; background: #fafbfc;
+  }
+  .cmd .name {
+    font-weight: 600; color: var(--accent); font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .cmd .desc { color: #444; margin: 6px 0; font-size: 14px; }
+  .cmd .io {
+    color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: Consolas, monospace;
+  }
+  .cmd .hint {
+    background: var(--accent-soft); border-radius: 4px;
+    padding: 6px 10px; margin-top: 8px; font-size: 13px; color: #234;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, .cmd { page-break-inside: avoid; }
+    .toc ol { column-count: 2; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SRT 工具箱 操作说明书</h1>
+  <div class="meta">版本 1.0 &nbsp;|&nbsp; SRT Toolbox / VlsSrtTools</div>
+</header>
+
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#s1">程序简介</a></li>
+    <li><a href="#s2">界面布局</a></li>
+    <li><a href="#s3">左侧面板：目录与文件</a></li>
+    <li><a href="#s4">字幕行类型</a></li>
+    <li><a href="#s5">中间面板：17 个命令</a></li>
+    <li><a href="#s6">字幕与文本互转（命令 1-8）</a></li>
+    <li><a href="#s7">字幕内容操作（命令 9-15）</a></li>
+    <li><a href="#s8">视频分割（命令 16-17）</a></li>
+    <li><a href="#s9">右侧面板：Anki 导出</a></li>
+    <li><a href="#s10">常见问题</a></li>
+    <li><a href="#s11">注意事项</a></li>
+    <li><a href="#s12">附录：文件命名规则</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. 程序简介</h2>
+  <p>SRT 工具箱（VlsSrtTools）是一款 SRT 字幕批量处理工具，用于对一组字幕文件执行常见的整理、转换、导出工作。</p>
+  <p>主要能力：</p>
+  <ul>
+    <li>字幕与纯文本互转（导出、回填）</li>
+    <li>字幕内容的合并、拆分、交换、删除</li>
+    <li>简繁转换</li>
+    <li>时间线扩展</li>
+    <li>生成 AI 翻译 / 检查译文用的文本</li>
+    <li>按字幕时间线分割视频（生成 ffmpeg 批处理）</li>
+    <li>导出 Anki 播放器文本、剧集卡片、句子笔记卡片</li>
+  </ul>
+  <p>程序支持多文件批量处理，所有修改类操作都会自动备份原文件。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 界面布局</h2>
+  <p>主窗口分为三个区域：</p>
+  <table>
+    <thead><tr><th>区域</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>左侧面板</td><td>SRT 目录选择、字幕行类型、SRT 文件列表</td></tr>
+      <tr><td>中间面板</td><td>17 个命令按钮</td></tr>
+      <tr><td>右侧面板</td><td>Anki 导出设置（悬停命令 1 时显示）+ SRT 预览</td></tr>
+      <tr><td>底部状态栏</td><td>当前文件名 + 字幕数量</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s3">
+  <h2>3. 左侧面板：目录与文件</h2>
+
+  <h3>3.1 SRT 目录</h3>
+  <ul>
+    <li>下拉框选择已保存的 SRT 目录。</li>
+    <li>绿色 <code>+</code> 按钮：添加 SRT 目录。</li>
+    <li>红色 <code>−</code> 按钮：移除当前 SRT 目录。</li>
+    <li><code>含子目录?</code>：勾选后扫描时包括子目录。</li>
+  </ul>
+  <p>程序会记住每个目录的配置（包括字幕行类型、Anki 参数等），切换目录时自动恢复。</p>
+
+  <h3>3.2 SRT 文件列表</h3>
+  <ul>
+    <li>列出当前目录下所有 <code>.srt</code> 文件。</li>
+    <li>支持多选，批量操作的対象就是选中的文件。</li>
+    <li>点击单个文件，右侧预览区显示其内容，状态栏显示字幕数量。</li>
+    <li>列表标题显示总数和当前选中数。</li>
+  </ul>
+</section>
+
+<section id="s4">
+  <h2>4. 字幕行类型</h2>
+  <p>SRT 文件每条字幕可能只有一行文字，也可能有原文和译文两行。程序需要知道怎么拆分成“字幕一”和“字幕二”。</p>
+  <table>
+    <thead><tr><th>选项</th><th>拆分规则</th></tr></thead>
+    <tbody>
+      <tr><td>自动识别</td><td>按语言特征判断：英文行归字幕一，其余归字幕二</td></tr>
+      <tr><td>第一行作为字幕一</td><td>每条字幕的第一行归字幕一，其余合并到字幕二</td></tr>
+      <tr><td>所有行作为字幕一</td><td>全部文字视为字幕一，字幕二留空</td></tr>
+      <tr><td>最后行作为字幕二</td><td>每条字幕的最后一行归字幕二，其余合并到字幕一</td></tr>
+      <tr><td>奇偶字幕行成对</td><td>第 1、2 行成对，第 3、4 行成对……（默认）</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    这个选项直接影响所有命令的处理结果，尤其是“交换字幕一和字幕二”、“简繁转换”这类只处理字幕二的操作。选错会导致处理对象错位。
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. 中间面板：17 个命令</h2>
+  <p>中间是命令按钮组，共 17 个命令，鼠标悬停时按钮高亮并显示提示。悬停第 1 个命令时，右侧会显示 Anki 导出面板。</p>
+  <p>命令按用途分为三组：</p>
+  <ul>
+    <li><strong>字幕与文本互转</strong>：命令 1 ~ 8</li>
+    <li><strong>字幕内容操作</strong>：命令 9 ~ 15</li>
+    <li><strong>视频分割</strong>：命令 16 ~ 17</li>
+  </ul>
+  <div class="note">
+    执行任何命令前，必须先选好 SRT 目录、选中至少一个 SRT 文件，否则会弹窗提示。
+  </div>
+</section>
+
+<section id="s6">
+  <h2>6. 字幕与文本互转（命令 1-8）</h2>
+
+  <div class="cmd">
+    <div class="name">1. 导出Anki播放器文本</div>
+    <div class="desc">此命令本身不执行导出，而是显示右侧 Anki 设置面板，导出操作在面板中进行。详见第 9 节。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">2. 导出字幕一到文本文件</div>
+    <div class="desc">把选中 SRT 的字幕一逐行导出为纯文本。每行格式为 <code>行号|内容</code>，行号从 1 开始，4 位补零。</div>
+    <div class="io">输出文件：*_1.txt（UTF-8）</div>
+    <div class="hint">用于把字幕交给外部工具（如 AI、翻译软件）修改后，再用命令 4 回填。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">3. 导出字幕二到文本文件</div>
+    <div class="desc">同上，导出的是字幕二。</div>
+    <div class="io">输出文件：*_2.txt（UTF-8）</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">4. 从文本中更新字幕一</div>
+    <div class="desc">读取同目录下的 <code>*_1.txt</code>，按行号更新字幕一。文本格式必须是 <code>行号|内容</code>，行号有效才更新，越界的忽略。</div>
+    <div class="io">输入文件：*_1.txt</div>
+    <div class="hint">处理前自动备份原 SRT。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">5. 从文本中更新字幕二</div>
+    <div class="desc">同上，更新字幕二。</div>
+    <div class="io">输入文件：*_2.txt</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">6. 生成AI翻译所需要的文本</div>
+    <div class="desc">弹出 Prompt 输入窗口，确认后生成用于 AI 翻译的文本。内容 = Prompt + 所有字幕一（按 <code>行号|内容</code> 格式）。Prompt 会保存在配置中，下次自动载入。</div>
+    <div class="io">输出文件：*_t.txt（UTF-8）</div>
+    <div class="hint">默认 Prompt 要求逐行直译、严禁拆分合并行、输出格式为 <code>行号|译文</code>，可自行修改。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">7. 生成AI检查翻译所需文本</div>
+    <div class="desc">弹出 Prompt 输入窗口，确认后生成用于 AI 检查译文的文本。内容 = Prompt + 完整 SRT 内容（原文 + 译文对照）。</div>
+    <div class="io">输出文件：*_c.txt（UTF-8）</div>
+    <div class="hint">默认 Prompt 要求 AI 找出漏译、错译、可改进处，只输出修正行。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">8. 导出选中的SRT到一个文本</div>
+    <div class="desc">把所有选中的 SRT 合并输出到一个文本文件。每个文件以 <code>[文件名]</code> 开头，之后每行是 <code>时间戳（MM:SS）Tab 字幕一</code>。文件之间空一行。</div>
+    <div class="io">输出文件：SRT目录下的 _all.txt（UTF-8）</div>
+    <div class="hint">用于快速浏览整季字幕或做总体校对。</div>
+  </div>
+</section>
+
+<section id="s7">
+  <h2>7. 字幕内容操作（命令 9-15）</h2>
+
+  <div class="cmd">
+    <div class="name">9. 交换字幕一和字幕二</div>
+    <div class="desc">把每条字幕的原文和译文对调。</div>
+    <div class="hint">处理前自动备份。如果字幕行类型选错，会导致交换结果不如预期，先检查第 4 节的设置。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">10. 删除字幕二</div>
+    <div class="desc">清空所有字幕二的内容，只保留字幕一。</div>
+    <div class="hint">适合只保留原文的场景。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">11. 合并字幕中的句子碎片</div>
+    <div class="desc">自动判断属于同一句子的相邻字幕行并合并。合并规则：时间取并集，文本用空格连接，译文用空格连接。可识别缩写、未闭合引号、逗号/分号结尾等情形。</div>
+    <div class="hint">用于修复 ASR 输出或人工切分过碎的字幕。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">12. 按 -分割角色字幕行</div>
+    <div class="desc">对每条字幕，按文本中的 <code> -</code>（空格+短横线）切成两行。时间按文本长度比例分配：前半部分占前段，后半部分占后段。如果译文里也有 <code> -</code>，同步切分。</div>
+    <div class="hint">用于在精调时间轴前，把同一时间段内的不同角色台词粗略分离。若某条字幕不包含 <code> -</code>，保持不变。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">13. 扩展时间线</div>
+    <div class="desc">弹出时间输入窗口，按指定偏移量前后扩展每条字幕的起止时间。扩展时自动避免与相邻字幕重叠，每侧最多扩展到相邻字幕的中间位置。</div>
+    <div class="hint">用于修复字幕时间过短、显示停留不足的问题。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">14. 字幕简体转繁体中文</div>
+    <div class="desc">把字幕二由简体转换为繁体。字幕一不变。</div>
+    <div class="hint">只处理字幕二，转换时使用系统 LCMapString，不会影响英文字幕。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">15. 字幕繁体转简体中文</div>
+    <div class="desc">把字幕二由繁体转换为简体。字幕一不变。</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. 视频分割（命令 16-17）</h2>
+
+  <div class="cmd">
+    <div class="name">16. 按字幕分割为多个视频</div>
+    <div class="desc">弹出媒体类型选择窗口（mp4、mkv 等）。确认后，按字幕时间线逐句生成 ffmpeg 命令，写入批处理文件。媒体文件假设与 SRT 同名，只是扩展名不同。</div>
+    <div class="io">输出文件：*_cut.bat</div>
+    <div class="hint">
+      批处理文件需手动双击运行。运行时需保证系统已安装 ffmpeg 并加入 PATH，或把 ffmpeg.exe 放在同目录。<br>
+      切分命令使用 <code>-c copy</code>，不重新编码，速度极快。
+    </div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">17. 分割为两个字幕及视频</div>
+    <div class="desc">弹出媒体类型 + 分割时间窗口。确认后：</div>
+    <ul>
+      <li>在指定时间点把 SRT 切成 <code>*_1.srt</code> 和 <code>*_2.srt</code>，后者的时间轴整体前移</li>
+      <li>生成 <code>*_cut_2.bat</code>，包含两条 ffmpeg 命令，分别切出前半段和后半段视频</li>
+    </ul>
+    <div class="io">输出文件：*_1.srt、*_2.srt、*_cut_2.bat</div>
+    <div class="hint">
+      如果指定的时间点正好落在某条字幕中间，程序会自动把它调整到相邻两条字幕之间的空隙。<br>
+      时间点超出字幕范围时会跳过该文件。
+    </div>
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. 右侧面板：Anki 导出</h2>
+  <p>鼠标悬停在命令 1 <code>导出Anki播放器文本</code> 上时，右侧显示 Anki 导出面板。</p>
+
+  <h3>9.1 面板选项</h3>
+  <table>
+    <thead><tr><th>项目</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>剧集牌组名称</td><td>勾选后启用，选择 Anki 中用于剧集的牌组</td></tr>
+      <tr><td>标题(关键字)</td><td>剧集标题，由三段组成：主标题 + 季/章节 + 集/单元</td></tr>
+      <tr><td>笔记牌组</td><td>勾选后启用，用于导出带备注的句子卡片</td></tr>
+      <tr><td>另存为文本文件?</td><td>勾选后同时保存为本地文本文件</td></tr>
+      <tr><td>更新后同步Anki?</td><td>勾选后自动触发 Anki 同步</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 季/集编号提取</h3>
+  <table>
+    <thead><tr><th>项目</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>媒体文件名前缀</td><td>时间线字段的前缀，例如 <code>fr</code></td></tr>
+      <tr><td>获取季编号来源</td><td>可选“从SRT文件夹获取”或“从SRT文件名获取”</td></tr>
+      <tr><td>季编号开始位置</td><td>从第几个字符开始提取</td></tr>
+      <tr><td>季编号长度</td><td>提取多少位字符</td></tr>
+      <tr><td>剧集编号开始位置</td><td>同上，对应剧集编号</td></tr>
+      <tr><td>剧集编号长度</td><td>同上</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 导出内容</h3>
+  <ul>
+    <li><strong>剧集牌组</strong>：一季的所有字幕文本，按季归档到对应字段</li>
+    <li><strong>笔记牌组</strong>：只导出带备注或格式标记的句子，作为学习卡片</li>
+  </ul>
+
+  <h3>9.4 操作步骤</h3>
+  <ol>
+    <li>在左侧选中要导出的 SRT 文件。</li>
+    <li>鼠标悬停在命令 1 上，显示 Anki 面板。</li>
+    <li>设置牌组、标题、季集编号提取参数。</li>
+    <li>点击面板右上角的 <strong>导出</strong> 按钮。</li>
+    <li>日志区显示导出结果。</li>
+  </ol>
+
+  <h3>9.5 前置条件</h3>
+  <ul>
+    <li>Anki 正在运行</li>
+    <li>已安装 AnkiConnect 插件</li>
+    <li>端口 8765 未被占用</li>
+  </ul>
+  <div class="note">
+    若笔记类型不存在，程序会尝试自动创建。若创建失败，说明模板文件缺失，需检查程序目录下的 <code>lib\anki\</code> 子目录。
+  </div>
+</section>
+
+<section id="s10">
+  <h2>10. 常见问题</h2>
+
+  <div class="qa">
+    <div class="q">Q1：提示“请选择SRT文件夹”</div>
+    <div class="a">顶部的 SRT 目录下拉框为空。点击绿色 <code>+</code> 按钮添加目录。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：提示“请选择SRT文件”</div>
+    <div class="a">左侧文件列表中没有选中任何文件。点击文件名即可选中，可多选。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：处理速度慢</div>
+    <div class="a">文件数量多、字幕行数多，或启用了 Anki 导出功能。可分批处理。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：原文/译文识别不对</div>
+    <div class="a">在左侧 <strong>字幕行类型</strong> 中手动指定拆分方式，不要用“自动识别”。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：导出 * _1.txt 后修改，回填没有生效</div>
+    <div class="a">检查文本格式是否为 <code>行号|内容</code>（行号 4 位补零，竖线分隔），行号是否在有效范围内。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：Anki 导出失败</div>
+    <div class="a">检查 Anki 是否在运行、AnkiConnect 插件是否安装、牌组是否存在。导出失败不影响本地 SRT 文件。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：修改后能撤销吗？</div>
+    <div class="a">不能。修改类操作会自动备份原文件，备份文件在同目录的 <code>backup\</code> 子目录中。如需恢复，手动把备份文件改回原名。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：分割视频时找不到媒体文件</div>
+    <div class="a">程序假设媒体文件与 SRT 同名，只是扩展名不同。若媒体文件名不同，需要先改成同名。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：生成的批处理文件怎么用？</div>
+    <div class="a">把批处理文件复制到媒体文件所在目录，双击运行。需要系统已安装 ffmpeg 并加入 PATH，或把 ffmpeg.exe 放在同目录。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：分割时间点落在字幕中间怎么办？</div>
+    <div class="a">程序会自动把分割点调整到相邻两条字幕之间的空隙。若整段字幕之后没有更多字幕，则按原时间点处理。</div>
+  </div>
+</section>
+
+<section id="s11">
+  <h2>11. 注意事项</h2>
+  <ol>
+    <li>批量操作前建议先备份整个 SRT 目录。</li>
+    <li>修改类操作会覆盖原文件，程序会自动备份到 <code>backup\</code> 子目录，但备份数量有限。</li>
+    <li>AI 翻译和检查功能只生成文本，不直接修改 SRT。需要用“从文本中更新字幕”命令把结果写回。</li>
+    <li>分割视频功能只生成批处理文件，不会直接执行 ffmpeg。运行批处理前请确认路径和文件名正确。</li>
+    <li>Anki 相关功能需要 AnkiConnect 插件和运行中的 Anki。</li>
+    <li>程序退出时会保存当前目录、参数和窗口位置，下次启动自动恢复。</li>
+    <li>简繁转换只处理字幕二，如果字幕一也需要转换，先用“交换字幕一和字幕二”，转换后再交换回来。</li>
+  </ol>
+</section>
+
+<section id="s12">
+  <h2>12. 附录：文件命名规则</h2>
+  <table>
+    <thead><tr><th>后缀</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td>_1.txt</td><td>字幕一导出的文本</td></tr>
+      <tr><td>_2.txt</td><td>字幕二导出的文本</td></tr>
+      <tr><td>_t.txt</td><td>AI 翻译用的文本</td></tr>
+      <tr><td>_c.txt</td><td>AI 检查翻译用的文本</td></tr>
+      <tr><td>_series.txt</td><td>Anki 剧集文本</td></tr>
+      <tr><td>_sentence.txt</td><td>Anki 句子笔记文本</td></tr>
+      <tr><td>_cut.bat</td><td>按字幕逐句分割视频的批处理</td></tr>
+      <tr><td>_cut_2.bat</td><td>按时间点分割为两个视频的批处理</td></tr>
+      <tr><td>_1.srt / _2.srt</td><td>分割后的两个字幕文件</td></tr>
+      <tr><td>_all.txt</td><td>所有选中 SRT 合并的文本</td></tr>
+    </tbody>
+  </table>
+
+  <h3>备份目录</h3>
+  <p>每次修改类操作前，原文件自动备份到同目录的 <code>backup\</code> 子目录，文件名带时间戳，例如：</p>
+  <pre>字幕目录\backup\某剧集_20240101_1200.srt</pre>
+</section>
+
+<footer>
+  SRT 工具箱 操作说明书 · 版本 1.0
+</footer>
+
+</div>
+</body>
+</html>

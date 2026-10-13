@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki iPhone Media Files Guide</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #2b6cb0; --accent-soft: #ebf3fb; --border: #dde2e8;
+    --code-bg: #f0f2f5; --warn-bg: #fff8e6; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+    --danger-bg: #fff0f0; --danger-border: #d04040;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .danger { background: var(--danger-bg); border-left: 4px solid var(--danger-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki iPhone Media Files Guide</h1>
+  <div class="meta">Version 1.2 &nbsp;|&nbsp; Compress, name, package, transfer, import, update, clean up</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">What this guide solves</a></li>
+    <li><a href="#s2">Platform differences</a></li>
+    <li><a href="#s3">Windows video format limit</a></li>
+    <li><a href="#s4">Core mechanism: [sound:]</a></li>
+    <li><a href="#s5">Media pack deck structure</a></li>
+    <li><a href="#s6">File naming rules</a></li>
+    <li><a href="#s7">Compress & convert with ffmpeg</a></li>
+    <li><a href="#s8">Media must be seekable</a></li>
+    <li><a href="#s9">Export to apkg</a></li>
+    <li><a href="#s10">Transfer to iPhone</a></li>
+    <li><a href="#s11">Import: delete old deck first</a></li>
+    <li><a href="#s12">Update media</a></li>
+    <li><a href="#s13">Delete specific media files</a></li>
+    <li><a href="#s14">Clean up files over 100MB</a></li>
+    <li><a href="#s15">Full workflow summary</a></li>
+    <li><a href="#s16">FAQ</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. What this guide solves</h2>
+  <p>On iPhone, Anki media files work completely differently than on desktop or Android. On desktop and Android, you can open the file manager and manipulate the media folder directly. On iPhone you can't — iOS sandboxing keeps AnkiMobile's media library completely closed to the user.</p>
+  <p>This creates several real problems:</p>
+  <ol>
+    <li><b>How do I get tens of GB of media onto my iPhone?</b> AnkiWeb sync is out of the question. The only workable path is offline apkg packaging, transferred via iTunes File Sharing or cloud drives.</li>
+    <li><b>How do I play video on Windows?</b> Windows Anki only supports WebM, not MP4. So the same video needs two copies: MP4 for iPhone, WebM for Windows.</li>
+    <li><b>How do I make media seek accurately on iPhone?</b> Not every video format supports seeking. Files that don't meet the requirements play fine on iPhone but the progress bar jumps erratically.</li>
+    <li><b>How do I delete media I've already imported?</b> Anki's "Check Media" can clean unused media, but only if the file is no longer referenced by any <code>[sound:]</code> tag and is under 100MB.</li>
+    <li><b>Why does importing an apkg always fail?</b> Because a deck with the same name already exists on iPhone, and AnkiMobile won't overwrite it. You must delete the old deck first.</li>
+  </ol>
+  <p>This guide gives a complete, actionable workflow for all of the above.</p>
+</section>
+
+<section id="s2">
+  <h2>2. Platform differences</h2>
+
+  <h3>2.1 Comparison</h3>
+  <table>
+    <thead>
+      <tr><th>Platform</th><th>Media file access</th><th>Video format</th><th>Media pack needed?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Windows</td><td>Open <code>collection.media</code> folder directly; add/remove/replace freely</td><td><b>WebM only</b></td><td>No</td></tr>
+      <tr><td>macOS</td><td>Open <code>collection.media</code> folder directly</td><td>MP4 / WebM</td><td>No</td></tr>
+      <tr><td>Android</td><td>Direct access to AnkiDroid's media folder</td><td>MP4</td><td>No</td></tr>
+      <tr><td>iPhone / iPad</td><td>Sandboxed, no file system access</td><td>MP4</td><td><b>Required</b></td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 The usual approach on desktop & Android</h3>
+  <ul>
+    <li>Copy media files straight into <code>collection.media</code></li>
+    <li><code>[sound:]</code> references in cards find them automatically</li>
+    <li>Delete = just delete the file</li>
+    <li>Replace = just overwrite the file</li>
+    <li>Check Media works normally</li>
+  </ul>
+
+  <h3>2.3 The iPhone problem</h3>
+  <div class="danger">
+    <b>This guide focuses on iPhone / iPad.</b> Desktop and Android users can operate the media folder directly; they only need to mind the Windows WebM limit.
+  </div>
+  <p>iPhone sandboxing means:</p>
+  <ul>
+    <li>No file system access → you can't copy, delete, or replace files manually</li>
+    <li>The only media transfer channel is apkg → media must be packaged to get in</li>
+    <li><code>[sound:]</code> is the only way to make Anki pack a file into an apkg</li>
+    <li>Deleting media relies on "Check Media", triggered by removing the <code>[sound:]</code> reference</li>
+    <li>You must delete the old deck before importing an apkg, or the import is skipped</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. Windows video format limit</h2>
+
+  <div class="danger">
+    <b>Windows Anki only supports WebM video, not MP4.</b> This is a limitation of the Windows Anki playback engine, unrelated to iPhone.
+  </div>
+
+  <h3>3.1 Why this limit exists</h3>
+  <p>Anki on Windows uses QtWebEngine (based on Chromium). Chromium on Windows doesn't ship with the H.264 decoder by default (patent licensing), so MP4 won't play. WebM uses VP8/VP9, which is open and free, so it's supported.</p>
+
+  <h3>3.2 Impact on workflow</h3>
+  <p>The same video needs two versions:</p>
+  <table>
+    <thead>
+      <tr><th>Platform</th><th>Video format</th><th>Codec</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iPhone / iPad / Android / macOS</td><td>MP4</td><td>H.264 + AAC</td></tr>
+      <tr><td>Windows</td><td>WebM</td><td>VP8/VP9 + Vorbis/Opus</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.3 How media pack decks are split</h3>
+  <p>This is why media packs are grouped by format. Example with Seinfeld:</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/     (for iPhone / Android / macOS)
+│   ├── Seinfeld S01 Mp4
+│   ├── Seinfeld S02 Mp4
+│   └── ...
+└── WEBM Seinfeld/    (for Windows)
+    ├── Seinfeld S01 Webm
+    ├── Seinfeld S02 Webm
+    └── ...</pre>
+  <p>The two decks are prepared independently, exported to separate apkg files, and transferred to the respective platforms.</p>
+
+  <h3>3.4 Audio is not affected</h3>
+  <p>Audio has fewer restrictions on Windows — both MP3 and M4A play. So MP3 series only need one copy.</p>
+</section>
+
+<section id="s4">
+  <h2>4. Core mechanism: [sound:]</h2>
+
+  <h3>4.1 Common misconception</h3>
+  <p>Many people think <code>[sound:]</code> is for controlling playback. In the media transfer scenario, its real purpose is:</p>
+  <p><b>To make Anki include the corresponding media file when exporting an apkg.</b></p>
+
+  <h3>4.2 Why it's required</h3>
+  <p>When exporting an apkg, Anki scans all <code>[sound:]</code> and <code>&lt;img&gt;</code> references in cards and collects the media files those references point to. Files that aren't referenced — Anki has no way to know they belong to this deck, so it won't pack them.</p>
+  <p>For tens of GB of media this is critical:</p>
+  <ul>
+    <li>AnkiWeb sync is impossible (bandwidth, 100MB per-file limit)</li>
+    <li>apkg is the only reliable bulk offline transfer method</li>
+    <li>And apkg can only declare media via <code>[sound:]</code></li>
+  </ul>
+
+  <h3>4.3 Three roles of [sound:]</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Transfer declaration</td><td>Tells Anki to pack these files into the apkg</td></tr>
+      <tr><td>Cleanup switch</td><td>Removing <code>[sound:]</code> and re-importing marks the file as "unused", so Check Media can delete it</td></tr>
+      <tr><td>Overwrite trigger</td><td>When overwriting a same-named file, Anki only notices files referenced by <code>[sound:]</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 [sound:] does not control playback</h3>
+  <p>Playback is actually controlled by the card template's JavaScript (see VlsPlayer Series / Notes guides). Here <code>[sound:]</code> is only a "file list".</p>
+</section>
+
+<section id="s5">
+  <h2>5. Media pack deck structure</h2>
+
+  <h3>5.1 Design principles</h3>
+  <ul>
+    <li><b>One deck per series</b>: easy to export, transfer, and clean individually</li>
+    <li><b>One card per season</b> for series with season numbers</li>
+    <li><b>One card for the whole series</b> when there's no season number</li>
+    <li><b>Group by format</b>: MP3 / MP4 / WEBM separated for platform-specific use</li>
+    <li><b>Deck and field names in pure English</b>: avoid Unicode path issues</li>
+  </ul>
+
+  <h3>5.2 Recommended structure (with seasons)</h3>
+  <p>Example with Seinfeld:</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/
+│   ├── Seinfeld S01 Mp4   (Card 1, sound field lists all S01 episodes)
+│   ├── Seinfeld S02 Mp4   (Card 2, sound field lists all S02 episodes)
+│   ├── Seinfeld S03 Mp4
+│   ├── ...
+│   └── Seinfeld S09 Mp4
+└── WEBM Seinfeld/
+    ├── Seinfeld S01 Webm
+    └── ...</pre>
+
+  <h3>5.3 Recommended structure (no seasons)</h3>
+  <p>Example with Atomic Habits:</p>
+  <pre>0. Resources/
+├── MP3 Atomic Habits      (one deck, one card)
+├── MP3 CWE                (one deck, one card)
+├── MP4 DDM
+└── MP4 Friends</pre>
+
+  <h3>5.4 Card fields</h3>
+  <p>Each note has two fields:</p>
+  <table>
+    <thead>
+      <tr><th>Field</th><th>Content</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Front</td><td>One line of plain text, e.g. <code>Seinfeld S02 Mp4</code>, used as identifier</td></tr>
+      <tr><td>sound</td><td>One <code>[sound:xxx]</code> per line, listing all media for this card</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 sound field examples</h3>
+  <p>With seasons (Seinfeld S02):</p>
+  <pre>[sound:sf_s02e01.mp4]
+[sound:sf_s02e02.mp4]
+[sound:sf_s02e03.mp4]
+...
+[sound:sf_s02e12.mp4]</pre>
+
+  <p>Without seasons (CWE):</p>
+  <pre>[sound:cwe_01.mp4]
+[sound:cwe_02.mp4]
+[sound:cwe_03.mp4]
+...</pre>
+
+  <div class="tip">
+    Put each <code>[sound:]</code> on its own line for readability and easy editing. Don't dump them into a single line — it's hard to maintain later.
+  </div>
+
+  <h3>5.6 Why one card per season</h3>
+  <table>
+    <thead>
+      <tr><th>Benefit</th><th>Explanation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Size control</td><td>One season's apkg isn't too big, transfers more reliably</td></tr>
+      <tr><td>Independent update</td><td>Updating one season only re-exports that one card</td></tr>
+      <tr><td>Independent cleanup</td><td>Cleanup granularity is per-season</td></tr>
+      <tr><td>Clear naming</td><td>Front field shows the season at a glance</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s6">
+  <h2>6. File naming rules</h2>
+
+  <h3>6.1 Two naming patterns</h3>
+  <p>Depending on whether the content has seasons:</p>
+
+  <h4>Without seasons</h4>
+  <pre>prefix_episode.ext</pre>
+  <p>Examples:</p>
+  <pre>cwe_01.mp4
+cwe_02.mp4
+atomic_habits_00.mp3
+atomic_habits_01.mp3</pre>
+
+  <h4>With seasons</h4>
+  <pre>prefix_s##e##.ext</pre>
+  <p>Examples:</p>
+  <pre>sf_s02e01.mp4
+sf_s02e02.mp4
+sf_s02e12.mp4</pre>
+
+  <h3>6.2 Rules</h3>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Rule</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Prefix</td><td>Series abbreviation, 2–4 lowercase letters, e.g. <code>sf</code>, <code>cwe</code>, <code>ah</code></td></tr>
+      <tr><td>Separator</td><td>Underscore <code>_</code></td></tr>
+      <tr><td>Season</td><td><code>s</code> + two-digit zero-padded number, e.g. <code>s01</code>, <code>s02</code> (with seasons only)</td></tr>
+      <tr><td>Episode</td><td><code>e</code> + two-digit zero-padded number, e.g. <code>e01</code>, <code>e12</code> (with seasons only)</td></tr>
+      <tr><td>Episode (no season)</td><td>Two or three-digit zero-padded, e.g. <code>01</code>, <code>001</code></td></tr>
+      <tr><td>Extension</td><td>Uniform; don't mix within a series</td></tr>
+      <tr><td>Forbidden</td><td>Chinese, spaces, uppercase, special chars</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 Choosing digit count</h3>
+  <ul>
+    <li>Under 100 episodes → two digits (<code>01</code> ~ <code>99</code>)</li>
+    <li>Over 100 episodes → three digits (<code>001</code> ~ <code>999</code>)</li>
+    <li><b>Digits must be uniform</b>, or sorting breaks: <code>_9.mp4</code> sorts after <code>_10.mp4</code></li>
+  </ul>
+
+  <h3>6.4 Same series, multiple formats</h3>
+  <pre>sf_s02e01.mp4   (iPhone / Android / macOS)
+sf_s02e01.webm  (Windows)
+sf_s02e01.mp3   (audio)</pre>
+  <p>Same filename, different extension. References in cards stay consistent; just swap extensions per platform.</p>
+
+  <h3>6.5 Consistency with VlsPlayer Series cards</h3>
+  <p>This naming convention <b>must</b> match the Series card Timeline field's concatenation rule. In the Series card code:</p>
+  <pre>filename = prefix + "_" + (season == "" ? episode : "s" + season + "e" + episode) + ext</pre>
+  <ul>
+    <li>No season → <code>cwe_01.mp4</code></li>
+    <li>With season → <code>sf_s02e01.mp4</code></li>
+  </ul>
+  <div class="danger">
+    The <code>[sound:]</code> reference in the media pack deck, the Series card's Timeline field, and the actual filename must all match exactly, or the card won't find the file.
+  </div>
+
+  <h3>6.6 Batch-generating [sound:] references</h3>
+  <p>With seasons (Bash, 12 episodes per season):</p>
+  <pre>for i in $(seq -w 1 12); do echo "[sound:sf_s02e${i}.mp4]"; done</pre>
+
+  <p>Without seasons:</p>
+  <pre>for i in $(seq -w 1 30); do echo "[sound:cwe_${i}.mp4]"; done</pre>
+
+  <p>Paste the output straight into the <code>sound</code> field.</p>
+</section>
+
+<section id="s7">
+  <h2>7. Compress & convert with ffmpeg</h2>
+
+  <h3>7.1 Why compression is required</h3>
+  <ul>
+    <li>Raw video can be tens of GB; the iPhone can't hold it</li>
+    <li>Anki has a 100MB per-file processing limit</li>
+    <li>AnkiMobile is sluggish loading large files</li>
+    <li>For language learning you only need readable subtitles and visible mouth shapes — picture detail doesn't matter</li>
+  </ul>
+
+  <h3>7.2 Video compression: specify height only</h3>
+  <p><b>You don't need to specify width</b> — use <code>-2</code> and let ffmpeg compute it:</p>
+
+  <h4>MP4 (iPhone / Android / macOS)</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.mp4</pre>
+
+  <h4>WebM (Windows)</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libvpx-vp9 -crf 35 -b:v 0 \
+  -c:a libopus -b:a 64k -ac 1 \
+  output.webm</pre>
+
+  <p>What <code>scale=-2:270</code> means:</p>
+  <ul>
+    <li>Height fixed at 270</li>
+    <li>Width computed automatically, preserving aspect ratio</li>
+    <li><code>-2</code> ensures the width is even (encoder requirement)</li>
+  </ul>
+  <p>270 is fine for both iPhone and desktop — subtitles and mouth shapes are clear. Let ffmpeg handle the width; you don't care whether the source is 16:9 or 4:3.</p>
+
+  <h3>7.3 Audio compression</h3>
+  <p>Recommended: M4A</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.m4a</pre>
+
+  <p>If you must use MP3, use CBR (constant bitrate):</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a libmp3lame -b:a 64k -ac 1 \
+  output.mp3</pre>
+
+  <div class="note">
+    Don't add <code>-q:a</code> — that produces VBR (variable bitrate). VBR MP3 without a Xing header seeks inaccurately on iPhone.
+  </div>
+
+  <h3>7.4 Key parameters</h3>
+  <table>
+    <thead>
+      <tr><th>Parameter</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>scale=-2:270</code></td><td>Fixed height 270, width auto even</td></tr>
+      <tr><td><code>-profile:v main</code></td><td>H.264 main profile, iOS compatible</td></tr>
+      <tr><td><code>-level 3.0</code></td><td>Compatibility margin</td></tr>
+      <tr><td><code>-crf 28</code></td><td>Quality/size balance point; higher gets blurry</td></tr>
+      <tr><td><code>-b:a 64k -ac 1</code></td><td>Mono audio, 64 kbps</td></tr>
+      <tr><td><code>-movflags +faststart</code></td><td><b>MP4-only. Moves moov to the front; critical for accurate seek on iPhone.</b></td></tr>
+    </tbody>
+  </table>
+  <p>WebM doesn't need <code>-movflags +faststart</code> — that's MP4-only.</p>
+
+  <h3>7.5 If still too big</h3>
+  <p>Further compression:</p>
+  <ul>
+    <li><code>-crf 32</code> — one notch lower quality</li>
+    <li><code>scale=-2:180</code> — height to 180</li>
+    <li><code>-r 20</code> — frame rate to 20 fps</li>
+    <li><code>-b:a 48k</code> — audio to 48 kbps</li>
+  </ul>
+
+  <h3>7.6 Batch conversion scripts</h3>
+  <p>Windows batch (convert all mkv in a folder to mp4):</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 ^
+    -c:a aac -b:a 64k -ac 1 ^
+    -movflags +faststart "%%~nf.mp4"
+)</pre>
+
+  <p>Same folder, to webm:</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libvpx-vp9 -crf 35 -b:v 0 ^
+    -c:a libopus -b:a 64k -ac 1 ^
+    "%%~nf.webm"
+)</pre>
+</section>
+
+<section id="s8">
+  <h2>8. Media must be seekable</h2>
+
+  <h3>8.1 What "seekable" means</h3>
+  <p>Seeking means the player can jump to any point in the file and start playing. On iPhone, AVFoundation's seek support depends on the <b>container format</b> and <b>metadata layout</b>.</p>
+  <p>If a file isn't seekable you'll see:</p>
+  <ul>
+    <li>It plays, but the progress bar is inaccurate</li>
+    <li>Jumping to the middle stalls or snaps back to start</li>
+    <li>Multiple <code>[sound:]</code> in sequence: the second starts at the wrong position</li>
+    <li>Looping starts offset</li>
+  </ul>
+
+  <h3>8.2 Seekability by format</h3>
+  <table>
+    <thead>
+      <tr><th>Format</th><th>Seekable condition</th><th>When unmet</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>MP4 / M4A</td><td>moov atom at start of file</td><td>Must read the whole file before seeking; large files practically unseekable</td></tr>
+      <tr><td>WebM</td><td>iOS AVFoundation support incomplete</td><td>Can't seek on iPhone; fine on Windows</td></tr>
+      <tr><td>MP3 (VBR)</td><td>Requires Xing/Info header</td><td>Seek position inaccurate</td></tr>
+      <tr><td>MP3 (CBR)</td><td>Naturally seekable</td><td>—</td></tr>
+      <tr><td>OGG / Opus</td><td>iOS native unsupported</td><td>Won't play at all</td></tr>
+      <tr><td>AVI / MKV / WMV / FLV</td><td>iOS native unsupported</td><td>Won't play at all</td></tr>
+      <tr><td>H.264 + AAC in MP4</td><td>Most stable</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 Four rules for seekability</h3>
+  <ol>
+    <li>On iPhone: video as MP4 (H.264 + AAC); audio as M4A or CBR MP3</li>
+    <li><code>-movflags +faststart</code> puts moov at the front — without it, large files can't seek</li>
+    <li>Video profile must not be too new; baseline / main are safest</li>
+    <li>Audio sample rate uniform at 44.1 kHz or 48 kHz</li>
+  </ol>
+
+  <h3>8.4 How to verify</h3>
+  <p>Use ffprobe to check moov position:</p>
+  <pre>ffprobe -v trace -i output.mp4 2>&1 | grep -E "type:'moov'|type:'mdat'"</pre>
+  <p>If moov comes before mdat, faststart was applied.</p>
+
+  <h3>8.5 One-liner summary</h3>
+  <div class="tip">
+    On iPhone: video as H.264 main profile + AAC in MP4, <b>must include <code>-movflags +faststart</code></b>; on Windows: video as VP9/VP8 + Opus/Vorbis in WebM. All audio as AAC M4A, or CBR MP3.
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. Export to apkg</h2>
+
+  <h3>9.1 Desktop preparation</h3>
+  <ol>
+    <li>Put all converted media files into <code>collection.media</code></li>
+    <li>Open the media pack deck (e.g. <code>MP4 Seinfeld</code>)</li>
+    <li>Verify the <code>[sound:]</code> references in the <code>sound</code> field match the actual files</li>
+    <li>Use Anki's "Check Media" to confirm all references resolve</li>
+  </ol>
+
+  <h3>9.2 Export</h3>
+  <ol>
+    <li>In the deck list, right-click the target deck → Export</li>
+    <li>Choose "Anki Deck Package (.apkg)"</li>
+    <li>Check "Include media"</li>
+    <li>Pick a save location</li>
+  </ol>
+
+  <div class="note">
+    If you only want to export one series or one season, make sure only that deck is selected — don't choose "All Decks". Exporting per season gives more reliable transfers and imports.
+  </div>
+
+  <h3>9.3 Verify the package</h3>
+  <ul>
+    <li>apkg size should be close to the total of the media files</li>
+    <li>If the apkg is noticeably small, media wasn't included — check the <code>[sound:]</code> references</li>
+    <li>Open the apkg with 7-Zip (it's a zip) and confirm <code>collection.media</code> contains files</li>
+  </ul>
+</section>
+
+<section id="s10">
+  <h2>10. Transfer to iPhone</h2>
+
+  <div class="tip">
+    <b>What you transfer is the apkg file itself, not synced media.</b> Media is packed inside the apkg and transferred in one shot, bypassing AnkiWeb.
+  </div>
+
+  <h3>10.1 Three options</h3>
+  <table>
+    <thead>
+      <tr><th>Method</th><th>Best for</th><th>Pros</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iTunes / Finder File Sharing</td><td>Windows / Mac, preferred</td><td>Wired, most stable, no size limit</td></tr>
+      <tr><td>Cloud drive</td><td>No cable available</td><td>Upload then download on iPhone, convenient</td></tr>
+      <tr><td>AirDrop</td><td>Mac, small-to-medium apkg</td><td>Works offline, fast</td></tr>
+      <tr><td>USB drive</td><td>Large apkg (&gt; 5GB)</td><td>No network needed, most stable</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 iTunes / Finder File Sharing (preferred)</h3>
+  <p>Most common method — no network dependency, no apkg size limit.</p>
+
+  <h4>Windows (iTunes)</h4>
+  <ol>
+    <li>Connect iPhone to PC with a cable</li>
+    <li>Open iTunes, click the device icon</li>
+    <li>Go to "File Sharing"</li>
+    <li>In the app list, select <b>AnkiMobile</b></li>
+    <li>Click "Add File" and choose the apkg</li>
+    <li>iTunes copies the apkg to AnkiMobile's Documents folder</li>
+    <li>On iPhone, open AnkiMobile — the apkg appears in the import list</li>
+  </ol>
+
+  <h4>macOS (Finder)</h4>
+  <ol>
+    <li>Connect iPhone to Mac with a cable</li>
+    <li>Open Finder, click iPhone in the sidebar</li>
+    <li>Go to the "Files" tab</li>
+    <li>In the app list, select <b>AnkiMobile</b></li>
+    <li>Drag the apkg into the file list</li>
+    <li>On iPhone, open AnkiMobile to import</li>
+  </ol>
+
+  <h3>10.3 Cloud drive</h3>
+  <p>Common options: iCloud Drive, OneDrive, Google Drive, Baidu Netdisk, Nutstore.</p>
+  <ol>
+    <li>Upload the apkg from your computer</li>
+    <li>On iPhone, open the cloud app and download the apkg</li>
+    <li>Tap the apkg → open with AnkiMobile</li>
+    <li>Or save to the "Files" app first, then tap it to import</li>
+  </ol>
+  <div class="note">
+    With Chinese cloud drives like Baidu Netdisk, you may need "Open with another app" and choose AnkiMobile. iOS hands the file over to AnkiMobile.
+  </div>
+
+  <h3>10.4 AirDrop (Mac users)</h3>
+  <ol>
+    <li>Right-click the apkg on Mac → Share → AirDrop</li>
+    <li>Select iPhone</li>
+    <li>Tap "Accept" on iPhone</li>
+    <li>iOS asks which app to open with — choose AnkiMobile</li>
+  </ol>
+
+  <h3>10.5 USB drive (large files)</h3>
+  <ol>
+    <li>Copy the apkg onto a USB-C or Lightning USB drive</li>
+    <li>Plug the drive into the iPhone</li>
+    <li>Open the "Files" app, enter the USB drive</li>
+    <li>Tap the apkg → open with AnkiMobile</li>
+  </ol>
+
+  <h3>10.6 Transfer time reference</h3>
+  <table>
+    <thead>
+      <tr><th>apkg size</th><th>iTunes File Sharing</th><th>Cloud drive</th><th>AirDrop</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>100 MB</td><td>Seconds</td><td>Tens of seconds</td><td>Seconds</td></tr>
+      <tr><td>1 GB</td><td>~30 s</td><td>A few minutes</td><td>~1 min</td></tr>
+      <tr><td>10 GB</td><td>~5 min</td><td>May time out</td><td>May fail</td></tr>
+      <tr><td>30 GB+</td><td>~15 min</td><td>Not recommended</td><td>Not recommended</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s11">
+  <h2>11. Import: delete old deck first</h2>
+
+  <div class="danger">
+    <b>This is the most common pitfall.</b> If a deck with the same name already exists on iPhone, importing the apkg fails or is skipped. You must delete the old deck first.
+  </div>
+
+  <h3>11.1 Why delete first</h3>
+  <p>When importing an apkg, AnkiMobile's policy for same-named decks is to <b>skip already-existing notes</b>, not overwrite. This means:</p>
+  <ul>
+    <li>Same-named deck exists → new notes won't be imported</li>
+    <li>Existing notes won't be updated</li>
+    <li>Media files won't be replaced</li>
+  </ul>
+  <p>Result: you import the new apkg, but iPhone still shows the old content.</p>
+
+  <h3>11.2 Correct import procedure</h3>
+  <ol>
+    <li>In AnkiMobile, find the old deck</li>
+    <li>Long-press the deck → Delete (or swipe to delete)</li>
+    <li>Confirm the deletion</li>
+    <li>Tap the apkg file → open with AnkiMobile</li>
+    <li>AnkiMobile shows a confirmation with the deck name and card count</li>
+    <li>Tap "Import" and wait</li>
+  </ol>
+
+  <h3>11.3 Will deleting the deck lose progress?</h3>
+  <ul>
+    <li>If it's a media pack deck (one card, never reviewed), no impact</li>
+    <li>If a study card references the media, deleting the media pack deck doesn't affect it</li>
+    <li>Deleting a study deck loses its scheduling progress — verify before doing so</li>
+  </ul>
+
+  <h3>11.4 Bulk deletion</h3>
+  <p>To update multiple season decks:</p>
+  <ol>
+    <li>Delete all decks to be updated in one pass</li>
+    <li>Then import the new apkg files one by one</li>
+  </ol>
+
+  <h3>11.5 Verify success</h3>
+  <ul>
+    <li>Open the newly imported deck and check the card count</li>
+    <li>Look at the <code>sound</code> field of the media pack card — confirm <code>[sound:]</code> entries play</li>
+    <li>Open a study card, play the media, drag the progress bar to verify seek</li>
+  </ul>
+
+  <h3>11.6 Post-import cleanup</h3>
+  <p>Once imported, you can delete the transferred apkg copies (on the USB drive, cloud drive, iTunes) to reclaim space.</p>
+</section>
+
+<section id="s12">
+  <h2>12. Update media</h2>
+
+  <h3>12.1 When an update is needed</h3>
+  <ul>
+    <li>A video segment was cut incorrectly — re-cut it</li>
+    <li>Compression parameters were wrong — re-compress</li>
+    <li>Subtitle timeline changed — regenerate media</li>
+    <li>New episodes were added</li>
+  </ul>
+
+  <h3>12.2 Update workflow</h3>
+  <ol>
+    <li>Generate the new media files on desktop</li>
+    <li><b>Keep filenames unchanged</b>, overwrite the old files in <code>collection.media</code></li>
+    <li>Verify the <code>sound</code> field references need no changes (filename unchanged)</li>
+    <li>Re-export the apkg with "Include media" checked</li>
+    <li>Transfer to iPhone</li>
+    <li><b>Delete the old deck on iPhone first</b></li>
+    <li>Import the new apkg</li>
+  </ol>
+
+  <div class="danger">
+    Media doesn't sync. Updates only happen through "delete old deck → re-import apkg". There's no such thing as syncing one file.
+  </div>
+
+  <h3>12.3 Adding new media</h3>
+  <ol>
+    <li>Name the new file per the convention, e.g. <code>sf_s02e13.mp4</code></li>
+    <li>Put it in <code>collection.media</code></li>
+    <li>Append <code>[sound:sf_s02e13.mp4]</code> at the end of the <code>sound</code> field</li>
+    <li>Re-export the apkg</li>
+    <li>Delete the old deck on iPhone</li>
+    <li>Import the new apkg</li>
+  </ol>
+
+  <h3>12.4 Renaming files</h3>
+  <div class="danger">
+    Renaming is high-risk — old files linger on iPhone. Avoid unless necessary. If you must:<br>
+    1. Name the new file per the convention<br>
+    2. Update card references<br>
+    3. Re-export apkg<br>
+    4. Delete the old deck and re-import<br>
+    5. Clean up the old files using section 13
+  </div>
+</section>
+
+<section id="s13">
+  <h2>13. Delete specific media files</h2>
+
+  <div class="tip">
+    This trick is the core of the whole guide: <b>delete the <code>[sound:]</code> reference to trigger Anki's "Check Media" cleanup of that file on iPhone.</b>
+  </div>
+
+  <h3>13.1 How it works</h3>
+  <p>Anki's "Check Media" scans the whole media library and finds files that are <b>not referenced by any card</b>, lists them under "unused files", and lets you delete them.</p>
+  <p>So you just need to:</p>
+  <ol>
+    <li>Remove the corresponding <code>[sound:xxx.mp4]</code> from the card field</li>
+    <li>Re-export the apkg and import on iPhone (delete old deck first)</li>
+    <li>Run "Check Media" in AnkiMobile</li>
+    <li>The file appears under "unused files" and can be deleted</li>
+  </ol>
+
+  <h3>13.2 Full steps</h3>
+
+  <h4>Step 1: Remove the reference from the sound field</h4>
+  <p>In desktop Anki, open the media pack deck's card and delete the <code>[sound:xxx.mp4]</code> line from the <code>sound</code> field.</p>
+
+  <h4>Step 2: Confirm no other references exist</h4>
+  <p>Use Anki's search to look for <code>xxx.mp4</code> across the whole collection:</p>
+  <pre>Search box: xxx.mp4</pre>
+  <p>If there are still results, other cards are using it and you can't delete it.</p>
+
+  <h4>Step 3: Re-export the apkg</h4>
+  <p>Re-export the media pack deck. Since the reference is gone, Anki won't include the file.</p>
+
+  <h4>Step 4: Transfer to iPhone</h4>
+  <p>Send via iTunes File Sharing / cloud drive / AirDrop / USB.</p>
+
+  <h4>Step 5: Delete the old deck on iPhone first</h4>
+  <p>Find the old deck in AnkiMobile and delete it.</p>
+
+  <h4>Step 6: Import the new apkg</h4>
+  <p>Tap the new apkg and import with AnkiMobile.</p>
+
+  <h4>Step 7: Run "Check Media"</h4>
+  <p>Run "Check Media" in AnkiMobile (or desktop Anki). The file now has no references and appears under "unused files".</p>
+
+  <h4>Step 8: Delete the unused file</h4>
+  <p>Confirm and delete. Space is reclaimed.</p>
+
+  <h3>13.3 Why this works</h3>
+  <p>AnkiMobile's "Check Media" scans the local media library against card references and finds orphan files. Once a file is no longer referenced, it's listed as unused regardless of size.</p>
+
+  <h3>13.4 Notes</h3>
+  <ul>
+    <li><b>Requires the file to be under 100MB.</b> Files over 100MB don't participate in the "unused" check — see section 14</li>
+    <li>After removing the reference, the card will show "media missing" when playing that segment — expected</li>
+    <li>If you don't want the missing-media warning, also delete the card or clean it up</li>
+    <li>Back up the apkg before proceeding</li>
+    <li>If iPhone's "Check Media" doesn't find the file, the import may have failed — re-import</li>
+  </ul>
+
+  <h3>13.5 Bulk deletion</h3>
+  <p>To remove multiple files, delete all corresponding <code>[sound:]</code> lines at once, re-export the apkg, import, then run "Check Media" once.</p>
+</section>
+
+<section id="s14">
+  <h2>14. Clean up files over 100MB</h2>
+
+  <h3>14.1 The problem</h3>
+  <p>If a media file is over 100MB, even after you delete the card that references it, the file remains in the media library and <b>cannot be removed via "Check Media → Delete unused files"</b>.</p>
+
+  <h3>14.2 Root cause</h3>
+  <p>Anki's "Check Media" treats files over 100MB specially:</p>
+  <ul>
+    <li>They're grouped separately under "Files over 100MB"</li>
+    <li>They don't participate in the "unused file" determination</li>
+    <li>So no matter whether any card still references it, the built-in tool won't delete it</li>
+  </ul>
+  <p>The origin of this design is AnkiWeb's 100MB per-file sync limit. Anki assumes such files need manual handling.</p>
+
+  <h3>14.3 The workaround</h3>
+  <p><b>Overwrite the big file with a same-named tiny file</b>, dropping it below 100MB. Anki then treats it like a normal file, and if no card references it, it becomes deletable via "unused files".</p>
+
+  <h3>14.4 Full steps</h3>
+
+  <h4>Step 1: Remove card references</h4>
+  <p>In desktop Anki, remove the <code>[sound:xxx.mp4]</code> reference from the card field, or delete the whole card.</p>
+
+  <h4>Step 2: Prepare a tiny same-named file</h4>
+  <p>Create a small file with the same name, well under 100MB.</p>
+  <p>Windows:</p>
+  <pre>type nul > xxx.mp4</pre>
+  <p>Or use ffmpeg to generate 1 second of silence:</p>
+  <pre>ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 1 -c:a aac -movflags +faststart xxx.mp4</pre>
+
+  <h4>Step 3: Overwrite the original in collection.media</h4>
+  <p>Open desktop Anki's media folder (Tools → Check Media → View Files), copy the tiny file in and overwrite the big one.</p>
+
+  <h4>Step 4: Re-export apkg</h4>
+  <p>Re-export the series (or media pack deck) with "Include media" checked.</p>
+
+  <h4>Step 5: Transfer to iPhone and re-import</h4>
+  <p>Send via iTunes File Sharing / cloud drive.</p>
+  <p><b>Delete the old deck on iPhone first</b>, then import the new apkg. The tiny same-named file overwrites the big one on iPhone.</p>
+
+  <h4>Step 6: Run Check Media</h4>
+  <p>The file is now under 100MB and appears under "unused files". Delete it and reclaim space.</p>
+
+  <h3>14.5 Why same-name overwrite works</h3>
+  <p>Anki's media library is keyed by filename. When the same name is used, Anki notices during import that a file with that name already exists and replaces it with the new one. The old big file is gone.</p>
+
+  <h3>14.6 Preconditions</h3>
+  <ul>
+    <li>The card must no longer reference the file; otherwise Anki treats it as "in use" and won't delete it even after shrinking</li>
+    <li>Do the overwrite on desktop — you can't access AnkiMobile's media folder directly</li>
+    <li>If the file on iPhone isn't replaced, the import probably failed; re-import</li>
+  </ul>
+
+  <h3>14.7 Warnings</h3>
+  <ul>
+    <li>If any card still references the file, overwriting it changes playback (silence or tiny snippet). Clear all references first</li>
+    <li>Back up <code>collection.media</code> before overwriting</li>
+    <li>This is the only way to remove a file over 100MB</li>
+  </ul>
+
+  <h3>14.8 Better: avoid it from the start</h3>
+  <div class="tip">
+    The easiest approach is to <b>keep every media file under 100MB</b> from the beginning. With the ffmpeg parameters in section 7, a 30-minute episode typically lands at 30–50MB. Then you never hit the 100MB problem and can clean up using section 13.
+  </div>
+</section>
+
+<section id="s15">
+  <h2>15. Full workflow summary</h2>
+
+  <h3>15.1 First-time import</h3>
+  <ol>
+    <li>Use ffmpeg to compress media: MP4 for iPhone, WebM for Windows</li>
+    <li>Rename files per convention (with/without seasons)</li>
+    <li>Put media into desktop Anki's <code>collection.media</code></li>
+    <li>Write all <code>[sound:]</code> references into the media pack deck's <code>sound</code> field</li>
+    <li>Export the apkg with "Include media" checked</li>
+    <li>Transfer to iPhone (iTunes File Sharing / cloud drive / AirDrop / USB)</li>
+    <li>Import with AnkiMobile</li>
+    <li>Verify media plays and seeks accurately</li>
+  </ol>
+
+  <h3>15.2 Update media</h3>
+  <ol>
+    <li>Generate new media on desktop, keeping filenames unchanged</li>
+    <li>Overwrite the old files in <code>collection.media</code></li>
+    <li>Re-export the apkg</li>
+    <li>Transfer to iPhone</li>
+    <li><b>Delete the old deck on iPhone first</b></li>
+    <li>Import the new apkg</li>
+  </ol>
+
+  <h3>15.3 Add new media</h3>
+  <ol>
+    <li>Name the new file per convention</li>
+    <li>Put it in <code>collection.media</code></li>
+    <li>Append a <code>[sound:]</code> line to the <code>sound</code> field</li>
+    <li>Re-export the apkg</li>
+    <li>Delete the old deck on iPhone</li>
+    <li>Import the new apkg</li>
+  </ol>
+
+  <h3>15.4 Delete specific media</h3>
+  <ol>
+    <li>Remove the corresponding <code>[sound:]</code> line from the <code>sound</code> field</li>
+    <li>Confirm no other card references it</li>
+    <li>Re-export the apkg</li>
+    <li>Delete the old deck on iPhone</li>
+    <li>Import the new apkg</li>
+    <li>Run "Check Media" → delete unused files</li>
+  </ol>
+
+  <h3>15.5 Clean up files over 100MB</h3>
+  <ol>
+    <li>Confirm the card no longer references the file</li>
+    <li>Prepare a tiny same-named file (&lt; 100MB)</li>
+    <li>Overwrite the original in <code>collection.media</code></li>
+    <li>Re-export the apkg</li>
+    <li>Delete the old deck on iPhone</li>
+    <li>Import the new apkg</li>
+    <li>Run "Check Media" → delete unused files</li>
+  </ol>
+</section>
+
+<section id="s16">
+  <h2>16. FAQ</h2>
+
+  <div class="qa">
+    <div class="q">Q1: After importing the apkg, the deck still shows old content</div>
+    <div class="a">
+      A deck with the same name already exists on iPhone, so AnkiMobile skipped the import. Delete the old deck first, then import.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: The apkg is tiny after export — media wasn't included</div>
+    <div class="a">
+      Check whether the <code>[sound:]</code> reference filename matches the actual file exactly (extension and case). Anki only packs media that cards reference.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: Video won't play on Windows</div>
+    <div class="a">
+      Windows Anki only supports WebM. Convert MP4 to WebM with ffmpeg:
+      <pre>ffmpeg -i input.mp4 -vf "scale=-2:270" -c:v libvpx-vp9 -crf 35 -b:v 0 -c:a libopus -b:a 64k -ac 1 output.webm</pre>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: Media plays on iPhone but the progress bar jumps around</div>
+    <div class="a">
+      The file isn't seekable. Re-encode with ffmpeg, <b>must include <code>-movflags +faststart</code></b>, video main profile, audio CBR MP3 or M4A.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: Removed the <code>[sound:]</code> reference, but Check Media doesn't find the file</div>
+    <div class="a">
+      Possible causes:<br>
+      1. Another card still references it — search the filename in Anki<br>
+      2. The apkg re-import failed<br>
+      3. The file is over 100MB and doesn't participate in the unused check — use section 14
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: Deleted the card, but the media file still takes up space</div>
+    <div class="a">
+      Deleting the card doesn't delete the media. Remove the reference in the <code>sound</code> field, re-import, and run Check Media.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Files over 100MB aren't in Check Media</div>
+    <div class="a">
+      That's Anki's design: files over 100MB are grouped separately and excluded from the unused check. Use the same-name overwrite method in section 14.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: Can AnkiWeb sync media?</div>
+    <div class="a">
+      No. Reasons:<br>
+      1. Tens of GB is impossible<br>
+      2. Files over 100MB can't sync<br>
+      3. Free AnkiWeb has storage limits<br>
+      So media only travels via apkg offline.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9: Will the study cards' references conflict with the media pack's [sound:]?</div>
+    <div class="a">
+      No. The media pack is just a transfer vehicle; study cards reference the same files. Once the files are on iPhone, study cards find them.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10: Filename case differs between Windows and iPhone</div>
+    <div class="a">
+      Windows filesystems are case-insensitive; iOS is case-sensitive. To avoid problems:<br>
+      1. Filenames all lowercase<br>
+      2. <code>[sound:]</code> references also all lowercase<br>
+      3. Don't name a file <code>File.mp4</code> on Windows and write <code>file.mp4</code> in the reference
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11: Will media pack cards show up during review?</div>
+    <div class="a">
+      If the media pack deck has a study plan, possibly. To prevent it:<br>
+      1. Set the media pack deck's options to "paused"<br>
+      2. Or exclude it from the review plan<br>
+      3. Or mark its cards as "suspended"
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12: Video got blurry after conversion</div>
+    <div class="a">
+      Tune the parameters:<br>
+      1. Lower <code>-crf</code> (e.g. 24) for better quality, larger file<br>
+      2. Raise <code>scale=-2:360</code> for higher resolution<br>
+      3. Change <code>-preset</code> to slow for finer encoding<br>
+      For language learning, readable subtitles are enough.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13: Can I package multiple seasons into one apkg?</div>
+    <div class="a">
+      Yes, but not recommended:<br>
+      1. A single large apkg makes transfer and import slow<br>
+      2. Updating one season means re-transferring the whole package<br>
+      3. Cleanup granularity is too coarse<br>
+      One apkg per season is the most flexible.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14: Can I skip apkg and copy files to iPhone directly?</div>
+    <div class="a">
+      No. iOS sandboxing keeps AnkiMobile's <code>collection.media</code> out of the Files app. apkg is the only reliable transfer method.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q15: AnkiMobile doesn't appear in iTunes File Sharing</div>
+    <div class="a">
+      Check:<br>
+      1. AnkiMobile is installed on the iPhone<br>
+      2. iPhone is unlocked and trusts this computer<br>
+      3. iTunes detects the device<br>
+      4. AnkiMobile has file sharing enabled (on by default)
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q16: Why do I have to delete the deck every time I update?</div>
+    <div class="a">
+      That's AnkiMobile's import policy. AnkiWeb sync is incremental (compares modification times), but apkg import is bulk-add. Same-named notes are skipped, so you must delete first.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q17: apkg downloaded from cloud drive won't open with AnkiMobile</div>
+    <div class="a">
+      Possible causes:<br>
+      1. The cloud app doesn't offer "Open with another app" — save to Files first<br>
+      2. The apkg download was incomplete — re-download<br>
+      3. AnkiMobile is outdated — update
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q18: Do I have to specify width when converting video?</div>
+    <div class="a">
+      No. Use <code>scale=-2:270</code> — height is fixed at 270 and width is auto-computed to preserve aspect ratio. <code>-2</code> ensures the width is even. Whether the source is 16:9, 4:3, or something else, ffmpeg calculates a suitable width.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Anki iPhone Media Files Guide · Version 1.2
+</footer>
+
+</div>
+</body>
+</html>

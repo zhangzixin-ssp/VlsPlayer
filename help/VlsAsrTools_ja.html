@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音声認識ツールボックス 操作マニュアル</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    color: var(--accent);
+  }
+  header .meta {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft);
+    color: var(--accent);
+  }
+  h3 {
+    font-size: 16px;
+    margin: 22px 0 10px;
+  }
+  h4 {
+    font-size: 15px;
+    margin: 18px 0 8px;
+    color: #333;
+  }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+  code {
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+  }
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 32px;
+    margin-bottom: 20px;
+  }
+  .toc h2 {
+    border: none;
+    font-size: 16px;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .toc ol { margin: 0; }
+  .toc a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: #fff8e6;
+    border-left: 4px solid #e8a200;
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .qa {
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    margin: 16px 0;
+  }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>音声認識ツールボックス 操作マニュアル</h1>
+  <div class="meta">バージョン 1.0 &nbsp;|&nbsp; ASR Toolbox</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">プログラム概要</a></li>
+    <li><a href="#s2">動作環境</a></li>
+    <li><a href="#s3">画面説明</a></li>
+    <li><a href="#s4">クイックスタート</a></li>
+    <li><a href="#s5">パラメータ詳細</a></li>
+    <li><a href="#s6">処理フロー</a></li>
+    <li><a href="#s7">よくある質問</a></li>
+    <li><a href="#s8">注意事項</a></li>
+    <li><a href="#s9">付録：UI 文字 中文・英文対照表</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. プログラム概要</h2>
+  <p>音声認識ツールボックスは、動画/音声の字幕を処理するためのツールで、2 つの動作モードを提供します：</p>
+  <table>
+    <thead>
+      <tr><th>モード</th><th>機能</th><th>出力先</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ASR で SRT 字幕ファイルを生成</td><td>ASR モデルで音声を認識し、字幕を生成</td><td>ASR フォルダー</td></tr>
+      <tr><td>SRT 字幕タイムラインを整列</td><td>既存の ASR 字幕をソース字幕と整列</td><td>ソースフォルダー（元ファイルを上書き）</td></tr>
+    </tbody>
+  </table>
+  <p>複数ファイルの一括処理に対応し、途中でキャンセルできます。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 動作環境</h2>
+  <ul>
+    <li>Windows</li>
+    <li>プログラムディレクトリに <code>lib\ffmpeg.exe</code> が必要</li>
+    <li>生成モードを使う場合、対応する ASR モデルをダウンロード済みであること</li>
+    <li>ASR モデルは小・中・大の 3 種類。大きいほど精度が高く、遅い</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. 画面説明</h2>
+
+  <h3>3.1 左側エリア</h3>
+  <h4>モード選択</h4>
+  <ul>
+    <li><code>SRT 字幕タイムラインを整列</code>：既存の字幕を整列</li>
+    <li><code>ASR で SRT 字幕ファイルを生成</code>：新しい字幕を生成</li>
+  </ul>
+  <h4>ファイルリスト</h4>
+  <ul>
+    <li>整列モード：ソースフォルダー内の <code>.srt</code> のみ表示</li>
+    <li>生成モード：ソースフォルダー内の動画/音声ファイルのみ表示</li>
+    <li>複数選択可</li>
+  </ul>
+  <h4>ファイル進捗バー</h4>
+  <p>ファイルリストの下にあり、複数ファイル処理時に全体の進捗を表示します。</p>
+
+  <h3>3.2 右側パラメータエリア</h3>
+  <h4>ディレクトリ設定</h4>
+  <table>
+    <thead><tr><th>項目</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>ソースフォルダー</td><td>ソースファイルのあるディレクトリ</td></tr>
+      <tr><td>ASR フォルダー</td><td>ASR ファイルのあるディレクトリ</td></tr>
+    </tbody>
+  </table>
+  <p>両方のディレクトリの右側に <code>...</code> ボタンがあり、クリックでフォルダーを選択できます。</p>
+
+  <h4>オプション</h4>
+  <table>
+    <thead><tr><th>オプション</th><th>表示条件</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>タイムライン整列の前に文の断片を結合しますか?</td><td>整列モードのみ</td><td>チェックすると、先に断片を結合してから整列</td></tr>
+      <tr><td>ASR で生成した SRT ファイルが存在する場合、上書きしますか?</td><td>生成モードのみ</td><td>チェックすると、既存の SRT を上書き</td></tr>
+    </tbody>
+  </table>
+
+  <h4>整列パラメータ</h4>
+  <table>
+    <thead><tr><th>パラメータ</th><th>範囲</th><th>デフォルト</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>時間ドリフトウィンドウ (秒)</td><td>10 ~ 180</td><td>30</td><td>許容される時間オフセット範囲</td></tr>
+      <tr><td>検索テキスト長</td><td>10 ~ 60</td><td>16</td><td>整列時に使う検索テキストウィンドウ長</td></tr>
+      <tr><td>最小時間ギャップ (ミリ秒)</td><td>1 ~ 100</td><td>1</td><td>字幕間の最小間隔</td></tr>
+      <tr><td>最大エラー閾値</td><td>0.01 ~ 0.39</td><td>0.15</td><td>許容される最大一致エラー率</td></tr>
+    </tbody>
+  </table>
+
+  <h4>デフォルトボタン</h4>
+  <p>クリックすると、4 つの整列パラメータがデフォルト値に戻ります。</p>
+
+  <h3>3.3 右側ログエリア</h3>
+  <ul>
+    <li>各ステップの処理状態を表示</li>
+    <li>失敗理由を表示</li>
+    <li>成功統計を表示</li>
+    <li>生成モードでは、下部に ASR セグメント進捗バーを表示</li>
+  </ul>
+
+  <h3>3.4 下部ボタン</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>OK</td><td>処理開始</td></tr>
+      <tr><td>キャンセル</td><td>処理中に押すと、現在のセグメント終了後に停止</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s4">
+  <h2>4. クイックスタート</h2>
+
+  <h3>4.1 SRT 字幕を生成</h3>
+  <ol>
+    <li><code>ASR で SRT 字幕ファイルを生成</code> を選択</li>
+    <li><strong>ソースフォルダー</strong>（メディアファイルのあるディレクトリ）を設定</li>
+    <li><strong>ASR フォルダー</strong>（SRT 出力ディレクトリ）を設定</li>
+    <li>左側リストで処理するメディアファイルを選択（複数選択可）</li>
+    <li>必要に応じて <code>ASR で生成した SRT ファイルが存在する場合、上書きしますか?</code> をチェック</li>
+    <li><strong>OK</strong> をクリック</li>
+    <li>ログエリアを確認し、処理完了を待つ</li>
+    <li><strong>ASR フォルダー</strong> から同名の <code>.srt</code> ファイルを取得</li>
+  </ol>
+
+  <h3>4.2 SRT タイムラインを整列</h3>
+  <ol>
+    <li><code>SRT 字幕タイムラインを整列</code> を選択</li>
+    <li><strong>ソースフォルダー</strong>（修正対象の <code>.srt</code> を含む）を設定</li>
+    <li><strong>ASR フォルダー</strong>（同名の ASR <code>.srt</code> を含む）を設定</li>
+    <li>必要に応じて <code>タイムライン整列の前に文の断片を結合しますか?</code> をチェック</li>
+    <li>必要に応じて 4 つの整列パラメータを調整するか、<strong>デフォルト</strong> をクリック</li>
+    <li>左側リストでファイルを選択</li>
+    <li><strong>OK</strong> をクリック</li>
+    <li>完了後、<strong>ソースフォルダー内の <code>.srt</code> が更新されます</strong></li>
+  </ol>
+</section>
+
+<section id="s5">
+  <h2>5. パラメータ詳細</h2>
+
+  <h4>時間ドリフトウィンドウ (秒)</h4>
+  <p>字幕タイムスタンプと音声の間に許容される最大オフセット。デフォルトは 30 秒。字幕全体が大きくずれている場合は適宜大きくします。</p>
+
+  <h4>検索テキスト長</h4>
+  <p>整列時にマッチングに使うテキストウィンドウの長さ。デフォルトは 16。大きいほど安定するが遅い；小さいほど速いが一致が不正確になる可能性があります。</p>
+
+  <h4>最小時間ギャップ (ミリ秒)</h4>
+  <p>2 つの字幕間に許容される最小間隔。デフォルトは 1 ミリ秒。タイムライン上で字幕が重なるのを防ぎます。</p>
+
+  <h4>最大エラー閾値</h4>
+  <p>マッチング時に許容される最大エラー率。デフォルトは 0.15。大きいほど寛容、小さいほど厳格です。</p>
+</section>
+
+<section id="s6">
+  <h2>6. 処理フロー</h2>
+
+  <h3>6.1 生成モード</h3>
+  <ol>
+    <li>メディアファイルを開き、総時間を読み取る</li>
+    <li><strong>120 秒</strong> ごとのセグメントに分割</li>
+    <li><code>lib\ffmpeg.exe</code> を使って 16kHz モノラル wav を抽出</li>
+    <li>ASR モデルを呼び出して認識</li>
+    <li>最後以外のセグメントでは最後の文を破棄し、次のセグメントとの重複を避ける</li>
+    <li>すべて完了したら ASR フォルダーに書き込む</li>
+  </ol>
+
+  <h3>6.2 整列モード</h3>
+  <ol>
+    <li>ソース SRT と ASR SRT を読み取る</li>
+    <li>チェックされていれば、先に文の断片を結合</li>
+    <li>4 つのパラメータに従って整列</li>
+    <li>結果をソース SRT に書き戻す</li>
+  </ol>
+</section>
+
+<section id="s7">
+  <h2>7. よくある質問</h2>
+
+  <div class="qa">
+    <div class="q">Q1：メディアファイル情報の読み取りに失敗</div>
+    <div class="a">メディアファイルを開けないか、形式が未対応です。ファイルが完全か、パスに特殊文字が含まれていないか確認してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：ASR 字幕ファイルがない</div>
+    <div class="a">整列モードでは、ASR フォルダーにソース SRT と同名のファイルがありません。先に生成モードを実行するか、ファイル名が一致しているか確認してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：音声の自動認識に失敗</div>
+    <div class="a">モデルの読み込み失敗、または音声抽出の失敗です。モデルがダウンロード済みか、<code>lib\ffmpeg.exe</code> が存在するか確認してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：最後の数分間結果がない</div>
+    <div class="a">考えられる原因：メディア総時間の読み取り失敗または過小評価；あるセグメントの認識失敗による中断；最後のセグメントから内容が認識されなかった。ログの最後の数行を確認し、どこで止まったか確認してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：ソースフォルダー内の SRT は上書きされますか？</div>
+    <div class="a">整列モードはソース SRT を上書きするため、先にバックアップしてください。生成モードでは、ASR フォルダーに同名 SRT が既に存在し、「上書き」がチェックされていない場合はスキップされます。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：途中でキャンセルできますか？</div>
+    <div class="a">できます。キャンセルをクリックすると、現在のセグメントが終了した時点で停止します。認識済みの部分は保存されません。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：ファイルリストに特定のファイルが表示されないのはなぜ？</div>
+    <div class="a">リストには対応拡張子のみ表示されます。整列モードでは <code>.srt</code> のみ；生成モードでは動画/音声拡張子のみ。対応リストにない拡張子は表示されません。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：パラメータを変更しても反映されない？</div>
+    <div class="a">パラメータは OK をクリックしたときに読み込まれます。変更後はそのまま OK をクリックしてください。入力値が範囲外の場合は、ダイアログで通知され自動修正されます。</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. 注意事項</h2>
+  <ol>
+    <li>長いファイルの処理は時間がかかります。まず短い動画でテストすることを推奨します。</li>
+    <li>モデルが大きいほど精度が高いですが、遅く、メモリを多く消費します。</li>
+    <li>一時 wav ファイルは自動削除されますが、異常終了時は残ることがあります。</li>
+    <li>整列モードはソースディレクトリの <code>.srt</code> を直接書き換えます。先にバックアップしてください。</li>
+    <li>プログラム終了時に現在の設定を保存し、次回起動時に自動復元します。</li>
+    <li><code>lib\ffmpeg.exe</code> はプログラムのバージョンと一致させることを推奨します。</li>
+  </ol>
+</section>
+
+<section id="s9">
+  <h2>9. 付録：UI 文字 中文・英文対照表</h2>
+  <table>
+    <thead><tr><th>中文</th><th>英文</th></tr></thead>
+    <tbody>
+      <tr><td>语音识别工具箱</td><td>ASR Toolbox</td></tr>
+      <tr><td>对齐SRT字幕时间线</td><td>Align SRT timeline</td></tr>
+      <tr><td>ASR生成SRT字幕文件</td><td>ASR Generate SRT file</td></tr>
+      <tr><td>源文件夹</td><td>Source dir</td></tr>
+      <tr><td>ASR文件夹</td><td>ASR SRT dir</td></tr>
+      <tr><td>在对齐时间线之前合并句子碎片?</td><td>Merger sentence fragments before alignment ?</td></tr>
+      <tr><td>如果ASR生成的SRT文件存在，覆盖吗?</td><td>If ASR SRT file exists, ovverwrite it ?</td></tr>
+      <tr><td>时间漂移窗口 (秒)</td><td>Time Drift Window (s)</td></tr>
+      <tr><td>搜索文本长度</td><td>Search Text Length</td></tr>
+      <tr><td>最小时间间隙 (毫秒)</td><td>Min Time Gap (ms)</td></tr>
+      <tr><td>最大错误阈值</td><td>Max Error Threshold</td></tr>
+      <tr><td>默认值</td><td>Default</td></tr>
+      <tr><td>取消</td><td>Cancel</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  音声認識ツールボックス 操作マニュアル · バージョン 1.0
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT ツールボックス 操作マニュアル</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+    --warn-bg: #fff8e6;
+    --warn-border: #e8a200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 16px; margin: 22px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.5;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .cmd {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 14px 18px; margin: 14px 0; background: #fafbfc;
+  }
+  .cmd .name {
+    font-weight: 600; color: var(--accent); font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .cmd .desc { color: #444; margin: 6px 0; font-size: 14px; }
+  .cmd .io {
+    color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: Consolas, monospace;
+  }
+  .cmd .hint {
+    background: var(--accent-soft); border-radius: 4px;
+    padding: 6px 10px; margin-top: 8px; font-size: 13px; color: #234;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, .cmd { page-break-inside: avoid; }
+    .toc ol { column-count: 2; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SRT ツールボックス 操作マニュアル</h1>
+  <div class="meta">バージョン 1.0 &nbsp;|&nbsp; SRT Toolbox / VlsSrtTools</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">プログラム概要</a></li>
+    <li><a href="#s2">画面レイアウト</a></li>
+    <li><a href="#s3">左パネル：ディレクトリとファイル</a></li>
+    <li><a href="#s4">字幕行タイプ</a></li>
+    <li><a href="#s5">中央パネル：17 のコマンド</a></li>
+    <li><a href="#s6">字幕とテキストの相互変換（コマンド 1-8）</a></li>
+    <li><a href="#s7">字幕内容の操作（コマンド 9-15）</a></li>
+    <li><a href="#s8">動画分割（コマンド 16-17）</a></li>
+    <li><a href="#s9">右パネル：Anki エクスポート</a></li>
+    <li><a href="#s10">よくある質問</a></li>
+    <li><a href="#s11">注意事項</a></li>
+    <li><a href="#s12">付録：ファイル命名規則</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. プログラム概要</h2>
+  <p>SRT ツールボックス（VlsSrtTools）は、SRT 字幕の一括処理ツールで、一連の字幕ファイルに対して一般的な整理・変換・エクスポート作業を行います。</p>
+  <p>主な機能：</p>
+  <ul>
+    <li>字幕とプレーンテキストの相互変換（エクスポート、書き戻し）</li>
+    <li>字幕内容の結合、分割、交換、削除</li>
+    <li>簡体字/繁体字変換</li>
+    <li>タイムライン拡張</li>
+    <li>AI 翻訳 / 翻訳チェック用テキストの生成</li>
+    <li>字幕タイムラインに基づく動画分割（ffmpeg バッチファイル生成）</li>
+    <li>Anki プレーヤーテキスト、シリーズカード、センテンスノートカードのエクスポート</li>
+  </ul>
+  <p>複数ファイルの一括処理に対応し、すべての変更系操作は元ファイルを自動バックアップします。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 画面レイアウト</h2>
+  <p>メインウィンドウは 3 つのエリアに分かれています：</p>
+  <table>
+    <thead><tr><th>エリア</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>左パネル</td><td>SRT ディレクトリ選択、字幕行タイプ、SRT ファイルリスト</td></tr>
+      <tr><td>中央パネル</td><td>17 のコマンドボタン</td></tr>
+      <tr><td>右パネル</td><td>Anki エクスポート設定（コマンド 1 にホバー時に表示）+ SRT プレビュー</td></tr>
+      <tr><td>下部ステータスバー</td><td>現在のファイル名 + 字幕数</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s3">
+  <h2>3. 左パネル：ディレクトリとファイル</h2>
+
+  <h3>3.1 SRT ディレクトリ</h3>
+  <ul>
+    <li>ドロップダウンボックスで保存済みの SRT ディレクトリを選択します。</li>
+    <li>緑の <code>+</code> ボタン：SRT ディレクトリを追加。</li>
+    <li>赤の <code>−</code> ボタン：現在の SRT ディレクトリを削除。</li>
+    <li><code>サブディレクトリを含む?</code>：チェックするとスキャン時にサブディレクトリを含めます。</li>
+  </ul>
+  <p>プログラムは各ディレクトリの設定（字幕行タイプ、Anki パラメータなど）を記憶し、ディレクトリ切替時に自動復元します。</p>
+
+  <h3>3.2 SRT ファイルリスト</h3>
+  <ul>
+    <li>現在のディレクトリ内のすべての <code>.srt</code> ファイルを一覧表示します。</li>
+    <li>複数選択に対応；一括操作の対象は選択されたファイルです。</li>
+    <li>単一ファイルをクリックすると、右側のプレビューエリアに内容が表示され、ステータスバーに字幕数が表示されます。</li>
+    <li>リストのタイトルには合計数と現在の選択数が表示されます。</li>
+  </ul>
+</section>
+
+<section id="s4">
+  <h2>4. 字幕行タイプ</h2>
+  <p>SRT ファイルの各字幕は、1 行のテキストのみの場合もあれば、原文と訳文の 2 行の場合もあります。プログラムはそれらを「字幕一」と「字幕二」にどう分割するかを知る必要があります。</p>
+  <table>
+    <thead><tr><th>オプション</th><th>分割ルール</th></tr></thead>
+    <tbody>
+      <tr><td>自動判別</td><td>言語特徴で判断：英語行は字幕一、それ以外は字幕二</td></tr>
+      <tr><td>最初の行を字幕一とする</td><td>各字幕の最初の行を字幕一、残りを字幕二に結合</td></tr>
+      <tr><td>すべての行を字幕一とする</td><td>すべてのテキストを字幕一とし、字幕二は空のまま</td></tr>
+      <tr><td>最後の行を字幕二とする</td><td>各字幕の最後の行を字幕二、残りを字幕一に結合</td></tr>
+      <tr><td>奇数/偶数の字幕行をペアにする</td><td>1 行目と 2 行目がペア、3 行目と 4 行目がペア…（デフォルト）</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    このオプションはすべてのコマンドの結果に直接影響します。特に「字幕一と字幕二を交換」「簡繁変換」など、字幕二だけを処理する操作では重要です。間違えると処理対象がずれます。
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. 中央パネル：17 のコマンド</h2>
+  <p>中央にはコマンドボタングループがあり、合計 17 のコマンドがあります。マウスをホバーするとボタンがハイライトされ、ツールチップが表示されます。コマンド 1 にホバーすると、右側に Anki エクスポートパネルが表示されます。</p>
+  <p>コマンドは用途別に 3 つのグループに分かれます：</p>
+  <ul>
+    <li><strong>字幕とテキストの相互変換</strong>：コマンド 1 ～ 8</li>
+    <li><strong>字幕内容の操作</strong>：コマンド 9 ～ 15</li>
+    <li><strong>動画分割</strong>：コマンド 16 ～ 17</li>
+  </ul>
+  <div class="note">
+    いずれかのコマンドを実行する前に、SRT ディレクトリを選択し、少なくとも 1 つの SRT ファイルを選択しておく必要があります。そうでない場合はダイアログで通知されます。
+  </div>
+</section>
+
+<section id="s6">
+  <h2>6. 字幕とテキストの相互変換（コマンド 1-8）</h2>
+
+  <div class="cmd">
+    <div class="name">1. Anki プレーヤーテキストをエクスポート</div>
+    <div class="desc">このコマンド自体はエクスポートを実行せず、右側の Anki 設定パネルを表示します。エクスポート操作はパネルで行います。詳細は第 9 節を参照。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">2. 字幕一をテキストファイルにエクスポート</div>
+    <div class="desc">選択した SRT の字幕一を 1 行ずつプレーンテキストとしてエクスポートします。各行の形式は <code>行番号|内容</code> で、行番号は 1 から始まり 4 桁にゼロ埋めされます。</div>
+    <div class="io">出力ファイル：*_1.txt（UTF-8）</div>
+    <div class="hint">字幕を外部ツール（AI や翻訳ソフトなど）に渡して修正させ、その後コマンド 4 で書き戻すために使います。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">3. 字幕二をテキストファイルにエクスポート</div>
+    <div class="desc">同上ですが、エクスポートするのは字幕二です。</div>
+    <div class="io">出力ファイル：*_2.txt（UTF-8）</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">4. テキストから字幕一を更新</div>
+    <div class="desc">同じディレクトリの <code>*_1.txt</code> を読み込み、行番号に従って字幕一を更新します。テキスト形式は必ず <code>行番号|内容</code> でなければなりません。有効な行番号のみ更新され、範囲外は無視されます。</div>
+    <div class="io">入力ファイル：*_1.txt</div>
+    <div class="hint">処理前に元の SRT が自動バックアップされます。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">5. テキストから字幕二を更新</div>
+    <div class="desc">同上ですが、字幕二を更新します。</div>
+    <div class="io">入力ファイル：*_2.txt</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">6. AI 翻訳に必要なテキストを生成</div>
+    <div class="desc">Prompt 入力ウィンドウがポップアップし、確認後に AI 翻訳用テキストを生成します。内容 = Prompt + すべての字幕一（<code>行番号|内容</code> 形式）。Prompt は設定に保存され、次回自動的に読み込まれます。</div>
+    <div class="io">出力ファイル：*_t.txt（UTF-8）</div>
+    <div class="hint">デフォルトの Prompt は、行ごとの直訳、行の分割・結合の厳禁、出力形式 <code>行番号|訳文</code> を要求します。自分で変更可能です。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">7. AI 翻訳チェックに必要なテキストを生成</div>
+    <div class="desc">Prompt 入力ウィンドウがポップアップし、確認後に AI 翻訳チェック用テキストを生成します。内容 = Prompt + 完全な SRT 内容（原文 + 訳文の対照）。</div>
+    <div class="io">出力ファイル：*_c.txt（UTF-8）</div>
+    <div class="hint">デフォルトの Prompt は、AI に漏訳・誤訳・改善点を見つけさせ、修正行のみを出力するよう要求します。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">8. 選択した SRT を 1 つのテキストにエクスポート</div>
+    <div class="desc">選択したすべての SRT を 1 つのテキストファイルに結合して出力します。各ファイルは <code>[ファイル名]</code> で始まり、その後の各行は <code>タイムスタンプ（MM:SS）Tab 字幕一</code> です。ファイル間は空行で区切られます。</div>
+    <div class="io">出力ファイル：SRT ディレクトリ内の _all.txt（UTF-8）</div>
+    <div class="hint">シーズン全体の字幕を素早く閲覧したり、全体校正に使います。</div>
+  </div>
+</section>
+
+<section id="s7">
+  <h2>7. 字幕内容の操作（コマンド 9-15）</h2>
+
+  <div class="cmd">
+    <div class="name">9. 字幕一と字幕二を交換</div>
+    <div class="desc">各字幕の原文と訳文を入れ替えます。</div>
+    <div class="hint">処理前に自動バックアップされます。字幕行タイプの設定が間違っていると交換結果が予期しないものになるため、先に第 4 節の設定を確認してください。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">10. 字幕二を削除</div>
+    <div class="desc">すべての字幕二の内容を消去し、字幕一のみを残します。</div>
+    <div class="hint">原文のみを残したい場面に適しています。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">11. 字幕内の文の断片を結合</div>
+    <div class="desc">同じ文に属する隣接する字幕行を自動判定して結合します。結合ルール：時間は和集合、テキストはスペースで連結、訳文はスペースで連結。略語、閉じられていない引用符、カンマ/セミコロンで終わる場合などを認識できます。</div>
+    <div class="hint">ASR 出力や人手で細かく分割されすぎた字幕の修復に使います。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">12. - で役割字幕行を分割</div>
+    <div class="desc">各字幕について、テキスト内の <code> -</code>（スペース + ハイフン）で 2 行に分割します。時間はテキスト長の比率で配分され、前半部分が前の区間、後半部分が後の区間を占めます。訳文にも <code> -</code> がある場合は同期して分割します。</div>
+    <div class="hint">タイムラインを微調整する前に、同じ時間帯の異なる役のセリフを大まかに分離するために使います。ある字幕に <code> -</code> が含まれない場合は変更されません。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">13. タイムラインを拡張</div>
+    <div class="desc">時間入力ウィンドウがポップアップし、指定したオフセットで各字幕の開始/終了時間を前後に拡張します。拡張時には隣接字幕との重複が自動的に回避され、各側は最大で隣接字幕の中間位置まで拡張されます。</div>
+    <div class="hint">字幕の時間が短すぎて表示停留が不足している問題の修復に使います。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">14. 字幕を簡体字から繁体字中国語に変換</div>
+    <div class="desc">字幕二を簡体字から繁体字に変換します。字幕一は変更されません。</div>
+    <div class="hint">字幕二のみを処理し、変換にはシステムの LCMapString を使用するため、英文字幕には影響しません。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">15. 字幕を繁体字から簡体字中国語に変換</div>
+    <div class="desc">字幕二を繁体字から簡体字に変換します。字幕一は変更されません。</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. 動画分割（コマンド 16-17）</h2>
+
+  <div class="cmd">
+    <div class="name">16. 字幕に従って複数の動画に分割</div>
+    <div class="desc">メディアタイプ選択ウィンドウ（mp4、mkv など）がポップアップします。確認後、字幕タイムラインに従って 1 文ずつ ffmpeg コマンドを生成し、バッチファイルに書き込みます。メディアファイルは SRT と同名で、拡張子のみ異なることを前提とします。</div>
+    <div class="io">出力ファイル：*_cut.bat</div>
+    <div class="hint">
+      バッチファイルは手動でダブルクリックして実行する必要があります。実行時には ffmpeg がインストールされ PATH に追加されているか、ffmpeg.exe が同じディレクトリにある必要があります。<br>
+      分割コマンドは <code>-c copy</code> を使用し、再エンコードしないため非常に高速です。
+    </div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">17. 2 つの字幕と動画に分割</div>
+    <div class="desc">メディアタイプ + 分割時間ウィンドウがポップアップします。確認後：</div>
+    <ul>
+      <li>指定した時間点で SRT を <code>*_1.srt</code> と <code>*_2.srt</code> に分割し、後者のタイムラインは全体として前に移動します</li>
+      <li><code>*_cut_2.bat</code> を生成し、前半と後半の動画をそれぞれ切り出す 2 つの ffmpeg コマンドを含めます</li>
+    </ul>
+    <div class="io">出力ファイル：*_1.srt、*_2.srt、*_cut_2.bat</div>
+    <div class="hint">
+      指定した時間点がちょうどある字幕の途中にある場合、プログラムは自動的に隣接する 2 つの字幕の間の隙間に調整します。<br>
+      時間点が字幕範囲外の場合はそのファイルをスキップします。
+    </div>
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. 右パネル：Anki エクスポート</h2>
+  <p>マウスをコマンド 1 <code>Anki プレーヤーテキストをエクスポート</code> にホバーすると、右側に Anki エクスポートパネルが表示されます。</p>
+
+  <h3>9.1 パネルオプション</h3>
+  <table>
+    <thead><tr><th>項目</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>シリーズデッキ名</td><td>チェックすると有効化され、Anki でシリーズに使うデッキを選択</td></tr>
+      <tr><td>タイトル（キーワード）</td><td>シリーズタイトル。メインタイトル + シーズン/章 + エピソード/ユニットの 3 部分で構成</td></tr>
+      <tr><td>ノートデッキ</td><td>チェックすると有効化され、備考付きのセンテンスカードをエクスポート</td></tr>
+      <tr><td>テキストファイルとしても保存?</td><td>チェックするとローカルのテキストファイルとしても保存</td></tr>
+      <tr><td>更新後に Anki を同期?</td><td>チェックすると Anki の同期を自動的にトリガー</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 シーズン/エピソード番号の抽出</h3>
+  <table>
+    <thead><tr><th>項目</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>メディアファイル名プレフィックス</td><td>タイムラインフィールドのプレフィックス。例：<code>fr</code></td></tr>
+      <tr><td>シーズン番号の取得元</td><td>「SRT フォルダから取得」または「SRT ファイル名から取得」を選択可能</td></tr>
+      <tr><td>シーズン番号の開始位置</td><td>何文字目から抽出するか</td></tr>
+      <tr><td>シーズン番号の長さ</td><td>何文字抽出するか</td></tr>
+      <tr><td>エピソード番号の開始位置</td><td>同上、エピソード番号に対応</td></tr>
+      <tr><td>エピソード番号の長さ</td><td>同上</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 エクスポート内容</h3>
+  <ul>
+    <li><strong>シリーズデッキ</strong>：1 シーズンのすべての字幕テキストを、シーズンごとに対応フィールドへアーカイブ</li>
+    <li><strong>ノートデッキ</strong>：備考やフォーマットマーク付きのセンテンスのみを学習カードとしてエクスポート</li>
+  </ul>
+
+  <h3>9.4 操作手順</h3>
+  <ol>
+    <li>左側でエクスポートする SRT ファイルを選択します。</li>
+    <li>マウスをコマンド 1 にホバーして Anki パネルを表示します。</li>
+    <li>デッキ、タイトル、シーズン/エピソード番号抽出パラメータを設定します。</li>
+    <li>パネル右上の <strong>エクスポート</strong> ボタンをクリックします。</li>
+    <li>ログエリアにエクスポート結果が表示されます。</li>
+  </ol>
+
+  <h3>9.5 前提条件</h3>
+  <ul>
+    <li>Anki が起動している</li>
+    <li>AnkiConnect アドオンがインストールされている</li>
+    <li>ポート 8765 が使用されていない</li>
+  </ul>
+  <div class="note">
+    ノートタイプが存在しない場合、プログラムは自動作成を試みます。作成に失敗した場合はテンプレートファイルが欠落しているため、プログラムディレクトリの <code>lib\anki\</code> サブディレクトリを確認してください。
+  </div>
+</section>
+
+<section id="s10">
+  <h2>10. よくある質問</h2>
+
+  <div class="qa">
+    <div class="q">Q1：「SRT フォルダを選択してください」と表示される</div>
+    <div class="a">上部の SRT ディレクトリのドロップダウンが空です。緑の <code>+</code> ボタンをクリックしてディレクトリを追加してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：「SRT ファイルを選択してください」と表示される</div>
+    <div class="a">左側のファイルリストでファイルが選択されていません。ファイル名をクリックして選択してください。複数選択可能です。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：処理速度が遅い</div>
+    <div class="a">ファイル数が多い、字幕行数が多い、または Anki エクスポート機能が有効になっています。分割して処理してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：原文/訳文の認識が正しくない</div>
+    <div class="a">左側の <strong>字幕行タイプ</strong> で分割方法を手動指定してください。「自動判別」は使わないでください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：*_1.txt をエクスポートして修正したが、書き戻しが反映されない</div>
+    <div class="a">テキスト形式が <code>行番号|内容</code>（行番号 4 桁ゼロ埋め、縦線区切り）であるか、行番号が有効範囲内であるかを確認してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：Anki エクスポートに失敗</div>
+    <div class="a">Anki が起動しているか、AnkiConnect アドオンがインストールされているか、デッキが存在するかを確認してください。エクスポート失敗はローカルの SRT ファイルには影響しません。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：変更を元に戻せますか？</div>
+    <div class="a">できません。変更系操作は元ファイルを自動バックアップし、バックアップは同じディレクトリの <code>backup\</code> サブディレクトリにあります。復元するには、バックアップファイルを手動で元の名前に戻してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：動画分割時にメディアファイルが見つからない</div>
+    <div class="a">プログラムはメディアファイルが SRT と同名で、拡張子のみ異なることを前提としています。メディアファイル名が異なる場合は、先に同名に変更してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：生成されたバッチファイルの使い方は？</div>
+    <div class="a">バッチファイルをメディアファイルのあるディレクトリにコピーし、ダブルクリックして実行します。ffmpeg がインストールされ PATH に追加されているか、ffmpeg.exe が同じディレクトリにある必要があります。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：分割時間点が字幕の途中にある場合は？</div>
+    <div class="a">プログラムは分割点を自動的に隣接する 2 つの字幕の間の隙間に調整します。字幕全体の後にそれ以上字幕がない場合は、元の時間点で処理します。</div>
+  </div>
+</section>
+
+<section id="s11">
+  <h2>11. 注意事項</h2>
+  <ol>
+    <li>一括操作の前に、SRT ディレクトリ全体をバックアップすることを推奨します。</li>
+    <li>変更系操作は元ファイルを上書きします。プログラムは <code>backup\</code> サブディレクトリに自動バックアップしますが、バックアップ数には限りがあります。</li>
+    <li>AI 翻訳とチェック機能はテキストを生成するだけで、SRT を直接変更しません。「テキストから字幕を更新」コマンドで結果を書き戻す必要があります。</li>
+    <li>動画分割機能はバッチファイルを生成するだけで、ffmpeg を直接実行しません。バッチ実行前にパスとファイル名が正しいか確認してください。</li>
+    <li>Anki 関連機能には AnkiConnect アドオンと起動中の Anki が必要です。</li>
+    <li>プログラム終了時に現在のディレクトリ、パラメータ、ウィンドウ位置を保存し、次回起動時に自動復元します。</li>
+    <li>簡繁変換は字幕二のみを処理します。字幕一も変換が必要な場合は、先に「字幕一と字幕二を交換」し、変換後に再度交換して戻してください。</li>
+  </ol>
+</section>
+
+<section id="s12">
+  <h2>12. 付録：ファイル命名規則</h2>
+  <table>
+    <thead><tr><th>接尾辞</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>_1.txt</td><td>字幕一からエクスポートしたテキスト</td></tr>
+      <tr><td>_2.txt</td><td>字幕二からエクスポートしたテキスト</td></tr>
+      <tr><td>_t.txt</td><td>AI 翻訳に使うテキスト</td></tr>
+      <tr><td>_c.txt</td><td>AI 翻訳チェックに使うテキスト</td></tr>
+      <tr><td>_series.txt</td><td>Anki シリーズテキスト</td></tr>
+      <tr><td>_sentence.txt</td><td>Anki センテンスノートテキスト</td></tr>
+      <tr><td>_cut.bat</td><td>字幕に従って 1 文ずつ動画を分割するバッチファイル</td></tr>
+      <tr><td>_cut_2.bat</td><td>時間点で 2 つの動画に分割するバッチファイル</td></tr>
+      <tr><td>_1.srt / _2.srt</td><td>分割後の 2 つの字幕ファイル</td></tr>
+      <tr><td>_all.txt</td><td>選択したすべての SRT を結合したテキスト</td></tr>
+    </tbody>
+  </table>
+
+  <h3>バックアップディレクトリ</h3>
+  <p>各変更系操作の前に、元ファイルは同じディレクトリの <code>backup\</code> サブディレクトリに自動バックアップされます。ファイル名にはタイムスタンプが付きます。例：</p>
+  <pre>字幕ディレクトリ\backup\某シリーズ_20240101_1200.srt</pre>
+</section>
+
+<footer>
+  SRT ツールボックス 操作マニュアル · バージョン 1.0
+</footer>
+
+</div>
+</body>
+</html>

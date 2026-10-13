@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki iPhone 媒體檔案操作說明書</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #2b6cb0; --accent-soft: #ebf3fb; --border: #dde2e8;
+    --code-bg: #f0f2f5; --warn-bg: #fff8e6; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+    --danger-bg: #fff0f0; --danger-border: #d04040;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .danger { background: var(--danger-bg); border-left: 4px solid var(--danger-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki iPhone 媒體檔案操作說明書</h1>
+  <div class="meta">版本 1.2 &nbsp;|&nbsp; 壓縮、命名、打包、傳輸、匯入、更新、清理全流程</div>
+</header>
+
+<nav class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s1">本說明書解決什麼問題</a></li>
+    <li><a href="#s2">三個平台的本質區別</a></li>
+    <li><a href="#s3">Windows 影片格式限制</a></li>
+    <li><a href="#s4">核心機制：[sound:] 的作用</a></li>
+    <li><a href="#s5">媒體包 deck 的結構</a></li>
+    <li><a href="#s6">檔案命名規範</a></li>
+    <li><a href="#s7">用 ffmpeg 壓縮與轉換</a></li>
+    <li><a href="#s8">媒體必須可精準定位</a></li>
+    <li><a href="#s9">打包成 apkg</a></li>
+    <li><a href="#s10">傳輸到 iPhone</a></li>
+    <li><a href="#s11">匯入：先刪除舊 deck</a></li>
+    <li><a href="#s12">更新媒體</a></li>
+    <li><a href="#s13">刪除指定媒體檔案</a></li>
+    <li><a href="#s14">清理超過 100MB 的大檔案</a></li>
+    <li><a href="#s15">完整操作流程總表</a></li>
+    <li><a href="#s16">常見問題</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. 本說明書解決什麼問題</h2>
+  <p>Anki 的媒體檔案在 iPhone 上的操作，和桌面、Android 完全不同。桌面和 Android 可以直接開啟檔案管理器操作媒體目錄，iPhone 不行——iOS 的沙箱機制讓 AnkiMobile 的媒體庫對使用者完全封閉。</p>
+  <p>這導致幾個現實問題：</p>
+  <ol>
+    <li><b>怎麼把幾十 G 的媒體傳進 iPhone？</b> 走 AnkiWeb 同步不可能，只能透過 apkg 離線打包，再借助 iTunes 檔案共享或網路硬碟傳輸。</li>
+    <li><b>Windows 上影片怎麼播放？</b> Windows 版 Anki 只支援 WebM，不支援 MP4。所以同一個影片要準備兩份，給 iPhone 用 MP4，給 Windows 用 WebM。</li>
+    <li><b>怎麼讓媒體在 iPhone 上精準定位？</b> 不是所有影片格式都支援 seek。不滿足條件的檔案在 iPhone 上播放正常但進度條亂跳。</li>
+    <li><b>怎麼刪除已經匯入的媒體？</b> Anki 的「檢查媒體」可以清理未使用的媒體，但前提是檔案中已經不再有 <code>[sound:]</code> 參照，而且檔案小於 100MB。</li>
+    <li><b>為什麼匯入 apkg 總是失敗？</b> 因為 iPhone 上已存在同名 deck，AnkiMobile 不會自動覆蓋，必須先刪除舊 deck 再匯入。</li>
+  </ol>
+  <p>本說明書針對這幾個問題，給出完整的、可操作的工作流程。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 三個平台的本質區別</h2>
+
+  <h3>2.1 對照表</h3>
+  <table>
+    <thead>
+      <tr><th>平台</th><th>媒體檔案存取方式</th><th>影片格式</th><th>是否需要媒體包</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Windows</td><td>直接開啟 <code>collection.media</code> 資料夾，增刪改都行</td><td><b>僅 WebM</b></td><td>不需要</td></tr>
+      <tr><td>macOS</td><td>直接開啟 <code>collection.media</code> 資料夾，增刪改都行</td><td>MP4 / WebM 皆可</td><td>不需要</td></tr>
+      <tr><td>Android</td><td>直接存取 AnkiDroid 的媒體目錄，增刪改都行</td><td>MP4</td><td>不需要</td></tr>
+      <tr><td>iPhone / iPad</td><td>沙箱封閉，無法直接存取檔案系統</td><td>MP4</td><td><b>必須</b></td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 桌面與 Android 的常規做法</h3>
+  <ul>
+    <li>直接把媒體檔案複製進 <code>collection.media</code> 資料夾</li>
+    <li>卡片裡的 <code>[sound:]</code> 參照自動找到檔案</li>
+    <li>刪除就是直接從資料夾刪</li>
+    <li>覆蓋就是直接取代檔案</li>
+    <li>檢查媒體能正常工作</li>
+  </ul>
+
+  <h3>2.3 iPhone 的困境</h3>
+  <div class="danger">
+    <b>本說明書主要面向 iPhone / iPad。</b>桌面和 Android 使用者可以直接操作媒體資料夾，只需要注意 Windows 的 WebM 格式限制。
+  </div>
+  <p>iPhone 的沙箱機制意味著：</p>
+  <ul>
+    <li>無法存取檔案系統 → 沒法手動複製、刪除、取代</li>
+    <li>唯一的檔案傳輸通道是 apkg → 媒體必須被打包才能進手機</li>
+    <li><code>[sound:]</code> 是讓 Anki 把檔案裝進 apkg 的唯一手段</li>
+    <li>刪除媒體要依賴 Anki 的「檢查媒體」，透過刪除 <code>[sound:]</code> 參照觸發</li>
+    <li>匯入 apkg 前必須先刪除同名 deck，否則匯入會被跳過</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. Windows 影片格式限制</h2>
+
+  <div class="danger">
+    <b>Windows 版 Anki 只支援 WebM 影片，不支援 MP4。</b>這是 Windows 版 Anki 的播放引擎限制，和 iPhone 無關。
+  </div>
+
+  <h3>3.1 為什麼會有這個限制</h3>
+  <p>Anki 在 Windows 上用的是 QtWebEngine（基於 Chromium），Chromium 在 Windows 上預設不帶 H.264 解碼器（因為專利授權問題），所以 MP4 播不了。WebM 用的是 VP8/VP9 編碼，開源免費，所以被支援。</p>
+
+  <h3>3.2 對工作流程的影響</h3>
+  <p>同一個影片，需要在兩個平台上有兩份：</p>
+  <table>
+    <thead>
+      <tr><th>平台</th><th>影片格式</th><th>編碼</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iPhone / iPad / Android / macOS</td><td>MP4</td><td>H.264 + AAC</td></tr>
+      <tr><td>Windows</td><td>WebM</td><td>VP8/VP9 + Vorbis/Opus</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.3 媒體包 deck 的分工</h3>
+  <p>這就是為什麼媒體包要按格式分組。以 Seinfeld 為例：</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/     （給 iPhone / Android / macOS 用）
+│   ├── Seinfeld S01 Mp4
+│   ├── Seinfeld S02 Mp4
+│   └── ...
+└── WEBM Seinfeld/    （給 Windows 用）
+    ├── Seinfeld S01 Webm
+    ├── Seinfeld S02 Webm
+    └── ...</pre>
+  <p>兩個 deck 是獨立準備的，各自匯出 apkg，各自傳輸到對應平台。</p>
+
+  <h3>3.4 音訊不受此限制</h3>
+  <p>音訊格式在 Windows 上限制較少，MP3、M4A 都能播。所以 MP3 系列只需要一份。</p>
+</section>
+
+<section id="s4">
+  <h2>4. 核心機制：[sound:] 的作用</h2>
+
+  <h3>4.1 常見的誤解</h3>
+  <p>很多人以為 <code>[sound:]</code> 是用來控制播放的。在媒體傳輸場景裡，它真正的作用是：</p>
+  <p><b>讓 Anki 在匯出 apkg 時，把對應的媒體檔案打包進去。</b></p>
+
+  <h3>4.2 為什麼必須用它</h3>
+  <p>Anki 匯出 apkg 時，會掃描卡片裡所有 <code>[sound:]</code> 和 <code>&lt;img&gt;</code> 參照，把這些參照指向的媒體檔案收集起來打包。沒有被參照的檔案，Anki 根本不知道它們屬於這個牌組，就不會打包。</p>
+  <p>對於幾十 G 的媒體，這尤其關鍵：</p>
+  <ul>
+    <li>AnkiWeb 同步不可能（流量、100MB 單檔限制）</li>
+    <li>apkg 是唯一可靠的批次離線傳輸方式</li>
+    <li>而 apkg 只能透過 <code>[sound:]</code> 宣告媒體</li>
+  </ul>
+
+  <h3>4.3 [sound:] 的三重角色</h3>
+  <table>
+    <thead>
+      <tr><th>角色</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>傳輸宣告</td><td>告訴 Anki 這些檔案要打進 apkg</td></tr>
+      <tr><td>清理開關</td><td>從卡片裡刪掉 <code>[sound:]</code> 參照，重新匯入後，對應媒體變成「未使用」，可被「檢查媒體」刪除</td></tr>
+      <tr><td>覆蓋觸發</td><td>同名檔案覆蓋時，Anki 只識別 <code>[sound:]</code> 參照的檔案是否更新</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 [sound:] 不負責播放控制</h3>
+  <p>真正的播放控制由卡片模板的 JavaScript 完成（見 VlsPlayer Series / Notes 說明書）。<code>[sound:]</code> 在這裡只是一個「檔案清單」。</p>
+</section>
+
+<section id="s5">
+  <h2>5. 媒體包 deck 的結構</h2>
+
+  <h3>5.1 設計原則</h3>
+  <ul>
+    <li><b>每個系列一個 deck</b>：便於單獨匯出、單獨傳輸、單獨清理</li>
+    <li><b>每季一張卡片</b>：有季編號的系列，每季單獨一張卡片</li>
+    <li><b>無季編號的系列，整個系列一張卡片</b></li>
+    <li><b>按格式分組</b>：MP3 / MP4 / WEBM 分開，便於按平台選用</li>
+    <li><b>deck 名和欄位用純英文</b>：避免路徑的 Unicode 問題</li>
+  </ul>
+
+  <h3>5.2 建議結構（有季編號）</h3>
+  <p>以 Seinfeld 為例：</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/
+│   ├── Seinfeld S01 Mp4   （卡片 1，sound 欄位列 S01 的所有集）
+│   ├── Seinfeld S02 Mp4   （卡片 2，sound 欄位列 S02 的所有集）
+│   ├── Seinfeld S03 Mp4
+│   ├── ...
+│   └── Seinfeld S09 Mp4
+└── WEBM Seinfeld/
+    ├── Seinfeld S01 Webm
+    └── ...</pre>
+
+  <h3>5.3 建議結構（無季編號）</h3>
+  <p>以 Atomic Habits 為例：</p>
+  <pre>0. Resources/
+├── MP3 Atomic Habits      （一個 deck，一張卡片）
+├── MP3 CWE                （一個 deck，一張卡片）
+├── MP4 DDM
+└── MP4 Friends</pre>
+
+  <h3>5.4 卡片欄位結構</h3>
+  <p>每張筆記有兩個欄位：</p>
+  <table>
+    <thead>
+      <tr><th>欄位名</th><th>內容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Front</td><td>一行純文字，如 <code>Seinfeld S02 Mp4</code>，用作識別符</td></tr>
+      <tr><td>sound</td><td>一行一個 <code>[sound:xxx]</code>，列出這張卡片對應的所有媒體</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 sound 欄位範例</h3>
+  <p>有季編號的（Seinfeld S02）：</p>
+  <pre>[sound:sf_s02e01.mp4]
+[sound:sf_s02e02.mp4]
+[sound:sf_s02e03.mp4]
+...
+[sound:sf_s02e12.mp4]</pre>
+
+  <p>無季編號的（CWE）：</p>
+  <pre>[sound:cwe_01.mp4]
+[sound:cwe_02.mp4]
+[sound:cwe_03.mp4]
+...</pre>
+
+  <div class="tip">
+    每個 <code>[sound:]</code> 佔一行，便於閱讀和手動增刪。不要寫成一行連續串，那樣以後不好維護。
+  </div>
+
+  <h3>5.6 為什麼每季一張卡片</h3>
+  <table>
+    <thead>
+      <tr><th>優點</th><th>說明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>體積可控</td><td>一季的 apkg 不會太大，傳輸更穩</td></tr>
+      <tr><td>獨立更新</td><td>更新某一季時，只重新匯出那一張卡片</td></tr>
+      <tr><td>獨立清理</td><td>清理時按季清理，粒度清晰</td></tr>
+      <tr><td>命名清晰</td><td>Front 欄位一眼看出是哪一季</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s6">
+  <h2>6. 檔案命名規範</h2>
+
+  <h3>6.1 兩種命名格式</h3>
+  <p>根據內容是否有季編號，命名分兩種：</p>
+
+  <h4>無季編號</h4>
+  <pre>前綴_集號.副檔名</pre>
+  <p>範例：</p>
+  <pre>cwe_01.mp4
+cwe_02.mp4
+atomic_habits_00.mp3
+atomic_habits_01.mp3</pre>
+
+  <h4>有季編號</h4>
+  <pre>前綴_s季號e集號.副檔名</pre>
+  <p>範例：</p>
+  <pre>sf_s02e01.mp4
+sf_s02e02.mp4
+sf_s02e12.mp4</pre>
+
+  <h3>6.2 規則</h3>
+  <table>
+    <thead>
+      <tr><th>項目</th><th>規則</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>前綴</td><td>系列縮寫，2-4 字母小寫，如 <code>sf</code>、<code>cwe</code>、<code>ah</code></td></tr>
+      <tr><td>分隔符</td><td>底線 <code>_</code></td></tr>
+      <tr><td>季號</td><td><code>s</code> + 兩位補零，如 <code>s01</code>、<code>s02</code>（僅在有季編號時使用）</td></tr>
+      <tr><td>集號</td><td><code>e</code> + 兩位補零，如 <code>e01</code>、<code>e12</code>（僅在有季編號時使用）</td></tr>
+      <tr><td>集號（無季）</td><td>兩位或三位補零，如 <code>01</code>、<code>001</code></td></tr>
+      <tr><td>副檔名</td><td>統一，同一系列內不混用</td></tr>
+      <tr><td>禁止</td><td>中文、空格、大寫、特殊字元</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 序號位數怎麼定</h3>
+  <ul>
+    <li>少於 100 集 → 兩位（<code>01</code> ~ <code>99</code>）</li>
+    <li>多於 100 集 → 三位（<code>001</code> ~ <code>999</code>）</li>
+    <li><b>位數必須統一</b>，否則排序會亂：<code>_9.mp4</code> 會排在 <code>_10.mp4</code> 後面</li>
+  </ul>
+
+  <h3>6.4 同一系列多種格式</h3>
+  <pre>sf_s02e01.mp4   （iPhone / Android / macOS）
+sf_s02e01.webm  （Windows 專用）
+sf_s02e01.mp3   （音訊）</pre>
+  <p>檔名相同，副檔名不同。這樣卡片裡的參照結構一致，按平台替換副檔名即可。</p>
+
+  <h3>6.5 和 VlsPlayer Series 卡片的一致性</h3>
+  <p>這個命名規範<b>必須</b>和 Series 卡 Timeline 欄位的拼接規則一致。Series 卡程式碼裡的拼接邏輯是：</p>
+  <pre>檔名 = 前綴 + "_" + (季號為空 ? 集號 : "s" + 季號 + "e" + 集號) + 副檔名</pre>
+  <ul>
+    <li>季號為空 → <code>cwe_01.mp4</code></li>
+    <li>季號非空 → <code>sf_s02e01.mp4</code></li>
+  </ul>
+  <div class="danger">
+    媒體包 deck 裡的 <code>[sound:]</code> 參照、Series 卡 Timeline 欄位、實際檔名，三者必須完全一致，否則卡片找不到檔案。
+  </div>
+
+  <h3>6.6 批次產生 [sound:] 參照</h3>
+  <p>有季編號（Bash，假設一季 12 集）：</p>
+  <pre>for i in $(seq -w 1 12); do echo "[sound:sf_s02e${i}.mp4]"; done</pre>
+
+  <p>無季編號：</p>
+  <pre>for i in $(seq -w 1 30); do echo "[sound:cwe_${i}.mp4]"; done</pre>
+
+  <p>輸出直接貼進 <code>sound</code> 欄位。</p>
+</section>
+
+<section id="s7">
+  <h2>7. 用 ffmpeg 壓縮與轉換</h2>
+
+  <h3>7.1 為什麼必須壓縮</h3>
+  <ul>
+    <li>原始影片動輒幾十 G，iPhone 裝不下</li>
+    <li>Anki 對單檔有 100MB 的處理限制</li>
+    <li>AnkiMobile 載入大檔案會卡頓</li>
+    <li>語言學習只需要看清字幕和嘴型，畫面細節不重要</li>
+  </ul>
+
+  <h3>7.2 影片壓縮：只需指定高度</h3>
+  <p><b>轉影片時不需要指定寬度</b>，用 <code>-2</code> 讓 ffmpeg 自動計算：</p>
+
+  <h4>MP4（iPhone / Android / macOS）</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.mp4</pre>
+
+  <h4>WebM（Windows 專用）</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libvpx-vp9 -crf 35 -b:v 0 \
+  -c:a libopus -b:a 64k -ac 1 \
+  output.webm</pre>
+
+  <p><code>scale=-2:270</code> 的含義：</p>
+  <ul>
+    <li>高度固定 270</li>
+    <li>寬度自動計算，保持長寬比</li>
+    <li><code>-2</code> 保證寬度是偶數（編碼器要求）</li>
+  </ul>
+  <p>270 對 iPhone 和桌面都夠用，字幕和嘴型都能看清。寬度交給 ffmpeg，不用管原始是 16:9 還是 4:3。</p>
+
+  <h3>7.3 音訊壓縮</h3>
+  <p>推薦 M4A：</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.m4a</pre>
+
+  <p>如果必須用 MP3，用 CBR（固定位元率）：</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a libmp3lame -b:a 64k -ac 1 \
+  output.mp3</pre>
+
+  <div class="note">
+    不要加 <code>-q:a</code>，那會產生 VBR（可變位元率）。VBR MP3 除非有 Xing 標頭，否則 iPhone 上 seek 不準。
+  </div>
+
+  <h3>7.4 關鍵參數說明</h3>
+  <table>
+    <thead>
+      <tr><th>參數</th><th>作用</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>scale=-2:270</code></td><td>高度固定 270，寬度自動取偶數</td></tr>
+      <tr><td><code>-profile:v main</code></td><td>H.264 主流 profile，iOS 相容</td></tr>
+      <tr><td><code>-level 3.0</code></td><td>相容性保險</td></tr>
+      <tr><td><code>-crf 28</code></td><td>畫質/體積平衡點，再高就糊</td></tr>
+      <tr><td><code>-b:a 64k -ac 1</code></td><td>音訊單聲道 64kbps</td></tr>
+      <tr><td><code>-movflags +faststart</code></td><td><b>MP4 專有，moov 移到檔案開頭，iPhone 上能精準 seek 的關鍵</b></td></tr>
+    </tbody>
+  </table>
+  <p>WebM 不需要 <code>-movflags +faststart</code>，那是 MP4 專有參數。</p>
+
+  <h3>7.5 如果還是太大</h3>
+  <p>進一步壓縮：</p>
+  <ul>
+    <li><code>-crf 32</code> 畫質再降一檔</li>
+    <li><code>scale=-2:180</code> 高度降到 180</li>
+    <li><code>-r 20</code> 幀率降到 20fps</li>
+    <li><code>-b:a 48k</code> 音訊降到 48kbps</li>
+  </ul>
+
+  <h3>7.6 批次轉換腳本</h3>
+  <p>Windows 批次檔（同一目錄下所有 mkv 轉 mp4）：</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 ^
+    -c:a aac -b:a 64k -ac 1 ^
+    -movflags +faststart "%%~nf.mp4"
+)</pre>
+
+  <p>同樣目錄轉 webm：</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libvpx-vp9 -crf 35 -b:v 0 ^
+    -c:a libopus -b:a 64k -ac 1 ^
+    "%%~nf.webm"
+)</pre>
+</section>
+
+<section id="s8">
+  <h2>8. 媒體必須可精準定位</h2>
+
+  <h3>8.1 什麼是「可定位」</h3>
+  <p>定位（seek）指的是播放器跳到檔案的任意時間點開始播放。iPhone 上的 AVFoundation 對 seek 的支援取決於<b>容器格式</b>和<b>元資料結構</b>。</p>
+  <p>如果檔案不可定位，會出現：</p>
+  <ul>
+    <li>播放能播，但滑動進度條不準</li>
+    <li>跳到中間位置會卡住或跳回開頭</li>
+    <li>多個 <code>[sound:]</code> 連續播放時，第二個開始位置錯亂</li>
+    <li>循環播放的起點偏移</li>
+  </ul>
+
+  <h3>8.2 各格式的可定位條件</h3>
+  <table>
+    <thead>
+      <tr><th>格式</th><th>可定位條件</th><th>不滿足時的現象</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>MP4 / M4A</td><td>moov atom 必須在檔案開頭</td><td>必須讀完整個檔案才能 seek，大檔案幾乎無法定位</td></tr>
+      <tr><td>WebM</td><td>iOS AVFoundation 支援不完整</td><td>iPhone 上無法 seek；Windows 上正常</td></tr>
+      <tr><td>MP3 (VBR)</td><td>必須有 Xing/Info 標頭</td><td>seek 位置不準</td></tr>
+      <tr><td>MP3 (CBR)</td><td>天然可定位</td><td>—</td></tr>
+      <tr><td>OGG / Opus</td><td>iOS 原生不支援</td><td>完全不能播</td></tr>
+      <tr><td>AVI / MKV / WMV / FLV</td><td>iOS 原生不支援</td><td>完全不能播</td></tr>
+      <tr><td>H.264 + AAC in MP4</td><td>最穩</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 保證可定位的四條規則</h3>
+  <ol>
+    <li>iPhone 上的影片用 MP4（H.264 + AAC），音訊用 M4A 或 CBR MP3</li>
+    <li><code>-movflags +faststart</code> 讓 moov 在開頭，否則大檔案無法 seek</li>
+    <li>影片 profile 不能太新，baseline / main 最穩</li>
+    <li>音訊取樣率統一 44.1kHz 或 48kHz</li>
+  </ol>
+
+  <h3>8.4 檢查方法</h3>
+  <p>用 ffprobe 檢查 moov 位置：</p>
+  <pre>ffprobe -v trace -i output.mp4 2>&1 | grep -E "type:'moov'|type:'mdat'"</pre>
+  <p>如果先出現 moov 再出現 mdat，說明已經 faststart 處理過。</p>
+
+  <h3>8.5 一句話總結</h3>
+  <div class="tip">
+    iPhone 上的影片轉成 H.264 main profile + AAC 的 MP4，<b>必須加 <code>-movflags +faststart</code></b>；Windows 上的影片轉成 VP9/VP8 + Opus/Vorbis 的 WebM。所有音訊轉成 AAC 的 M4A，或 CBR MP3。
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. 打包成 apkg</h2>
+
+  <h3>9.1 桌面側準備</h3>
+  <ol>
+    <li>把所有轉換好的媒體檔案放進 <code>collection.media</code> 資料夾</li>
+    <li>開啟媒體包 deck（如 <code>MP4 Seinfeld</code>）</li>
+    <li>確認 <code>sound</code> 欄位裡的 <code>[sound:]</code> 參照與實際檔案一致</li>
+    <li>可以用 Anki 的「檢查媒體」確認所有參照都能找到檔案</li>
+  </ol>
+
+  <h3>9.2 匯出 apkg</h3>
+  <ol>
+    <li>在牌組列表中，右鍵目標 deck → 匯出</li>
+    <li>選擇「Anki 牌組包（.apkg）」格式</li>
+    <li>勾選「包含媒體檔案」</li>
+    <li>選擇儲存位置</li>
+  </ol>
+
+  <div class="note">
+    如果只想匯出某個系列或某一季，一定要在匯出時選中那個 deck，不要選「所有牌組」。每季單獨匯出，傳輸和匯入都更穩。
+  </div>
+
+  <h3>9.3 打包後的驗證</h3>
+  <ul>
+    <li>apkg 檔案大小應該接近所有媒體檔案的總和</li>
+    <li>如果 apkg 明顯偏小，說明媒體沒被打包，檢查 <code>[sound:]</code> 參照是否正確</li>
+    <li>可以用 7-Zip 開啟 apkg（本質是 zip），確認裡面的 <code>collection.media</code> 有檔案</li>
+  </ul>
+</section>
+
+<section id="s10">
+  <h2>10. 傳輸到 iPhone</h2>
+
+  <div class="tip">
+    <b>傳輸的是 apkg 檔案本身，不是同步媒體。</b>媒體打包在 apkg 裡，一次性傳給 iPhone，不經過 AnkiWeb。
+  </div>
+
+  <h3>10.1 三種方式</h3>
+  <table>
+    <thead>
+      <tr><th>方式</th><th>適用場景</th><th>優點</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iTunes / Finder 檔案共享</td><td>Windows / Mac 使用者，首選</td><td>有線傳輸，最穩定，無大小限制</td></tr>
+      <tr><td>網路硬碟</td><td>無傳輸線時</td><td>上傳後 iPhone 下載，方便</td></tr>
+      <tr><td>AirDrop</td><td>Mac 使用者，中小 apkg</td><td>無網也可，速度快</td></tr>
+      <tr><td>USB 隨身碟直插</td><td>大 apkg（> 5GB）</td><td>不依賴網路，最穩定</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 iTunes / Finder 檔案共享（首選）</h3>
+  <p>這是最常用的方式，因為它不依賴網路，不受 apkg 大小限制。</p>
+
+  <h4>Windows（iTunes）</h4>
+  <ol>
+    <li>用傳輸線連接 iPhone 和電腦</li>
+    <li>開啟 iTunes，點擊裝置圖示</li>
+    <li>進入「檔案共享」</li>
+    <li>在 App 列表裡選擇 <b>AnkiMobile</b></li>
+    <li>點擊「加入檔案」，選擇 apkg</li>
+    <li>iTunes 把 apkg 傳到 AnkiMobile 的 Documents 目錄</li>
+    <li>在 iPhone 上開啟 AnkiMobile，apkg 出現在匯入列表裡</li>
+  </ol>
+
+  <h4>macOS（Finder）</h4>
+  <ol>
+    <li>用傳輸線連接 iPhone 和 Mac</li>
+    <li>開啟 Finder，側邊欄點擊 iPhone</li>
+    <li>進入「檔案」標籤頁</li>
+    <li>在 App 列表裡選擇 <b>AnkiMobile</b></li>
+    <li>把 apkg 拖進檔案列表</li>
+    <li>在 iPhone 上開啟 AnkiMobile 匯入</li>
+  </ol>
+
+  <h3>10.3 網路硬碟</h3>
+  <p>常用網路硬碟：iCloud Drive、OneDrive、Google Drive、百度網盤、堅果雲。</p>
+  <ol>
+    <li>電腦上把 apkg 上傳到網路硬碟</li>
+    <li>iPhone 上開啟對應網路硬碟 App，下載 apkg</li>
+    <li>點擊 apkg → 用 AnkiMobile 開啟</li>
+    <li>或者先存到「檔案」App，再點擊匯入</li>
+  </ol>
+  <div class="note">
+    百度網盤等國內網路硬碟，下載後可能需要先「用其他應用程式開啟」，選擇 AnkiMobile。iOS 的檔案系統會把它交給 AnkiMobile 處理。
+  </div>
+
+  <h3>10.4 AirDrop（Mac 使用者）</h3>
+  <ol>
+    <li>Mac 上右鍵 apkg → 共享 → 隔空投送</li>
+    <li>選擇 iPhone</li>
+    <li>iPhone 上點擊「接受」</li>
+    <li>系統會提示用哪個 App 開啟，選擇 AnkiMobile</li>
+  </ol>
+
+  <h3>10.5 USB 隨身碟直插（大檔案）</h3>
+  <ol>
+    <li>把 apkg 複製到 USB-C 或 Lightning 介面的隨身碟</li>
+    <li>隨身碟插到 iPhone</li>
+    <li>開啟「檔案」App，進入隨身碟</li>
+    <li>點擊 apkg → 選擇用 AnkiMobile 開啟</li>
+  </ol>
+
+  <h3>10.6 傳輸時間參考</h3>
+  <table>
+    <thead>
+      <tr><th>apkg 大小</th><th>iTunes 檔案共享</th><th>網路硬碟</th><th>AirDrop</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>100 MB</td><td>幾秒</td><td>幾十秒</td><td>幾秒</td></tr>
+      <tr><td>1 GB</td><td>約 30 秒</td><td>幾分鐘</td><td>約 1 分鐘</td></tr>
+      <tr><td>10 GB</td><td>約 5 分鐘</td><td>可能逾時</td><td>可能失敗</td></tr>
+      <tr><td>30 GB+</td><td>約 15 分鐘</td><td>不建議</td><td>不建議</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s11">
+  <h2>11. 匯入：先刪除舊 deck</h2>
+
+  <div class="danger">
+    <b>這是最容易踩的坑。</b>如果 iPhone 上已經有同名 deck，直接匯入 apkg 會失敗或被跳過。必須先刪除舊的 deck，再匯入新的。
+  </div>
+
+  <h3>11.1 為什麼必須先刪除</h3>
+  <p>AnkiMobile 在匯入 apkg 時，對同名 deck 的處理策略是<b>跳過已存在的筆記</b>，而不是覆蓋。這意味著：</p>
+  <ul>
+    <li>同名 deck 已存在 → 新筆記不會匯入</li>
+    <li>已存在的筆記不會被更新</li>
+    <li>媒體檔案也不會被取代</li>
+  </ul>
+  <p>結果就是：你匯入了新 apkg，但 iPhone 上還是舊的內容。</p>
+
+  <h3>11.2 正確的匯入流程</h3>
+  <ol>
+    <li>在 AnkiMobile 裡找到對應的舊 deck</li>
+    <li>長按 deck → 刪除（或滑動刪除）</li>
+    <li>確認刪除</li>
+    <li>點擊 apkg 檔案 → 用 AnkiMobile 開啟</li>
+    <li>AnkiMobile 彈出確認框，顯示 deck 名和卡片數量</li>
+    <li>點擊「匯入」，等待完成</li>
+  </ol>
+
+  <h3>11.3 刪除 deck 會不會影響學習進度</h3>
+  <ul>
+    <li>如果這個 deck 是媒體包（只有一張卡片，從不複習），刪除無影響</li>
+    <li>如果是正式學習卡片參照了媒體，刪除媒體包 deck 不會影響正式卡片</li>
+    <li>但刪除正式學習 deck 會遺失學習進度，操作前要確認清楚</li>
+  </ul>
+
+  <h3>11.4 批次刪除</h3>
+  <p>如果要更新多個季的 deck，可以：</p>
+  <ol>
+    <li>一次性刪除所有要更新的 deck</li>
+    <li>再逐個匯入新的 apkg</li>
+  </ol>
+
+  <h3>11.5 驗證匯入成功</h3>
+  <ul>
+    <li>開啟新匯入的 deck，檢查卡片數量</li>
+    <li>檢視 media pack 卡片的 <code>sound</code> 欄位，確認 <code>[sound:]</code> 都顯示為可播放</li>
+    <li>開啟一張正式學習卡片，播放媒體，拖動進度條驗證可定位</li>
+  </ul>
+
+  <h3>11.6 匯入後的清理</h3>
+  <p>apkg 已經匯入 iPhone 後，可以刪除傳輸過程中的 apkg 副本（隨身碟裡的、網路硬碟裡的、iTunes 裡的），釋放空間。</p>
+</section>
+
+<section id="s12">
+  <h2>12. 更新媒體</h2>
+
+  <h3>12.1 什麼情況下需要更新</h3>
+  <ul>
+    <li>發現某段影片切錯了，重新切</li>
+    <li>壓縮參數不對，重新壓</li>
+    <li>字幕時間軸調整，媒體需要重新產生</li>
+    <li>增加了新的集數</li>
+  </ul>
+
+  <h3>12.2 更新流程</h3>
+  <ol>
+    <li>桌面側產生新的媒體檔案</li>
+    <li><b>保持檔名不變</b>，覆蓋 <code>collection.media</code> 裡的舊檔案</li>
+    <li>確認 <code>sound</code> 欄位裡的參照不需要改（如果檔名沒變）</li>
+    <li>重新匯出 apkg，勾選「包含媒體檔案」</li>
+    <li>傳到 iPhone</li>
+    <li><b>先在 iPhone 上刪除對應的舊 deck</b></li>
+    <li>再匯入新的 apkg</li>
+  </ol>
+
+  <div class="danger">
+    媒體不走同步，更新只能透過「刪除舊 deck → 重新匯入 apkg」完成。不存在「只同步一個檔案」這種操作。
+  </div>
+
+  <h3>12.3 增加新媒體</h3>
+  <ol>
+    <li>新檔案按命名規範命名，如 <code>sf_s02e13.mp4</code></li>
+    <li>放進 <code>collection.media</code></li>
+    <li>在 <code>sound</code> 欄位末尾追加一行 <code>[sound:sf_s02e13.mp4]</code></li>
+    <li>重新匯出 apkg</li>
+    <li>刪除 iPhone 上的舊 deck</li>
+    <li>匯入新的 apkg</li>
+  </ol>
+
+  <h3>12.4 改檔名</h3>
+  <div class="danger">
+    改檔名是高風險操作，因為舊檔案會殘留在 iPhone 上。除非必要，不要改檔名。要改的話：<br>
+    1. 新檔名按規範命名<br>
+    2. 卡片參照同步改<br>
+    3. 重新匯出 apkg<br>
+    4. 刪除舊 deck 再匯入<br>
+    5. 舊檔案用第 13 節的方法清理
+  </div>
+</section>
+
+<section id="s13">
+  <h2>13. 刪除指定媒體檔案</h2>
+
+  <div class="tip">
+    這一節的技巧是整份說明書的核心：<b>透過刪除 <code>[sound:]</code> 參照，觸發 Anki 的「檢查媒體」來清理 iPhone 上的媒體檔案。</b>
+  </div>
+
+  <h3>13.1 原理</h3>
+  <p>Anki 的「檢查媒體」會掃描整個媒體庫，找出<b>沒有被任何卡片參照</b>的檔案，列在「未使用檔案」裡，允許使用者刪除。</p>
+  <p>因此，只要：</p>
+  <ol>
+    <li>從卡片欄位裡刪掉對應的 <code>[sound:xxx.mp4]</code></li>
+    <li>重新匯出 apkg 並匯入 iPhone（記得先刪除舊 deck）</li>
+    <li>在 AnkiMobile 裡執行「檢查媒體」</li>
+    <li>該檔案就會出現在「未使用檔案」列表裡，可以刪除</li>
+  </ol>
+
+  <h3>13.2 完整操作步驟</h3>
+
+  <h4>步驟 1：刪除 sound 欄位裡的參照</h4>
+  <p>在桌面 Anki 裡，開啟媒體包 deck 的卡片，從 <code>sound</code> 欄位裡刪掉要清理的 <code>[sound:xxx.mp4]</code> 行。</p>
+
+  <h4>步驟 2：確認參照已經被清掉</h4>
+  <p>用 Anki 的搜尋功能，在整個收藏裡搜尋 <code>xxx.mp4</code>，確認沒有其他卡片還在參照這個檔案。</p>
+  <pre>在 Anki 搜尋框輸入：xxx.mp4</pre>
+  <p>如果還有結果，說明其他卡片還在用，不能刪。</p>
+
+  <h4>步驟 3：重新匯出 apkg</h4>
+  <p>把媒體包 deck 重新匯出 apkg。此時因為 <code>sound</code> 欄位裡已經沒有該參照，Anki 打包時不會包含該檔案。</p>
+
+  <h4>步驟 4：傳到 iPhone</h4>
+  <p>透過 iTunes 檔案共享 / 網路硬碟 / AirDrop / 隨身碟傳到 iPhone。</p>
+
+  <h4>步驟 5：先刪除 iPhone 上的舊 deck</h4>
+  <p>在 AnkiMobile 裡找到對應的舊 deck，刪除。</p>
+
+  <h4>步驟 6：匯入新的 apkg</h4>
+  <p>點擊新的 apkg，用 AnkiMobile 匯入。</p>
+
+  <h4>步驟 7：執行「檢查媒體」</h4>
+  <p>在 AnkiMobile 裡（或桌面 Anki 裡）執行「檢查媒體」。該檔案現在沒有任何參照，會出現在「未使用檔案」列表裡。</p>
+
+  <h4>步驟 8：刪除未使用檔案</h4>
+  <p>確認後刪除。空間釋放。</p>
+
+  <h3>13.3 為什麼這個流程有效</h3>
+  <p>AnkiMobile 的「檢查媒體」會掃描本機媒體庫，對照卡片參照，找出孤兒檔案。只要檔案不再被參照，無論它大小，都會被列為「未使用」。</p>
+
+  <h3>13.4 注意事項</h3>
+  <ul>
+    <li><b>前提是該檔案小於 100MB</b>。超過 100MB 的檔案不參與「未使用」判定，見第 14 節</li>
+    <li>刪除參照後，卡片上播放這段媒體會顯示「媒體缺失」，這是預期的</li>
+    <li>如果不想讓卡片顯示缺失提示，應該同時刪掉卡片，或把卡片也一起清理</li>
+    <li>操作前備份 apkg，以防誤刪</li>
+    <li>如果 iPhone 上的「檢查媒體」沒有找到該檔案，可能是匯入沒成功，重新匯入一次</li>
+  </ul>
+
+  <h3>13.5 批次刪除多個媒體</h3>
+  <p>如果要清理多個檔案，一次性從 <code>sound</code> 欄位裡刪掉所有對應的 <code>[sound:]</code> 行，然後重新匯出 apkg。匯入後執行一次「檢查媒體」就能全部清理。</p>
+</section>
+
+<section id="s14">
+  <h2>14. 清理超過 100MB 的大檔案</h2>
+
+  <h3>14.1 問題描述</h3>
+  <p>如果媒體檔案超過 100MB，即使使用者已經刪掉了參照它的卡片，檔案仍然會留在媒體庫裡，<b>無法透過「檢查媒體 → 刪除未使用檔案」清除</b>。</p>
+
+  <h3>14.2 根本原因</h3>
+  <p>Anki 的「檢查媒體」對超過 100MB 的檔案有特殊處理：</p>
+  <ul>
+    <li>它們被單獨歸入「超過 100MB 的檔案」列表</li>
+    <li>不參與「未使用檔案」的判定</li>
+    <li>所以無論卡片是否還參照它，都無法透過內建功能刪除</li>
+  </ul>
+  <p>這個設計的根源是 AnkiWeb 對單一媒體檔案有 100MB 的同步上限。Anki 假設這類檔案需要使用者手動處理。</p>
+
+  <h3>14.3 解決思路</h3>
+  <p><b>用一個同名的小檔案覆蓋掉大檔案</b>，讓它降到 100MB 以下。此時 Anki 會把它當作普通檔案處理，如果卡片已經不再參照它，就會被正常列為「未使用檔案」，可以刪除。</p>
+
+  <h3>14.4 完整操作步驟</h3>
+
+  <h4>步驟 1：刪掉卡片參照</h4>
+  <p>在桌面 Anki 裡，去掉卡片欄位中對該媒體的 <code>[sound:xxx.mp4]</code> 參照，或者直接刪掉整張卡片。</p>
+
+  <h4>步驟 2：準備同名小檔案</h4>
+  <p>建立一個與原檔案同名的小檔案，大小遠小於 100MB。</p>
+  <p>Windows：</p>
+  <pre>type nul > xxx.mp4</pre>
+  <p>或者用 ffmpeg 產生 1 秒靜音片段：</p>
+  <pre>ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 1 -c:a aac -movflags +faststart xxx.mp4</pre>
+
+  <h4>步驟 3：覆蓋 collection.media 裡的原檔案</h4>
+  <p>開啟桌面 Anki 的媒體資料夾（工具 → 檢查媒體 → 檢視檔案），把剛準備的小檔案複製進去，覆蓋原大檔案。</p>
+
+  <h4>步驟 4：重新匯出 apkg</h4>
+  <p>把這個系列（或這個媒體包 deck）重新匯出 apkg，勾選「包含媒體檔案」。</p>
+
+  <h4>步驟 5：傳到 iPhone 重新匯入</h4>
+  <p>透過 iTunes 檔案共享 / 網路硬碟傳到 iPhone。</p>
+  <p><b>先在 iPhone 上刪除對應的舊 deck</b>，然後用 AnkiMobile 匯入新的 apkg。同名小檔案會覆蓋手機上的大檔案。</p>
+
+  <h4>步驟 6：執行檢查媒體</h4>
+  <p>此時這個檔案已經小於 100MB，會出現在「未使用檔案」列表裡。刪除它，空間釋放。</p>
+
+  <h3>14.5 為什麼同名覆蓋有效</h3>
+  <p>Anki 的媒體庫是按檔名管理的。用同名檔案覆蓋後，Anki 在匯入 apkg 時發現同名檔案已存在，會用新檔案取代舊檔案。這樣舊的大檔案就被取代掉了。</p>
+
+  <h3>14.6 前提條件</h3>
+  <ul>
+    <li>卡片必須先不再參照該檔案，否則即使檔案變小了，Anki 仍認為它是「使用中」，不會刪除</li>
+    <li>覆蓋操作要在桌面完成，因為 iPhone 端無法直接存取 AnkiMobile 的媒體資料夾</li>
+    <li>如果 iPhone 上的檔案沒被取代，可能是匯入沒成功，重新匯入一次</li>
+  </ul>
+
+  <h3>14.7 注意事項</h3>
+  <ul>
+    <li>如果這個檔案還有其他卡片在參照，覆蓋後播放效果會變（變成靜音或極小片段）。確保所有參照都已清掉再覆蓋</li>
+    <li>覆蓋前備份 <code>collection.media</code>，以防誤操作</li>
+    <li>這個方法是清理超過 100MB 大檔案的唯一途徑</li>
+  </ul>
+
+  <h3>14.8 更好的做法：從源頭避免</h3>
+  <div class="tip">
+    最省事的做法是從一開始就<b>把每個媒體檔案壓到 100MB 以下</b>。用第 7 節的 ffmpeg 參數，30 分鐘一集通常能壓到 30-50MB。這樣永遠不會遇到 100MB 問題，清理時直接用第 13 節的方法即可。
+  </div>
+</section>
+
+<section id="s15">
+  <h2>15. 完整操作流程總表</h2>
+
+  <h3>15.1 首次匯入</h3>
+  <ol>
+    <li>用 ffmpeg 把媒體壓縮：MP4 給 iPhone，WebM 給 Windows</li>
+    <li>按命名規範重新命名檔案（有季/無季兩種格式）</li>
+    <li>把媒體放進桌面 Anki 的 <code>collection.media</code></li>
+    <li>在媒體包 deck 的 <code>sound</code> 欄位裡寫好所有 <code>[sound:]</code> 參照</li>
+    <li>匯出 apkg，勾選「包含媒體檔案」</li>
+    <li>傳到 iPhone（iTunes 檔案共享 / 網路硬碟 / AirDrop / 隨身碟）</li>
+    <li>用 AnkiMobile 匯入</li>
+    <li>驗證媒體能播放且能精準定位</li>
+  </ol>
+
+  <h3>15.2 更新媒體</h3>
+  <ol>
+    <li>桌面側產生新媒體，保持檔名不變</li>
+    <li>覆蓋 <code>collection.media</code> 裡的舊檔案</li>
+    <li>重新匯出 apkg</li>
+    <li>傳到 iPhone</li>
+    <li><b>先刪除 iPhone 上的舊 deck</b></li>
+    <li>匯入新的 apkg</li>
+  </ol>
+
+  <h3>15.3 增加新媒體</h3>
+  <ol>
+    <li>新檔案按命名規範命名</li>
+    <li>放進 <code>collection.media</code></li>
+    <li><code>sound</code> 欄位追加一行 <code>[sound:]</code></li>
+    <li>重新匯出 apkg</li>
+    <li>刪除 iPhone 上的舊 deck</li>
+    <li>匯入新的 apkg</li>
+  </ol>
+
+  <h3>15.4 刪除指定媒體</h3>
+  <ol>
+    <li>從 <code>sound</code> 欄位刪掉對應的 <code>[sound:]</code> 行</li>
+    <li>確認沒有其他卡片還在參照</li>
+    <li>重新匯出 apkg</li>
+    <li>刪除 iPhone 上的舊 deck</li>
+    <li>匯入新的 apkg</li>
+    <li>執行「檢查媒體」 → 刪除未使用檔案</li>
+  </ol>
+
+  <h3>15.5 清理大檔案（> 100MB）</h3>
+  <ol>
+    <li>確認卡片已不再參照該檔案</li>
+    <li>準備同名小檔案（< 100MB）</li>
+    <li>覆蓋 <code>collection.media</code> 裡的原檔案</li>
+    <li>重新匯出 apkg</li>
+    <li>刪除 iPhone 上的舊 deck</li>
+    <li>匯入新的 apkg</li>
+    <li>執行「檢查媒體」 → 刪除未使用檔案</li>
+  </ol>
+</section>
+
+<section id="s16">
+  <h2>16. 常見問題</h2>
+
+  <div class="qa">
+    <div class="q">Q1：匯入 apkg 後，deck 裡還是舊內容</div>
+    <div class="a">
+      因為 iPhone 上已存在同名 deck，AnkiMobile 跳過了匯入。先在 iPhone 上刪除舊 deck，再匯入。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：apkg 匯出後體積很小，媒體沒被包含</div>
+    <div class="a">
+      檢查 <code>[sound:]</code> 參照的檔名是否和實際檔名完全一致（包括副檔名和大小寫）。Anki 只打包能被卡片參照的媒體。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：Windows 上影片播不了</div>
+    <div class="a">
+      Windows 版 Anki 只支援 WebM。用 ffmpeg 把 MP4 轉成 WebM：
+      <pre>ffmpeg -i input.mp4 -vf "scale=-2:270" -c:v libvpx-vp9 -crf 35 -b:v 0 -c:a libopus -b:a 64k -ac 1 output.webm</pre>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：iPhone 上媒體播放正常，但進度條亂跳</div>
+    <div class="a">
+      檔案不是「可定位」的。用 ffmpeg 重新轉，<b>必須加 <code>-movflags +faststart</code></b>，影片用 main profile，音訊用 CBR MP3 或 M4A。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：刪了 <code>[sound:]</code> 參照，但檢查媒體找不到該檔案</div>
+    <div class="a">
+      可能原因：<br>
+      1. 還有其他卡片在參照該檔案。用 Anki 搜尋功能搜檔名確認<br>
+      2. 重新匯入 apkg 時沒成功<br>
+      3. 該檔案大於 100MB，不參與「未使用」判定，需要用第 14 節的方法
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：刪了卡片，但媒體檔案還在佔空間</div>
+    <div class="a">
+      刪卡片不會自動刪媒體。需要在 <code>sound</code> 欄位裡也刪掉參照，然後重新匯入並執行檢查媒體。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：超過 100MB 的檔案，檢查媒體裡找不到</div>
+    <div class="a">
+      這是 Anki 的設計：超過 100MB 的檔案被單獨歸類，不參與「未使用」判定。用同名小檔案覆蓋法處理（第 14 節）。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：能不能用 AnkiWeb 同步媒體？</div>
+    <div class="a">
+      不能。原因：<br>
+      1. 幾十 G 的流量不可能<br>
+      2. 單檔超過 100MB 無法同步<br>
+      3. AnkiWeb 免費帳戶有容量限制<br>
+      所以媒體只能透過 apkg 離線傳輸。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：正式卡片的參照和媒體包的 [sound:] 會不會衝突</div>
+    <div class="a">
+      不會。媒體包只是一個「傳輸載體」，正式卡片的參照指向同一批檔案。檔案在 iPhone 上就位後，正式卡片就能找到。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：檔名大小寫在 Windows 和 iPhone 上不一致</div>
+    <div class="a">
+      Windows 檔案系統不分大小寫，iOS 分。為避免問題：<br>
+      1. 檔名全小寫<br>
+      2. <code>[sound:]</code> 參照也用全小寫<br>
+      3. 不要在 Windows 上命名成 <code>File.mp4</code>，再在參照裡寫成 <code>file.mp4</code>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：媒體包 deck 裡的卡片會不會在複習時出現</div>
+    <div class="a">
+      如果媒體包 deck 有學習計畫，可能會出現。處理方法：<br>
+      1. 把媒體包 deck 的學習選項設為「暫停」<br>
+      2. 或者把媒體包 deck 從複習計畫中排除<br>
+      3. 或者把媒體包 deck 裡的卡片設定成「已暫停」
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12：ffmpeg 轉換後影片變糊了</div>
+    <div class="a">
+      調整參數：<br>
+      1. <code>-crf</code> 降低（如 24），畫質提升，體積增大<br>
+      2. <code>scale=-2:360</code> 高度提到 360，解析度提升<br>
+      3. <code>-preset</code> 改為 slow，編碼更精細<br>
+      語言學習場景下，只要字幕能看清就夠了。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13：多個季一起打包成一個 apkg 可以嗎</div>
+    <div class="a">
+      可以，但建議分開。原因：<br>
+      1. 單個 apkg 太大會導致傳輸慢、匯入慢<br>
+      2. 更新某一季時要重新傳整個大包<br>
+      3. 清理時粒度太粗<br>
+      每季一個 apkg 最靈活。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14：能不能不用 apkg，直接複製檔案到 iPhone</div>
+    <div class="a">
+      不能。iOS 沙箱機制下，AnkiMobile 的 <code>collection.media</code> 不暴露在檔案 App 裡。唯一可靠的傳輸方式是 apkg。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q15：iTunes 檔案共享裡看不到 AnkiMobile</div>
+    <div class="a">
+      確認：<br>
+      1. iPhone 上已安裝 AnkiMobile<br>
+      2. iPhone 已解鎖並信任此電腦<br>
+      3. iTunes 已識別到裝置<br>
+      4. AnkiMobile 開啟了檔案共享（AnkiMobile 預設開啟）
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q16：為什麼每次更新都要刪 deck 再匯入</div>
+    <div class="a">
+      這是 AnkiMobile 的匯入策略。AnkiWeb 的同步是增量的（按修改時間比較），但 apkg 匯入不是增量，而是「批次新增」。同名筆記被跳過，所以只能先刪除再匯入。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q17：網路硬碟下載的 apkg 用 AnkiMobile 打不開</div>
+    <div class="a">
+      可能原因：<br>
+      1. 網路硬碟 App 沒提供「用其他應用程式開啟」的選項，先存到「檔案」App 再點擊<br>
+      2. apkg 下載不完整，重新下載<br>
+      3. AnkiMobile 版本太舊，升級到最新版
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q18：轉影片時一定要指定寬度嗎</div>
+    <div class="a">
+      不需要。用 <code>scale=-2:270</code>，高度固定 270，寬度自動計算，保持長寬比。<code>-2</code> 保證寬度是偶數。這樣不管原始影片是 16:9、4:3 還是其他比例，ffmpeg 都會自動算出合適的寬度。
+    </div>
+  </div>
+</section>
+
+<footer>
+  Anki iPhone 媒體檔案操作說明書 · 版本 1.2
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki iPhone メディアファイル操作マニュアル</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #2b6cb0; --accent-soft: #ebf3fb; --border: #dde2e8;
+    --code-bg: #f0f2f5; --warn-bg: #fff8e6; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+    --danger-bg: #fff0f0; --danger-border: #d04040;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .danger { background: var(--danger-bg); border-left: 4px solid var(--danger-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki iPhone メディアファイル操作マニュアル</h1>
+  <div class="meta">バージョン 1.2 &nbsp;|&nbsp; 圧縮・命名・パッケージ・転送・インポート・更新・クリーンアップの全手順</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">このマニュアルが解決する課題</a></li>
+    <li><a href="#s2">3 プラットフォームの本質的な違い</a></li>
+    <li><a href="#s3">Windows の動画フォーマット制限</a></li>
+    <li><a href="#s4">中核機構：[sound:] の役割</a></li>
+    <li><a href="#s5">メディアパック deck の構造</a></li>
+    <li><a href="#s6">ファイル命名規則</a></li>
+    <li><a href="#s7">ffmpeg による圧縮と変換</a></li>
+    <li><a href="#s8">メディアは正確にシーク可能であること</a></li>
+    <li><a href="#s9">apkg にパッケージする</a></li>
+    <li><a href="#s10">iPhone へ転送</a></li>
+    <li><a href="#s11">インポート：先に旧 deck を削除</a></li>
+    <li><a href="#s12">メディアの更新</a></li>
+    <li><a href="#s13">特定のメディアファイルを削除</a></li>
+    <li><a href="#s14">100MB 超の大ファイルをクリーンアップ</a></li>
+    <li><a href="#s15">操作フロー総まとめ</a></li>
+    <li><a href="#s16">よくある質問</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. このマニュアルが解決する課題</h2>
+  <p>Anki のメディアファイルは、iPhone 上ではデスクトップや Android とまったく異なる扱いになります。デスクトップと Android ではファイルマネージャで直接メディアフォルダを操作できますが、iPhone ではできません。iOS のサンドボックス機構により、AnkiMobile のメディアライブラリはユーザーに完全に閉じられています。</p>
+  <p>その結果、いくつかの現実的な問題が生じます：</p>
+  <ol>
+    <li><b>数十 GB のメディアを iPhone にどう入れるか？</b> AnkiWeb 同期は不可能です。唯一現実的な方法は apkg によるオフラインパッケージで、iTunes ファイル共有またはクラウド経由で転送します。</li>
+    <li><b>Windows で動画をどう再生するか？</b> Windows 版 Anki は WebM のみ対応で MP4 は非対応です。同じ動画を 2 種類用意する必要があります：iPhone 用 MP4、Windows 用 WebM。</li>
+    <li><b>iPhone 上でメディアを正確にシークさせるには？</b> すべての動画フォーマットがシークに対応しているわけではありません。条件を満たさないファイルは iPhone で再生はできても、プログレスバーがおかしくなります。</li>
+    <li><b>すでにインポートしたメディアをどう削除するか？</b> Anki の「メディアをチェック」は未使用メディアをクリーンアップできますが、<code>[sound:]</code> 参照がなくなっている必要があり、かつ 100MB 未満である必要があります。</li>
+    <li><b>apkg のインポートがいつも失敗するのはなぜ？</b> iPhone 上に同名 deck が既に存在し、AnkiMobile は上書きしないためです。旧 deck を削除してからインポートする必要があります。</li>
+  </ol>
+  <p>このマニュアルでは、これらの問題に対する完全で実行可能な手順を示します。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 3 プラットフォームの本質的な違い</h2>
+
+  <h3>2.1 比較表</h3>
+  <table>
+    <thead>
+      <tr><th>プラットフォーム</th><th>メディアファイルへのアクセス</th><th>動画フォーマット</th><th>メディアパック必要？</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Windows</td><td><code>collection.media</code> フォルダを直接開ける。追加・削除・置換自由</td><td><b>WebM のみ</b></td><td>不要</td></tr>
+      <tr><td>macOS</td><td><code>collection.media</code> フォルダを直接開ける</td><td>MP4 / WebM</td><td>不要</td></tr>
+      <tr><td>Android</td><td>AnkiDroid のメディアフォルダに直接アクセス</td><td>MP4</td><td>不要</td></tr>
+      <tr><td>iPhone / iPad</td><td>サンドボックス化され、ファイルシステムにアクセス不可</td><td>MP4</td><td><b>必須</b></td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 デスクトップと Android の通常手順</h3>
+  <ul>
+    <li>メディアファイルを <code>collection.media</code> に直接コピー</li>
+    <li>カード内の <code>[sound:]</code> 参照が自動的にファイルを見つける</li>
+    <li>削除はそのままファイルを削除</li>
+    <li>置換はそのままファイルを上書き</li>
+    <li>メディアをチェックが正常動作</li>
+  </ul>
+
+  <h3>2.3 iPhone の困難</h3>
+  <div class="danger">
+    <b>本マニュアルは iPhone / iPad を対象としています。</b>デスクトップと Android ユーザーはメディアフォルダを直接操作できます。Windows の WebM 制限にだけ注意してください。
+  </div>
+  <p>iPhone のサンドボックス機構による影響：</p>
+  <ul>
+    <li>ファイルシステムにアクセス不可 → 手動でコピー・削除・置換できない</li>
+    <li>メディア転送路は apkg のみ → メディアをパッケージしないと端末に入らない</li>
+    <li><code>[sound:]</code> が Anki にファイルをパッケージさせる唯一の手段</li>
+    <li>メディア削除は「メディアをチェック」に依存し、<code>[sound:]</code> 参照の削除でトリガーされる</li>
+    <li>apkg インポート前に同名 deck を削除しないと、インポートがスキップされる</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. Windows の動画フォーマット制限</h2>
+
+  <div class="danger">
+    <b>Windows 版 Anki は WebM 動画のみ対応、MP4 は非対応です。</b>これは Windows 版 Anki の再生エンジンの制限で、iPhone とは無関係です。
+  </div>
+
+  <h3>3.1 この制限の理由</h3>
+  <p>Windows 上の Anki は QtWebEngine（Chromium ベース）を使用しています。Chromium は Windows では H.264 デコーダを標準搭載していないため（特許ライセンスの問題）、MP4 は再生できません。WebM は VP8/VP9 を使用し、オープンで無料のため対応しています。</p>
+
+  <h3>3.2 ワークフローへの影響</h3>
+  <p>同じ動画に対して 2 バージョンが必要です：</p>
+  <table>
+    <thead>
+      <tr><th>プラットフォーム</th><th>動画フォーマット</th><th>コーデック</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iPhone / iPad / Android / macOS</td><td>MP4</td><td>H.264 + AAC</td></tr>
+      <tr><td>Windows</td><td>WebM</td><td>VP8/VP9 + Vorbis/Opus</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.3 メディアパック deck の分割</h3>
+  <p>これがメディアパックをフォーマット別にグループ化する理由です。Seinfeld の例：</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/     (iPhone / Android / macOS 用)
+│   ├── Seinfeld S01 Mp4
+│   ├── Seinfeld S02 Mp4
+│   └── ...
+└── WEBM Seinfeld/    (Windows 用)
+    ├── Seinfeld S01 Webm
+    ├── Seinfeld S02 Webm
+    └── ...</pre>
+  <p>2 つの deck は独立して準備し、それぞれ apkg にエクスポートして対応プラットフォームへ転送します。</p>
+
+  <h3>3.4 オーディオは影響を受けない</h3>
+  <p>オーディオは Windows でも制限が少なく、MP3 も M4A も再生できます。そのため MP3 シリーズは 1 部だけで済みます。</p>
+</section>
+
+<section id="s4">
+  <h2>4. 中核機構：[sound:] の役割</h2>
+
+  <h3>4.1 よくある誤解</h3>
+  <p>多くの人は <code>[sound:]</code> を再生制御のためだと思っています。メディア転送の文脈では、その真の目的は：</p>
+  <p><b>Anki が apkg をエクスポートする際に対応するメディアファイルをパッケージに含めるようにすることです。</b></p>
+
+  <h3>4.2 必須である理由</h3>
+  <p>Anki は apkg をエクスポートする際、カード内のすべての <code>[sound:]</code> と <code>&lt;img&gt;</code> 参照をスキャンし、それらが指すメディアファイルを収集してパッケージ化します。参照されていないファイルは、Anki がこの deck に属していると認識できないため、パッケージに含まれません。</p>
+  <p>数十 GB のメディアでは特に重要です：</p>
+  <ul>
+    <li>AnkiWeb 同期は不可能（帯域、1 ファイル 100MB 制限）</li>
+    <li>apkg が唯一信頼できる一括オフライン転送手段</li>
+    <li>そして apkg は <code>[sound:]</code> 経由でしかメディアを宣言できない</li>
+  </ul>
+
+  <h3>4.3 [sound:] の 3 つの役割</h3>
+  <table>
+    <thead>
+      <tr><th>役割</th><th>説明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>転送宣言</td><td>これらのファイルを apkg に含めるよう Anki に指示</td></tr>
+      <tr><td>クリーンアップスイッチ</td><td><code>[sound:]</code> を削除して再インポートすると、そのファイルは「未使用」になり、「メディアをチェック」で削除可能になる</td></tr>
+      <tr><td>上書きトリガー</td><td>同名ファイルを上書きする場合、Anki は <code>[sound:]</code> で参照されるファイルのみ認識する</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 [sound:] は再生制御を担当しない</h3>
+  <p>再生制御は実際にはカードテンプレートの JavaScript が担当します（VlsPlayer Series / Notes マニュアル参照）。ここでの <code>[sound:]</code> は単なる「ファイルリスト」です。</p>
+</section>
+
+<section id="s5">
+  <h2>5. メディアパック deck の構造</h2>
+
+  <h3>5.1 設計原則</h3>
+  <ul>
+    <li><b>シリーズごとに 1 deck</b>：個別にエクスポート・転送・クリーンアップしやすい</li>
+    <li><b>シーズンごとに 1 カード</b>：シーズン番号があるシリーズはシーズンごとにカード</li>
+    <li><b>シーズン番号がないシリーズは 1 カードで全体を表現</b></li>
+    <li><b>フォーマット別にグループ化</b>：MP3 / MP4 / WEBM を分離し、プラットフォーム別に使いやすく</li>
+    <li><b>deck 名とフィールド名は純英語</b>：Unicode パスの問題を避ける</li>
+  </ul>
+
+  <h3>5.2 推奨構造（シーズンあり）</h3>
+  <p>Seinfeld の例：</p>
+  <pre>0. Resources/
+├── MP4 Seinfeld/
+│   ├── Seinfeld S01 Mp4   (カード1、sound フィールドに S01 の全エピソード)
+│   ├── Seinfeld S02 Mp4   (カード2、sound フィールドに S02 の全エピソード)
+│   ├── Seinfeld S03 Mp4
+│   ├── ...
+│   └── Seinfeld S09 Mp4
+└── WEBM Seinfeld/
+    ├── Seinfeld S01 Webm
+    └── ...</pre>
+
+  <h3>5.3 推奨構造（シーズンなし）</h3>
+  <p>Atomic Habits の例：</p>
+  <pre>0. Resources/
+├── MP3 Atomic Habits      (1 deck、1 カード)
+├── MP3 CWE                (1 deck、1 カード)
+├── MP4 DDM
+└── MP4 Friends</pre>
+
+  <h3>5.4 カードフィールド</h3>
+  <p>各ノートには 2 つのフィールドがあります：</p>
+  <table>
+    <thead>
+      <tr><th>フィールド</th><th>内容</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Front</td><td>識別子としての 1 行のプレーンテキスト、例 <code>Seinfeld S02 Mp4</code></td></tr>
+      <tr><td>sound</td><td>1 行に 1 つの <code>[sound:xxx]</code>、このカードの全メディアを列挙</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 sound フィールドの例</h3>
+  <p>シーズンあり（Seinfeld S02）：</p>
+  <pre>[sound:sf_s02e01.mp4]
+[sound:sf_s02e02.mp4]
+[sound:sf_s02e03.mp4]
+...
+[sound:sf_s02e12.mp4]</pre>
+
+  <p>シーズンなし（CWE）：</p>
+  <pre>[sound:cwe_01.mp4]
+[sound:cwe_02.mp4]
+[sound:cwe_03.mp4]
+...</pre>
+
+  <div class="tip">
+    各 <code>[sound:]</code> は 1 行ずつ記述してください。読みやすく、編集しやすいです。1 行にまとめないでください。後で保守しにくくなります。
+  </div>
+
+  <h3>5.6 なぜシーズンごとに 1 カードか</h3>
+  <table>
+    <thead>
+      <tr><th>利点</th><th>説明</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>サイズ管理</td><td>1 シーズンの apkg は大きすぎず、転送が安定</td></tr>
+      <tr><td>独立更新</td><td>あるシーズンの更新はそのカードのみ再エクスポート</td></tr>
+      <tr><td>独立クリーンアップ</td><td>シーズン単位でクリーンアップでき粒度が明確</td></tr>
+      <tr><td>命名が明快</td><td>Front フィールドでシーズンが一目で分かる</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s6">
+  <h2>6. ファイル命名規則</h2>
+
+  <h3>6.1 2 つの命名パターン</h3>
+  <p>内容にシーズン番号があるかどうかで分かれます：</p>
+
+  <h4>シーズンなし</h4>
+  <pre>接頭辞_エピソード番号.拡張子</pre>
+  <p>例：</p>
+  <pre>cwe_01.mp4
+cwe_02.mp4
+atomic_habits_00.mp3
+atomic_habits_01.mp3</pre>
+
+  <h4>シーズンあり</h4>
+  <pre>接頭辞_sシーズンeエピソード.拡張子</pre>
+  <p>例：</p>
+  <pre>sf_s02e01.mp4
+sf_s02e02.mp4
+sf_s02e12.mp4</pre>
+
+  <h3>6.2 規則</h3>
+  <table>
+    <thead>
+      <tr><th>項目</th><th>規則</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>接頭辞</td><td>シリーズ略号、2〜4 文字の小文字、例 <code>sf</code>、<code>cwe</code>、<code>ah</code></td></tr>
+      <tr><td>区切り</td><td>アンダースコア <code>_</code></td></tr>
+      <tr><td>シーズン</td><td><code>s</code> + 2 桁ゼロ埋め、例 <code>s01</code>、<code>s02</code>（シーズンありのみ）</td></tr>
+      <tr><td>エピソード</td><td><code>e</code> + 2 桁ゼロ埋め、例 <code>e01</code>、<code>e12</code>（シーズンありのみ）</td></tr>
+      <tr><td>エピソード（シーズンなし）</td><td>2 桁または 3 桁ゼロ埋め、例 <code>01</code>、<code>001</code></td></tr>
+      <tr><td>拡張子</td><td>統一。シリーズ内で混在させない</td></tr>
+      <tr><td>禁止</td><td>中国語、スペース、大文字、特殊文字</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 桁数の決め方</h3>
+  <ul>
+    <li>100 話未満 → 2 桁（<code>01</code> ~ <code>99</code>）</li>
+    <li>100 話以上 → 3 桁（<code>001</code> ~ <code>999</code>）</li>
+    <li><b>桁数は必ず統一</b>。統一しないと並び順が崩れます：<code>_9.mp4</code> は <code>_10.mp4</code> の後に並びます</li>
+  </ul>
+
+  <h3>6.4 同一シリーズで複数フォーマット</h3>
+  <pre>sf_s02e01.mp4   (iPhone / Android / macOS)
+sf_s02e01.webm  (Windows 用)
+sf_s02e01.mp3   (オーディオ)</pre>
+  <p>ファイル名は同じで拡張子だけ異なります。カード内の参照構造は一貫しているため、プラットフォーム別に拡張子を差し替えるだけで済みます。</p>
+
+  <h3>6.5 VlsPlayer Series カードとの整合性</h3>
+  <p>この命名規則は Series カードの Timeline フィールドの連結規則と<b>必ず一致</b>させる必要があります。Series カードのコードでは：</p>
+  <pre>ファイル名 = 接頭辞 + "_" + (シーズン == "" ? エピソード : "s" + シーズン + "e" + エピソード) + 拡張子</pre>
+  <ul>
+    <li>シーズンなし → <code>cwe_01.mp4</code></li>
+    <li>シーズンあり → <code>sf_s02e01.mp4</code></li>
+  </ul>
+  <div class="danger">
+    メディアパック deck の <code>[sound:]</code> 参照、Series カードの Timeline フィールド、実際のファイル名は完全一致している必要があります。そうでないとカードがファイルを見つけられません。
+  </div>
+
+  <h3>6.6 [sound:] 参照の一括生成</h3>
+  <p>シーズンあり（Bash、1 シーズン 12 話の場合）：</p>
+  <pre>for i in $(seq -w 1 12); do echo "[sound:sf_s02e${i}.mp4]"; done</pre>
+
+  <p>シーズンなし：</p>
+  <pre>for i in $(seq -w 1 30); do echo "[sound:cwe_${i}.mp4]"; done</pre>
+
+  <p>出力をそのまま <code>sound</code> フィールドに貼り付けてください。</p>
+</section>
+
+<section id="s7">
+  <h2>7. ffmpeg による圧縮と変換</h2>
+
+  <h3>7.1 圧縮が必要な理由</h3>
+  <ul>
+    <li>元動画は数十 GB になることが多く、iPhone には収まらない</li>
+    <li>Anki は 1 ファイル 100MB の処理制限がある</li>
+    <li>AnkiMobile は大きいファイルの読み込みで動作が重くなる</li>
+    <li>語学学習には字幕と口の動きが見えれば十分。画質の細部は不要</li>
+  </ul>
+
+  <h3>7.2 動画圧縮：高さのみ指定すればよい</h3>
+  <p><b>幅を指定する必要はありません</b>。<code>-2</code> を使って ffmpeg に自動計算させます：</p>
+
+  <h4>MP4（iPhone / Android / macOS）</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.mp4</pre>
+
+  <h4>WebM（Windows 用）</h4>
+  <pre>ffmpeg -i input.mkv \
+  -vf "scale=-2:270" \
+  -c:v libvpx-vp9 -crf 35 -b:v 0 \
+  -c:a libopus -b:a 64k -ac 1 \
+  output.webm</pre>
+
+  <p><code>scale=-2:270</code> の意味：</p>
+  <ul>
+    <li>高さを 270 に固定</li>
+    <li>幅は自動計算され、アスペクト比を保持</li>
+    <li><code>-2</code> は幅が偶数になることを保証（エンコーダの要件）</li>
+  </ul>
+  <p>270 は iPhone にもデスクトップにも十分で、字幕と口の形がはっきり見えます。幅は ffmpeg に任せましょう。元が 16:9 か 4:3 かを気にする必要はありません。</p>
+
+  <h3>7.3 オーディオ圧縮</h3>
+  <p>推奨は M4A：</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a aac -b:a 64k -ac 1 \
+  -movflags +faststart \
+  output.m4a</pre>
+
+  <p>どうしても MP3 を使う場合は CBR（固定ビットレート）で：</p>
+  <pre>ffmpeg -i input.wav \
+  -c:a libmp3lame -b:a 64k -ac 1 \
+  output.mp3</pre>
+
+  <div class="note">
+    <code>-q:a</code> を付けないでください。VBR（可変ビットレート）になり、Xing ヘッダがない VBR MP3 は iPhone でシークが不正確になります。
+  </div>
+
+  <h3>7.4 主要パラメータ</h3>
+  <table>
+    <thead>
+      <tr><th>パラメータ</th><th>効果</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>scale=-2:270</code></td><td>高さ 270 固定、幅は偶数で自動</td></tr>
+      <tr><td><code>-profile:v main</code></td><td>H.264 main profile、iOS 互換</td></tr>
+      <tr><td><code>-level 3.0</code></td><td>互換性の余裕</td></tr>
+      <tr><td><code>-crf 28</code></td><td>画質/サイズのバランス点。これより大きいとぼやける</td></tr>
+      <tr><td><code>-b:a 64k -ac 1</code></td><td>モノラル、64 kbps</td></tr>
+      <tr><td><code>-movflags +faststart</code></td><td><b>MP4 専用。moov を先頭に移動。iPhone での正確なシークに必須。</b></td></tr>
+    </tbody>
+  </table>
+  <p>WebM には <code>-movflags +faststart</code> は不要です（MP4 専用）。</p>
+
+  <h3>7.5 まだ大きい場合</h3>
+  <p>さらなる圧縮：</p>
+  <ul>
+    <li><code>-crf 32</code> — 画質を 1 段下げる</li>
+    <li><code>scale=-2:180</code> — 高さを 180 に</li>
+    <li><code>-r 20</code> — フレームレートを 20 fps に</li>
+    <li><code>-b:a 48k</code> — オーディオを 48 kbps に</li>
+  </ul>
+
+  <h3>7.6 バッチ変換スクリプト</h3>
+  <p>Windows バッチ（同じフォルダの全 mkv を mp4 に）：</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libx264 -profile:v main -level 3.0 -preset fast -crf 28 ^
+    -c:a aac -b:a 64k -ac 1 ^
+    -movflags +faststart "%%~nf.mp4"
+)</pre>
+
+  <p>同じフォルダで webm に：</p>
+  <pre>for %%f in (*.mkv) do (
+  ffmpeg -i "%%f" -vf "scale=-2:270" ^
+    -c:v libvpx-vp9 -crf 35 -b:v 0 ^
+    -c:a libopus -b:a 64k -ac 1 ^
+    "%%~nf.webm"
+)</pre>
+</section>
+
+<section id="s8">
+  <h2>8. メディアは正確にシーク可能であること</h2>
+
+  <h3>8.1 「シーク可能」とは</h3>
+  <p>シークとは、プレイヤーがファイル内の任意の時点にジャンプして再生できることです。iPhone 上の AVFoundation のシーク対応は、<b>コンテナフォーマット</b>と<b>メタデータ構造</b>に依存します。</p>
+  <p>シーク不可能なファイルでは：</p>
+  <ul>
+    <li>再生はできるが、プログレスバーが不正確</li>
+    <li>中間へのジャンプでスタック、または先頭に戻る</li>
+    <li>複数の <code>[sound:]</code> を連続再生すると 2 つ目の開始位置がずれる</li>
+    <li>ループの開始位置がずれる</li>
+  </ul>
+
+  <h3>8.2 フォーマット別のシーク条件</h3>
+  <table>
+    <thead>
+      <tr><th>フォーマット</th><th>シーク条件</th><th>満たさない場合</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>MP4 / M4A</td><td>moov atom がファイル先頭</td><td>ファイル全体を読まないとシークできない。大きいファイルでは事実上不可能</td></tr>
+      <tr><td>WebM</td><td>iOS AVFoundation の対応不完全</td><td>iPhone でシーク不可、Windows では問題なし</td></tr>
+      <tr><td>MP3 (VBR)</td><td>Xing/Info ヘッダが必要</td><td>シーク位置が不正確</td></tr>
+      <tr><td>MP3 (CBR)</td><td>本来シーク可能</td><td>—</td></tr>
+      <tr><td>OGG / Opus</td><td>iOS 非対応</td><td>再生不可</td></tr>
+      <tr><td>AVI / MKV / WMV / FLV</td><td>iOS 非対応</td><td>再生不可</td></tr>
+      <tr><td>H.264 + AAC in MP4</td><td>最も安定</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 シーク可能にする 4 つの原則</h3>
+  <ol>
+    <li>iPhone：動画は MP4（H.264 + AAC）、音声は M4A または CBR MP3</li>
+    <li><code>-movflags +faststart</code> で moov を先頭に。ないと大きいファイルはシーク不可</li>
+    <li>動画 profile は新しすぎないこと。baseline / main が最安定</li>
+    <li>オーディオのサンプルレートは 44.1 kHz または 48 kHz に統一</li>
+  </ol>
+
+  <h3>8.4 検証方法</h3>
+  <p>ffprobe で moov の位置を確認：</p>
+  <pre>ffprobe -v trace -i output.mp4 2>&1 | grep -E "type:'moov'|type:'mdat'"</pre>
+  <p>moov が mdat より先に来れば faststart 処理済みです。</p>
+
+  <h3>8.5 ひとことまとめ</h3>
+  <div class="tip">
+    iPhone：動画は H.264 main profile + AAC の MP4 で<b>必ず <code>-movflags +faststart</code> を付ける</b>。Windows：動画は VP9/VP8 + Opus/Vorbis の WebM。音声はすべて AAC M4A、または CBR MP3。
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. apkg にパッケージする</h2>
+
+  <h3>9.1 デスクトップ側の準備</h3>
+  <ol>
+    <li>変換済みのメディアファイルを <code>collection.media</code> に配置</li>
+    <li>メディアパック deck（例 <code>MP4 Seinfeld</code>）を開く</li>
+    <li><code>sound</code> フィールドの <code>[sound:]</code> 参照が実ファイルと一致しているか確認</li>
+    <li>Anki の「メディアをチェック」で全参照が解決できるか確認</li>
+  </ol>
+
+  <h3>9.2 エクスポート</h3>
+  <ol>
+    <li>deck 一覧で対象 deck を右クリック → エクスポート</li>
+    <li>「Anki デッキパッケージ（.apkg）」を選択</li>
+    <li>「メディアを含める」にチェック</li>
+    <li>保存先を選択</li>
+  </ol>
+
+  <div class="note">
+    あるシリーズやシーズンだけをエクスポートしたい場合は、その deck だけを選択してください。「すべてのデッキ」は選ばないでください。シーズン単位でエクスポートすると、転送とインポートがより確実です。
+  </div>
+
+  <h3>9.3 パッケージの検証</h3>
+  <ul>
+    <li>apkg サイズがメディアファイル合計に近いこと</li>
+    <li>apkg が明らかに小さい場合はメディアが含まれていない。<code>[sound:]</code> 参照を確認</li>
+    <li>7-Zip で apkg を開いて（実際は zip）<code>collection.media</code> にファイルがあるか確認</li>
+  </ul>
+</section>
+
+<section id="s10">
+  <h2>10. iPhone へ転送</h2>
+
+  <div class="tip">
+    <b>転送するのは apkg ファイルそのものです。同期メディアではありません。</b>メディアは apkg にパッケージされ、一括で iPhone に転送されます。AnkiWeb を経由しません。
+  </div>
+
+  <h3>10.1 3 つの方法</h3>
+  <table>
+    <thead>
+      <tr><th>方法</th><th>適した場面</th><th>利点</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>iTunes / Finder ファイル共有</td><td>Windows / Mac、第一候補</td><td>有線、最も安定、サイズ制限なし</td></tr>
+      <tr><td>クラウドドライブ</td><td>ケーブルがないとき</td><td>アップロード後 iPhone でダウンロード、便利</td></tr>
+      <tr><td>AirDrop</td><td>Mac、中小サイズの apkg</td><td>オフライン可、速い</td></tr>
+      <tr><td>USB ドライブ</td><td>大容量 apkg（&gt; 5GB）</td><td>ネット不要、最も安定</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 iTunes / Finder ファイル共有（第一候補）</h3>
+  <p>最も一般的な方法で、ネットワークに依存せず、apkg のサイズ制限もありません。</p>
+
+  <h4>Windows（iTunes）</h4>
+  <ol>
+    <li>ケーブルで iPhone と PC を接続</li>
+    <li>iTunes を開き、デバイスアイコンをクリック</li>
+    <li>「ファイル共有」へ</li>
+    <li>アプリ一覧で <b>AnkiMobile</b> を選択</li>
+    <li>「ファイルを追加」をクリックし apkg を選択</li>
+    <li>iTunes が apkg を AnkiMobile の Documents へコピー</li>
+    <li>iPhone で AnkiMobile を開くと apkg がインポート一覧に現れる</li>
+  </ol>
+
+  <h4>macOS（Finder）</h4>
+  <ol>
+    <li>ケーブルで iPhone と Mac を接続</li>
+    <li>Finder を開き、サイドバーの iPhone をクリック</li>
+    <li>「ファイル」タブへ</li>
+    <li>アプリ一覧で <b>AnkiMobile</b> を選択</li>
+    <li>apkg をファイルリストにドラッグ</li>
+    <li>iPhone で AnkiMobile を開いてインポート</li>
+  </ol>
+
+  <h3>10.3 クラウドドライブ</h3>
+  <p>よく使われるもの：iCloud Drive、OneDrive、Google Drive、Baidu Netdisk、Nutstore。</p>
+  <ol>
+    <li>PC で apkg をクラウドにアップロード</li>
+    <li>iPhone でクラウドアプリを開き、apkg をダウンロード</li>
+    <li>apkg をタップ → AnkiMobile で開く</li>
+    <li>または「ファイル」アプリに保存してからタップしてインポート</li>
+  </ol>
+  <div class="note">
+    Baidu Netdisk など中国のクラウドでは、「別のアプリで開く」を選んで AnkiMobile を選択する必要があるかもしれません。iOS がファイルを AnkiMobile に引き渡します。
+  </div>
+
+  <h3>10.4 AirDrop（Mac ユーザー）</h3>
+  <ol>
+    <li>Mac で apkg を右クリック → 共有 → AirDrop</li>
+    <li>iPhone を選択</li>
+    <li>iPhone で「受け入れる」をタップ</li>
+    <li>iOS がどのアプリで開くか尋ねるので AnkiMobile を選択</li>
+  </ol>
+
+  <h3>10.5 USB ドライブ（大容量ファイル）</h3>
+  <ol>
+    <li>apkg を USB-C または Lightning の USB ドライブにコピー</li>
+    <li>ドライブを iPhone に接続</li>
+    <li>「ファイル」アプリを開き USB ドライブへ</li>
+    <li>apkg をタップ → AnkiMobile で開く</li>
+  </ol>
+
+  <h3>10.6 転送時間の目安</h3>
+  <table>
+    <thead>
+      <tr><th>apkg サイズ</th><th>iTunes ファイル共有</th><th>クラウド</th><th>AirDrop</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>100 MB</td><td>数秒</td><td>数十秒</td><td>数秒</td></tr>
+      <tr><td>1 GB</td><td>約 30 秒</td><td>数分</td><td>約 1 分</td></tr>
+      <tr><td>10 GB</td><td>約 5 分</td><td>タイムアウトの可能性</td><td>失敗の可能性</td></tr>
+      <tr><td>30 GB+</td><td>約 15 分</td><td>非推奨</td><td>非推奨</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s11">
+  <h2>11. インポート：先に旧 deck を削除</h2>
+
+  <div class="danger">
+    <b>最もよくある落とし穴です。</b>iPhone 上に同名 deck が既にあると、apkg インポートは失敗するかスキップされます。先に旧 deck を削除してください。
+  </div>
+
+  <h3>11.1 なぜ先に削除するのか</h3>
+  <p>AnkiMobile は apkg をインポートする際、同名 deck に対して<b>既存ノートをスキップ</b>する方針で、上書きはしません。つまり：</p>
+  <ul>
+    <li>同名 deck が存在 → 新ノートはインポートされない</li>
+    <li>既存ノートは更新されない</li>
+    <li>メディアファイルも置換されない</li>
+  </ul>
+  <p>結果として、新しい apkg をインポートしても iPhone には古い内容が残ります。</p>
+
+  <h3>11.2 正しいインポート手順</h3>
+  <ol>
+    <li>AnkiMobile で該当する旧 deck を探す</li>
+    <li>deck を長押し → 削除（またはスワイプで削除）</li>
+    <li>削除を確認</li>
+    <li>apkg ファイルをタップ → AnkiMobile で開く</li>
+    <li>deck 名とカード数が表示される確認ダイアログが出る</li>
+    <li>「インポート」をタップして完了を待つ</li>
+  </ol>
+
+  <h3>11.3 deck を削除すると学習進捗が失われる？</h3>
+  <ul>
+    <li>メディアパック deck（1 枚のカード、レビューしない）なら影響なし</li>
+    <li>学習カードがメディアを参照している場合、メディアパック deck の削除は影響しない</li>
+    <li>学習 deck を削除するとスケジュール進捗が失われるので、事前に確認</li>
+  </ul>
+
+  <h3>11.4 一括削除</h3>
+  <p>複数シーズンの deck を更新する場合：</p>
+  <ol>
+    <li>更新対象の deck をまとめて削除</li>
+    <li>新しい apkg を順番にインポート</li>
+  </ol>
+
+  <h3>11.5 成功の確認</h3>
+  <ul>
+    <li>新しくインポートした deck を開きカード数を確認</li>
+    <li>メディアパックカードの <code>sound</code> フィールドで <code>[sound:]</code> が再生可能か確認</li>
+    <li>学習カードを開きメディアを再生、プログレスバーをドラッグしてシーク確認</li>
+  </ul>
+
+  <h3>11.6 インポート後の整理</h3>
+  <p>インポート完了後、転送に使った apkg のコピー（USB ドライブ、クラウド、iTunes 内）を削除して容量を空けられます。</p>
+</section>
+
+<section id="s12">
+  <h2>12. メディアの更新</h2>
+
+  <h3>12.1 更新が必要な場面</h3>
+  <ul>
+    <li>動画の切り出し位置が間違っていたので切り直し</li>
+    <li>圧縮パラメータが不適切だったので圧縮し直し</li>
+    <li>字幕タイムラインが変わりメディアを再生成</li>
+    <li>新しいエピソードを追加</li>
+  </ul>
+
+  <h3>12.2 更新手順</h3>
+  <ol>
+    <li>デスクトップ側で新しいメディアファイルを生成</li>
+    <li><b>ファイル名は変えずに</b>、<code>collection.media</code> の旧ファイルを上書き</li>
+    <li><code>sound</code> フィールドの参照に変更が不要か確認（ファイル名が同じなら不要）</li>
+    <li>「メディアを含める」にチェックして apkg を再エクスポート</li>
+    <li>iPhone へ転送</li>
+    <li><b>先に iPhone 上の旧 deck を削除</b></li>
+    <li>新しい apkg をインポート</li>
+  </ol>
+
+  <div class="danger">
+    メディアは同期しません。更新は「旧 deck 削除 → apkg 再インポート」でのみ行います。1 ファイルだけ同期する、という操作は存在しません。
+  </div>
+
+  <h3>12.3 メディアの追加</h3>
+  <ol>
+    <li>新しいファイルを命名規則に従って命名、例 <code>sf_s02e13.mp4</code></li>
+    <li><code>collection.media</code> に配置</li>
+    <li><code>sound</code> フィールドの末尾に <code>[sound:sf_s02e13.mp4]</code> を追加</li>
+    <li>apkg を再エクスポート</li>
+    <li>iPhone 上の旧 deck を削除</li>
+    <li>新しい apkg をインポート</li>
+  </ol>
+
+  <h3>12.4 ファイル名の変更</h3>
+  <div class="danger">
+    ファイル名変更は高リスクです。iPhone 上に旧ファイルが残留します。必要な場合を除いて避けてください。変更する場合：<br>
+    1. 新しいファイル名を規則に従って命名<br>
+    2. カードの参照も更新<br>
+    3. apkg を再エクスポート<br>
+    4. 旧 deck を削除して再インポート<br>
+    5. 旧ファイルはセクション 13 の方法でクリーンアップ
+  </div>
+</section>
+
+<section id="s13">
+  <h2>13. 特定のメディアファイルを削除</h2>
+
+  <div class="tip">
+    このセクションのテクニックが本マニュアルの中核です：<b><code>[sound:]</code> 参照を削除することで、Anki の「メディアをチェック」をトリガーし、iPhone 上のそのファイルをクリーンアップします。</b>
+  </div>
+
+  <h3>13.1 原理</h3>
+  <p>Anki の「メディアをチェック」はメディアライブラリ全体をスキャンし、<b>どのカードからも参照されていない</b>ファイルを見つけて「未使用ファイル」にリストし、削除を許可します。</p>
+  <p>したがって、以下を行うだけで：</p>
+  <ol>
+    <li>カードフィールドから対応する <code>[sound:xxx.mp4]</code> を削除</li>
+    <li>apkg を再エクスポートして iPhone にインポート（先に旧 deck を削除）</li>
+    <li>AnkiMobile で「メディアをチェック」を実行</li>
+    <li>そのファイルが「未使用ファイル」に現れ、削除できる</li>
+  </ol>
+
+  <h3>13.2 完全な手順</h3>
+
+  <h4>ステップ 1：sound フィールドの参照を削除</h4>
+  <p>デスクトップ Anki でメディアパック deck のカードを開き、<code>sound</code> フィールドから <code>[sound:xxx.mp4]</code> の行を削除します。</p>
+
+  <h4>ステップ 2：他の参照がないことを確認</h4>
+  <p>Anki の検索でコレクション全体を <code>xxx.mp4</code> で検索：</p>
+  <pre>検索ボックス：xxx.mp4</pre>
+  <p>結果がまだある場合、他のカードが使用中なので削除できません。</p>
+
+  <h4>ステップ 3：apkg を再エクスポート</h4>
+  <p>メディアパック deck を再エクスポートします。参照がなくなったので、Anki はそのファイルを含めません。</p>
+
+  <h4>ステップ 4：iPhone へ転送</h4>
+  <p>iTunes ファイル共有 / クラウド / AirDrop / USB で転送。</p>
+
+  <h4>ステップ 5：iPhone 上の旧 deck を削除</h4>
+  <p>AnkiMobile で対応する旧 deck を見つけて削除。</p>
+
+  <h4>ステップ 6：新しい apkg をインポート</h4>
+  <p>新しい apkg をタップして AnkiMobile でインポート。</p>
+
+  <h4>ステップ 7：「メディアをチェック」を実行</h4>
+  <p>AnkiMobile（またはデスクトップ Anki）で「メディアをチェック」を実行。参照のないファイルは「未使用ファイル」に表示されます。</p>
+
+  <h4>ステップ 8：未使用ファイルを削除</h4>
+  <p>確認して削除。容量が解放されます。</p>
+
+  <h3>13.3 なぜこれが機能するか</h3>
+  <p>AnkiMobile の「メディアをチェック」はローカルのメディアライブラリをカード参照と照合し、孤立ファイルを見つけます。ファイルが参照されなくなれば、サイズに関係なく「未使用」として扱われます。</p>
+
+  <h3>13.4 注意事項</h3>
+  <ul>
+    <li><b>ファイルが 100MB 未満であることが前提です。</b>100MB 超のファイルは「未使用」判定に参加しません。セクション 14 参照</li>
+    <li>参照を削除した後、カードでそのメディアを再生すると「メディアが見つかりません」と表示されますが、これは想定内です</li>
+    <li>欠落警告を避けたい場合は、カードも削除するかクリーンアップしてください</li>
+    <li>作業前に apkg をバックアップしてください</li>
+    <li>iPhone の「メディアをチェック」でファイルが見つからない場合、インポートが失敗した可能性があります。再インポートしてください</li>
+  </ul>
+
+  <h3>13.5 複数メディアの一括削除</h3>
+  <p>複数のファイルをクリーンアップする場合、対応する <code>[sound:]</code> 行を一度にすべて削除し、apkg を再エクスポートしてインポート後、「メディアをチェック」を 1 回実行します。</p>
+</section>
+
+<section id="s14">
+  <h2>14. 100MB 超の大ファイルをクリーンアップ</h2>
+
+  <h3>14.1 問題</h3>
+  <p>メディアファイルが 100MB を超える場合、参照カードを削除しても、ファイルはメディアライブラリに残り、<b>「メディアをチェック → 未使用ファイルを削除」で削除できません</b>。</p>
+
+  <h3>14.2 根本原因</h3>
+  <p>Anki の「メディアをチェック」は 100MB 超のファイルを特別扱いします：</p>
+  <ul>
+    <li>「100MB 超のファイル」として別リストに分類</li>
+    <li>「未使用ファイル」の判定に参加しない</li>
+    <li>カードがまだ参照しているかどうかに関わらず、内蔵機能では削除できない</li>
+  </ul>
+  <p>この設計の起源は、AnkiWeb の 1 ファイル 100MB の同期上限です。Anki はこのようなファイルは手動で扱うと想定しています。</p>
+
+  <h3>14.3 回避策</h3>
+  <p><b>同名の極小ファイルで上書きして 100MB 未満に落とします。</b>すると Anki は普通のファイルとして扱い、どのカードからも参照されていなければ「未使用ファイル」に分類され、削除できるようになります。</p>
+
+  <h3>14.4 完全な手順</h3>
+
+  <h4>ステップ 1：カード参照を削除</h4>
+  <p>デスクトップ Anki で、カードフィールドから <code>[sound:xxx.mp4]</code> 参照を削除するか、カードごと削除します。</p>
+
+  <h4>ステップ 2：同名の極小ファイルを準備</h4>
+  <p>元ファイルと同名で、100MB よりはるかに小さいファイルを作成します。</p>
+  <p>Windows：</p>
+  <pre>type nul > xxx.mp4</pre>
+  <p>または ffmpeg で 1 秒の無音を生成：</p>
+  <pre>ffmpeg -f lavfi -i anullsrc=r=44100:cl=mono -t 1 -c:a aac -movflags +faststart xxx.mp4</pre>
+
+  <h4>ステップ 3：collection.media の元ファイルを上書き</h4>
+  <p>デスクトップ Anki のメディアフォルダを開き（ツール → メディアをチェック → ファイルを表示）、準備した極小ファイルをコピーして元の大ファイルを上書きします。</p>
+
+  <h4>ステップ 4：apkg を再エクスポート</h4>
+  <p>そのシリーズ（またはメディアパック deck）を「メディアを含める」で再エクスポートします。</p>
+
+  <h4>ステップ 5：iPhone へ転送して再インポート</h4>
+  <p>iTunes ファイル共有 / クラウドで iPhone へ。</p>
+  <p><b>先に iPhone 上の旧 deck を削除</b>してから、新しい apkg を AnkiMobile でインポートします。同名の極小ファイルが iPhone 上の大ファイルを上書きします。</p>
+
+  <h4>ステップ 6：メディアをチェック</h4>
+  <p>ファイルは 100MB 未満になり「未使用ファイル」に現れます。削除して容量を解放します。</p>
+
+  <h3>14.5 同名上書きが機能する理由</h3>
+  <p>Anki のメディアライブラリはファイル名で管理されています。同名ファイルを使うと、Anki はインポート時点で同名ファイルが存在することを検知し、新しいファイルで置換します。元の大ファイルは消えます。</p>
+
+  <h3>14.6 前提条件</h3>
+  <ul>
+    <li>カードがそのファイルを参照していないこと。参照が残っていると、ファイルが小さくなっても Anki は「使用中」と見なし削除しません</li>
+    <li>上書きはデスクトップで行う。AnkiMobile のメディアフォルダには直接アクセスできません</li>
+    <li>iPhone 上のファイルが置換されない場合、インポートが失敗した可能性があります。再インポートしてください</li>
+  </ul>
+
+  <h3>14.7 警告</h3>
+  <ul>
+    <li>ファイルを参照している他のカードがあると、上書き後は再生が変わります（無音、または極小片）。参照をすべて削除してから上書きしてください</li>
+    <li>上書き前に <code>collection.media</code> をバックアップ</li>
+    <li>これが 100MB 超のファイルを削除する唯一の方法です</li>
+  </ul>
+
+  <h3>14.8 より良い方法：最初から避ける</h3>
+  <div class="tip">
+    最も楽なのは<b>最初からすべてのメディアファイルを 100MB 未満に保つ</b>ことです。セクション 7 の ffmpeg パラメータなら、30 分のエピソードは通常 30〜50MB に収まります。100MB 問題は発生せず、セクション 13 の方法でクリーンアップできます。
+  </div>
+</section>
+
+<section id="s15">
+  <h2>15. 操作フロー総まとめ</h2>
+
+  <h3>15.1 初回インポート</h3>
+  <ol>
+    <li>ffmpeg でメディアを圧縮：MP4 は iPhone 用、WebM は Windows 用</li>
+    <li>命名規則に従ってファイルをリネーム（シーズンあり／なしの 2 パターン）</li>
+    <li>メディアをデスクトップ Anki の <code>collection.media</code> に配置</li>
+    <li>メディアパック deck の <code>sound</code> フィールドにすべての <code>[sound:]</code> 参照を記述</li>
+    <li>「メディアを含める」にチェックして apkg をエクスポート</li>
+    <li>iPhone へ転送（iTunes ファイル共有 / クラウド / AirDrop / USB）</li>
+    <li>AnkiMobile でインポート</li>
+    <li>メディアが再生でき、正確にシークできることを確認</li>
+  </ol>
+
+  <h3>15.2 メディアの更新</h3>
+  <ol>
+    <li>デスクトップ側で新しいメディアを生成、ファイル名は変えない</li>
+    <li><code>collection.media</code> の旧ファイルを上書き</li>
+    <li>apkg を再エクスポート</li>
+    <li>iPhone へ転送</li>
+    <li><b>先に iPhone 上の旧 deck を削除</b></li>
+    <li>新しい apkg をインポート</li>
+  </ol>
+
+  <h3>15.3 メディアの追加</h3>
+  <ol>
+    <li>新しいファイルを命名規則に従って命名</li>
+    <li><code>collection.media</code> に配置</li>
+    <li><code>sound</code> フィールドに <code>[sound:]</code> 行を追加</li>
+    <li>apkg を再エクスポート</li>
+    <li>iPhone 上の旧 deck を削除</li>
+    <li>新しい apkg をインポート</li>
+  </ol>
+
+  <h3>15.4 特定メディアの削除</h3>
+  <ol>
+    <li><code>sound</code> フィールドから対応する <code>[sound:]</code> 行を削除</li>
+    <li>他のカードが参照していないことを確認</li>
+    <li>apkg を再エクスポート</li>
+    <li>iPhone 上の旧 deck を削除</li>
+    <li>新しい apkg をインポート</li>
+    <li>「メディアをチェック」 → 未使用ファイルを削除</li>
+  </ol>
+
+  <h3>15.5 大ファイル（&gt; 100MB）のクリーンアップ</h3>
+  <ol>
+    <li>カードがそのファイルを参照していないことを確認</li>
+    <li>同名の極小ファイル（&lt; 100MB）を準備</li>
+    <li><code>collection.media</code> の元ファイルを上書き</li>
+    <li>apkg を再エクスポート</li>
+    <li>iPhone 上の旧 deck を削除</li>
+    <li>新しい apkg をインポート</li>
+    <li>「メディアをチェック」 → 未使用ファイルを削除</li>
+  </ol>
+</section>
+
+<section id="s16">
+  <h2>16. よくある質問</h2>
+
+  <div class="qa">
+    <div class="q">Q1：apkg をインポートしたのに deck の中身が古いまま</div>
+    <div class="a">
+      iPhone に同名 deck が既にあるため AnkiMobile がインポートをスキップしました。先に旧 deck を削除してからインポートしてください。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：apkg がエクスポート後に小さい。メディアが含まれていない</div>
+    <div class="a">
+      <code>[sound:]</code> 参照のファイル名が実ファイル名と完全に一致しているか（拡張子・大文字小文字を含めて）確認してください。Anki はカードから参照されているメディアのみを含めます。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：Windows で動画が再生できない</div>
+    <div class="a">
+      Windows 版 Anki は WebM のみ対応です。ffmpeg で MP4 を WebM に変換してください：
+      <pre>ffmpeg -i input.mp4 -vf "scale=-2:270" -c:v libvpx-vp9 -crf 35 -b:v 0 -c:a libopus -b:a 64k -ac 1 output.webm</pre>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：iPhone で再生はできるがプログレスバーが飛ぶ</div>
+    <div class="a">
+      ファイルがシーク可能ではありません。ffmpeg で再エンコードし、<b>必ず <code>-movflags +faststart</code> を付けてください</b>。動画は main profile、音声は CBR MP3 または M4A。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：<code>[sound:]</code> 参照を削除したのに「メディアをチェック」で見つからない</div>
+    <div class="a">
+      考えられる原因：<br>
+      1. まだ他のカードが参照している。Anki の検索でファイル名を確認<br>
+      2. apkg の再インポートが失敗した<br>
+      3. ファイルが 100MB 超で「未使用」判定に参加しない。セクション 14 の方法を使用
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：カードを削除したのにメディアファイルが容量を占めたまま</div>
+    <div class="a">
+      カードを削除してもメディアは削除されません。<code>sound</code> フィールドの参照を削除し、再インポートして「メディアをチェック」を実行してください。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：100MB 超のファイルが「メディアをチェック」に出てこない</div>
+    <div class="a">
+      Anki の設計です。100MB 超のファイルは別扱いで「未使用」判定に参加しません。セクション 14 の同名上書き法を使用してください。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：AnkiWeb でメディアを同期できる？</div>
+    <div class="a">
+      できません。理由：<br>
+      1. 数十 GB の帯域は現実的でない<br>
+      2. 1 ファイル 100MB 超は同期不可<br>
+      3. 無料の AnkiWeb には容量制限がある<br>
+      メディアは apkg によるオフライン転送のみです。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：学習カードの参照とメディアパックの [sound:] が衝突しない？</div>
+    <div class="a">
+      しません。メディアパックは転送媒体にすぎず、学習カードは同じファイルを参照しています。ファイルが iPhone 上にあれば、学習カードは見つけられます。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：Windows と iPhone でファイル名の大文字小文字が一致しない</div>
+    <div class="a">
+      Windows は大文字小文字を区別しませんが iOS は区別します。問題を避けるには：<br>
+      1. ファイル名はすべて小文字<br>
+      2. <code>[sound:]</code> 参照もすべて小文字<br>
+      3. Windows で <code>File.mp4</code> と命名し、参照で <code>file.mp4</code> と書かない
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：メディアパックのカードが復習に出てくる？</div>
+    <div class="a">
+      メディアパック deck に学習計画があると出てくることがあります。対処：<br>
+      1. メディアパック deck の学習オプションを「一時停止」に<br>
+      2. または復習計画から除外<br>
+      3. またはカードを「保留」に設定
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12：変換後、動画がぼやける</div>
+    <div class="a">
+      パラメータを調整：<br>
+      1. <code>-crf</code> を下げる（例 24）→ 高画質、サイズ増<br>
+      2. <code>scale=-2:360</code> で解像度を上げる<br>
+      3. <code>-preset</code> を slow にしてエンコードを細かく<br>
+      語学学習では字幕が読めれば十分です。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13：複数シーズンを 1 つの apkg にまとめてもいい？</div>
+    <div class="a">
+      可能ですが非推奨です。理由：<br>
+      1. 1 つの apkg が大きいと転送・インポートが遅い<br>
+      2. 1 シーズン更新時にパッケージ全体を再転送<br>
+      3. クリーンアップの粒度が粗い<br>
+      1 シーズン 1 apkg が最も柔軟です。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14：apkg を使わず iPhone にファイルを直接コピーできる？</div>
+    <div class="a">
+      できません。iOS サンドボックスでは AnkiMobile の <code>collection.media</code> は「ファイル」アプリに公開されていません。apkg が唯一信頼できる転送方法です。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q15：iTunes ファイル共有に AnkiMobile が出てこない</div>
+    <div class="a">
+      確認：<br>
+      1. iPhone に AnkiMobile がインストール済み<br>
+      2. iPhone がロック解除され、このコンピュータを信頼している<br>
+      3. iTunes がデバイスを認識している<br>
+      4. AnkiMobile のファイル共有が有効（デフォルトで有効）
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q16：なぜ毎回 deck を削除してからインポートする必要がある？</div>
+    <div class="a">
+      AnkiMobile のインポート方針です。AnkiWeb 同期は差分式（更新時刻の比較）ですが、apkg インポートは「一括追加」です。同名ノートはスキップされるため、先に削除する必要があります。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q17：クラウドからダウンロードした apkg が AnkiMobile で開けない</div>
+    <div class="a">
+      考えられる原因：<br>
+      1. クラウドアプリに「他のアプリで開く」がない。「ファイル」アプリに保存してからタップ<br>
+      2. apkg のダウンロードが不完全。再ダウンロード<br>
+      3. AnkiMobile が古い。最新版へ更新
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q18：動画変換時に幅を指定する必要がある？</div>
+    <div class="a">
+      不要です。<code>scale=-2:270</code> を使えば高さは 270 に固定され、幅はアスペクト比を保って自動計算されます。<code>-2</code> は幅が偶数になることを保証します。元動画が 16:9、4:3、その他どの比率でも、ffmpeg が適切な幅を算出します。
+    </div>
+  </div>
+</section>
+
+<footer>
+  Anki iPhone メディアファイル操作マニュアル · バージョン 1.2
+</footer>
+
+</div>
+</body>
+</html>

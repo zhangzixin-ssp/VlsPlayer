@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VlsPlayer 操作マニュアル（詳細版）</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #2b6cb0; --accent-soft: #ebf3fb; --border: #dde2e8;
+    --code-bg: #f0f2f5; --warn-bg: #fff8e6; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .tip {
+    background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key {
+    display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333;
+  }
+  .btn {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    background: #e8eef5; border: 1px solid #b8c6d6; font-size: 13px;
+    color: #223;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>VlsPlayer 操作マニュアル</h1>
+  <div class="meta">バージョン 1.0 &nbsp;|&nbsp; 字幕プレーヤー、エディター、語学学習ツール</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">プログラム概要と画面全体像</a></li>
+    <li><a href="#s2">字幕ディレクトリとファイル管理</a></li>
+    <li><a href="#s3">メディアと字幕を開く</a></li>
+    <li><a href="#s4">ツールバーボタン詳細</a></li>
+    <li><a href="#s5">字幕テーブル</a></li>
+    <li><a href="#s6">字幕編集エリア</a></li>
+    <li><a href="#s7">注釈、ディクテーション、校正エリア</a></li>
+    <li><a href="#s8">マーク（Flags）</a></li>
+    <li><a href="#s9">波形エディター</a></li>
+    <li><a href="#s10">プレーヤーと再生モード</a></li>
+    <li><a href="#s11">シャドーイングと録音</a></li>
+    <li><a href="#s12">ディクテーションモード</a></li>
+    <li><a href="#s13">ASR 音声認識</a></li>
+    <li><a href="#s14">字幕の校正</a></li>
+    <li><a href="#s15">フィルター表示</a></li>
+    <li><a href="#s16">辞書 / AI / TTS</a></li>
+    <li><a href="#s17">ツールボックス（SRT / TXT / ASR）</a></li>
+    <li><a href="#s18">オプション設定</a></li>
+    <li><a href="#s19">テーマシステム</a></li>
+    <li><a href="#s20">ファイル形式とディレクトリ構造</a></li>
+    <li><a href="#s21">ショートカットキー一覧</a></li>
+    <li><a href="#s22">よくある質問とトラブルシューティング</a></li>
+  </ol>
+</nav>
+
+<!-- ============== 1 ============== -->
+<section id="s1">
+  <h2>1. プログラム概要と画面全体像</h2>
+
+  <h3>1.1 位置づけ</h3>
+  <p>VlsPlayer は語学学習者向けの字幕プレーヤー兼エディターです。再生、字幕編集、波形調整、音声認識、シャドーイング録音、辞書検索、AI 翻訳、Anki エクスポートを 1 つのインターフェースに統合し、「動画を見る — 字幕を編集する — ノートを取る — カードをエクスポートする」という流れを 1 つのウィンドウで完結させます。</p>
+
+  <h3>1.2 主な機能</h3>
+  <ul>
+    <li>波形の可視化：ハンドルを直接ドラッグして字幕タイミングを変更</li>
+    <li>5 つの再生モード：通常、単文、役割1/2の演じ分け、範囲ループ</li>
+    <li>文ごとのシャドーイング録音と自動 ASR 採点</li>
+    <li>ディクテーションモード：原文を隠して聞き取り入力</li>
+    <li>カラーマーク（7 色）+ 注釈 + 段落タグ</li>
+    <li>字幕の校正：最大 4 つの参照字幕を同時に読み込み</li>
+    <li>フィルター表示：注釈 / マークで絞り込み</li>
+    <li>ローカル ASR：sherpa-onnx モデルで字幕セグメントを個別認識</li>
+    <li>辞書、AI 分析、TTS：内蔵または外部ブラウザーで開く</li>
+    <li>デュアルエンジン再生：MPV（デフォルト）と VLC。オプションで切替可能</li>
+    <li>バイリンガル字幕管理：字幕一（原文）と字幕二（訳文）を個別に編集</li>
+    <li>3 つの付属ツールボックス：SRT / TXT / ASR</li>
+    <li>4 言語の UI、16 以上の組み込みテーマ、カスタムテーマ対応</li>
+  </ul>
+
+  <h3>1.3 画面全体のレイアウト</h3>
+  <p>メインウィンドウは上から下へ 4 層に分かれています：</p>
+  <table>
+    <thead><tr><th>層</th><th>内容</th><th>非表示可否</th></tr></thead>
+    <tbody>
+      <tr><td>タイトルバー</td><td>カスタムタイトルバー。ファイル名を表示</td><td>全画面時に非表示</td></tr>
+      <tr><td>ツールバー</td><td>すべてのショートカットボタン</td><td>全画面時に非表示</td></tr>
+      <tr><td>メイン領域（上下可変）</td>
+        <td>
+          上：字幕テーブル<br>
+          下：メディア画面 + 字幕編集 + 注釈/校正
+        </td>
+        <td>テーブルは非表示可能</td>
+      </tr>
+      <tr><td>波形エディター</td><td>波形エリア + ハンドルエリア</td><td>メディアなしの場合非表示</td>
+      </tr>
+      <tr><td>録音パネル</td><td>シャドーイング時に表示</td><td>シャドーイングオフ時に非表示</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.4 スプリッター</h3>
+  <ul>
+    <li><strong>SplitterClient</strong>：テーブルと下の詳細エリアの間。ドラッグで比率を調整</li>
+    <li><strong>SplitterMedia</strong>：動画画面と右側のテキストエリアの間。水平にドラッグ</li>
+    <li><strong>SplitterRe</strong>：字幕編集エリアと注釈エリアの間。垂直にドラッグ</li>
+    <li><strong>SplitterBottom</strong>：メイン領域と波形エディターの間。垂直にドラッグ</li>
+  </ul>
+  <p>ウィンドウサイズ、スプリッター位置、パネルの表示状態は終了時に INI に保存され、次回起動時に自動復元されます。</p>
+</section>
+
+<!-- ============== 2 ============== -->
+<section id="s2">
+  <h2>2. 字幕ディレクトリとファイル管理</h2>
+  <p>字幕ディレクトリパネルはデフォルトでメインウィンドウの左側にドッキングされ、ツールバー左端のボタンで表示方法を切り替えられます。</p>
+
+  <h3>2.1 表示モード</h3>
+  <table>
+    <thead><tr><th>モード</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>自動ドッキング（デフォルト）</td><td>マウスがウィンドウの左端に移動すると自動表示され、離れると非表示</td></tr>
+      <tr><td>非表示</td><td>まったく表示しない</td></tr>
+    </tbody>
+  </table>
+  <p>ツールバー左端のボタンで切り替えます。自動モードでは、マウスが離れてから 3 秒後に自動的に非表示になります。</p>
+
+  <h3>2.2 ディレクトリ管理</h3>
+  <ul>
+    <li><strong>ドロップダウンボックス</strong>：保存済みの SRT ディレクトリを選択</li>
+    <li><span class="btn">+</span>：SRT ディレクトリを追加（自動的に重複排除）</li>
+    <li><span class="btn">−</span>：現在選択中のディレクトリを削除</li>
+  </ul>
+  <p>すべてのディレクトリは INI の <code>[SrtDir]</code> セクションに保存され、終了時に書き込まれ、起動時に読み込まれます。</p>
+
+  <h3>2.3 ファイルリスト</h3>
+  <ul>
+    <li>現在のディレクトリ内のすべての <code>.srt</code> ファイルを一覧表示</li>
+    <li>クリックで選択して読み込み</li>
+    <li>起動時に前回開いたファイルを自動選択</li>
+    <li>履歴がない場合はリストの最初の項目を選択</li>
+  </ul>
+
+  <h3>2.4 ツールボックスの入口</h3>
+  <p>ディレクトリパネル上部の 3 つのボタンで付属ツールを開きます：</p>
+  <table>
+    <thead><tr><th>ボタン</th><th>開くもの</th></tr></thead>
+    <tbody>
+      <tr><td>SRT ツールボックス</td><td>VlsSrtTools.exe（外部プログラム）</td></tr>
+      <tr><td>TXT ツールボックス</td><td>プログラム内の TxtTools ウィンドウ</td></tr>
+      <tr><td>ASR ツールボックス</td><td>VlsAsrTools.exe（外部プログラム）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 3 ============== -->
+<section id="s3">
+  <h2>3. メディアと字幕を開く</h2>
+
+  <h3>3.1 開く流れ</h3>
+  <ol>
+    <li>ファイルリストで .srt ファイルをクリック</li>
+    <li>プログラムは次の順で読み込みます：
+      <ol>
+        <li>.srt 字幕を読み込む</li>
+        <li>同名の .snt ファイル（注釈、段落タグ、書式付きテキスト）を読み込む</li>
+        <li>同名の .dic ファイル（ディクテーション内容）を読み込む</li>
+        <li>同ディレクトリの ProofSrt.lst（校正ファイルリスト、存在する場合）を読み込む</li>
+        <li>現在のフィルター条件に従ってフィルターを適用</li>
+      </ol>
+    </li>
+    <li>同名のメディアファイルを探し（VIDEO_EXTS 優先、次に AUDIO_EXTS）、自動で読み込む</li>
+    <li>同名の .wfm 波形キャッシュファイルを探し、なければ ffmpeg で生成</li>
+    <li>前回終了時のそのファイルの再生位置を復元</li>
+  </ol>
+
+  <h3>3.2 対応字幕エンコーディング</h3>
+  <p>SRT 読み込み時に以下のエンコーディングを自動判別します：</p>
+  <ul>
+    <li>UTF-8（BOM あり / BOM なし）</li>
+    <li>UTF-16 LE（BOM）</li>
+    <li>UTF-16 BE（BOM）</li>
+    <li>システム既定エンコーディング（ANSI）</li>
+  </ul>
+  <p>BOM がない場合は、まず UTF-8 の妥当性を検証し、不正な場合はシステム既定エンコーディングで読み込みます。</p>
+
+  <h3>3.3 対応メディア形式</h3>
+  <p><strong>動画</strong>：mp4、mkv、avi、mov、flv、webm、3gp、3g2、wmv、asf、vob、mts、m2ts、ts、mpeg、mpg、m4v</p>
+  <p><strong>音声</strong>：wav、mp3、ogg、flac、aac、wma、m4a、aiff、aif、alac、wavpack、ape、mid、midi</p>
+
+  <h3>3.4 波形キャッシュ</h3>
+  <p>.wfm ファイルは、次のコマンドで生成される 4 kHz モノラル PCM キャッシュです：</p>
+  <pre>ffmpeg.exe -i メディアファイル -ar 4000 -ac 1 -acodec pcm_s16le -f wav -y 出力.wfm</pre>
+  <p>生成は最大 30 秒待機します。生成に失敗した場合、波形エリアは空のままになり、字幕編集には影響しません。</p>
+</section>
+
+<!-- ============== 4 ============== -->
+<section id="s4">
+  <h2>4. ツールバーボタン詳細</h2>
+  <p>ツールバーは左から右へ 5 つのグループに分かれ、各グループは区切り線で仕切られています。</p>
+
+  <h3>4.1 ファイルグループ（最左）</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>ファイルリストの表示/非表示</td><td>自動ドッキングと非表示を切り替え</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 再生グループ</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>ショートカット</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>前の文</td><td></td><td>前の字幕に切り替えて再生</td></tr>
+      <tr><td>再生 / 一時停止</td><td><span class="key">Space</span></td><td>再生状態を切り替え</td></tr>
+      <tr><td>次の文</td><td></td><td>次の字幕に切り替えて再生</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">再生ボタンのアイコンは状態に応じて変化します：再生中は一時停止アイコン、一時停止中は再生アイコン。</div>
+
+  <h3>4.3 学習グループ</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>シャドーイング</td><td>録音パネルを展開し、シャドーイングモードに入る</td></tr>
+      <tr><td>ディクテーション</td><td>ディクテーションモードに入り、原文を隠す</td></tr>
+      <tr><td>再生モード</td><td>ホバーでパネルを表示し、再生モード、一時停止時間、リピート回数、音量を設定</td></tr>
+      <tr><td>再生速度</td><td>ホバーでパネルを表示し、0.25x から 3.00x を 0.25 刻みで選択</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 字幕編集グループ</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>ショートカット</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>挿入</td><td><span class="key">Ctrl+N</span></td><td>現在行の後に空の字幕を挿入</td></tr>
+      <tr><td>削除</td><td><span class="key">Ctrl+L</span></td><td>現在行または選択範囲を削除</td></tr>
+      <tr><td>結合</td><td><span class="key">Ctrl+M</span></td><td>現在行と次の行を結合</td></tr>
+      <tr><td>時間の変更</td><td></td><td>ホバーでパネルを表示し、ミリ秒単位で開始/終了時間を移動</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 保存と元に戻す</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>ショートカット</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>保存</td><td><span class="key">Ctrl+S</span></td><td>SRT / SNT / DIC を保存</td></tr>
+      <tr><td>元に戻す</td><td><span class="key">Ctrl+Z</span></td><td>直前の操作を元に戻す</td></tr>
+      <tr><td>やり直し</td><td><span class="key">Ctrl+Y</span></td><td>元に戻した操作をやり直す</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">保存後、元に戻すスタックはクリアされます。一括操作は 1 つのバッチとしてまとめて元に戻されます。</div>
+
+  <h3>4.6 ツールグループ（最右）</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>検索</td><td>ホバーで検索ボックスを表示。通常検索と正規表現に対応</td></tr>
+      <tr><td>波形の幅</td><td>左クリックで拡大（1 ページあたりの時間を減らす）、右クリックで縮小</td></tr>
+      <tr><td>波形の振幅</td><td>左クリックで増加、右クリックで減少</td></tr>
+      <tr><td>テーマ</td><td>ホバーでテーマ一覧を表示</td></tr>
+      <tr><td>オプション</td><td>オプションウィンドウを開く</td></tr>
+      <tr><td>ヘルプ</td><td>VlsPlayer.html ヘルプファイルを開く</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 5 ============== -->
+<section id="s5">
+  <h2>5. 字幕テーブル</h2>
+
+  <h3>5.1 列の定義</h3>
+  <table>
+    <thead><tr><th>列</th><th>幅</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>番号</td><td>固定</td><td>1 から開始</td></tr>
+      <tr><td>開始時間</td><td>固定</td><td>形式切替可能（オプション参照）</td></tr>
+      <tr><td>終了時間</td><td>任意</td><td>オプションで表示を切り替え</td></tr>
+      <tr><td>段落マーク</td><td>狭い列</td><td>バーの色で話者を表示</td></tr>
+      <tr><td>字幕一</td><td>可変</td><td>原文。カラーマークに対応</td></tr>
+      <tr><td>字幕二</td><td>可変</td><td>訳文。非表示可能</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 表示モード</h3>
+  <p>ツールバー右端の「字幕を表示」ボタンで 3 つを循環します：</p>
+  <ul>
+    <li>字幕一のみ</li>
+    <li>字幕二のみ</li>
+    <li>字幕一 + 字幕二（デフォルト、比率 3:2）</li>
+  </ul>
+
+  <h3>5.3 時間形式</h3>
+  <p>オプションで設定します：</p>
+  <table>
+    <thead><tr><th>番号</th><th>形式</th><th>例</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>完全</td><td>00:12:34,567</td></tr>
+      <tr><td>1</td><td>時の先頭 0 を省略</td><td>0:12:34,567</td></tr>
+      <tr><td>2</td><td>時なし</td><td>12:34,567</td></tr>
+      <tr><td>3</td><td>時なし、ミリ秒 1 桁</td><td>12:34,5</td></tr>
+      <tr><td>4</td><td>分秒のみ</td><td>12:34</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 行の色</h3>
+  <table>
+    <thead><tr><th>色</th><th>トリガー</th></tr></thead>
+    <tbody>
+      <tr><td>選択行</td><td>カーソルがある行（常にハイライト）</td></tr>
+      <tr><td>選択範囲</td><td>複数選択された行（背景色がやや異なる）</td></tr>
+      <tr><td>再生行</td><td>現在再生中の字幕（選択行と異なる場合に見える）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 段落マーク列</h3>
+  <p>色と塗りつぶしスタイルで話者を表現します：</p>
+  <table>
+    <thead><tr><th>話者</th><th>色</th><th>スタイル</th></tr></thead>
+    <tbody>
+      <tr><td>ナレーション（Speaker 0）</td><td>グレー</td><td>塗りつぶし</td></tr>
+      <tr><td>役割 1（Speaker 1）</td><td>オレンジ</td><td>塗りつぶし</td></tr>
+      <tr><td>役割 2（Speaker 2）</td><td>オレンジ</td><td>中抜き</td></tr>
+    </tbody>
+  </table>
+  <p>話者番号は段落タグ（ParTag）から自動推測されます。ルールは第 8 節を参照。</p>
+
+  <h3>5.6 マウス操作</h3>
+  <table>
+    <thead><tr><th>操作</th><th>効果</th></tr></thead>
+    <tbody>
+      <tr><td>シングルクリック</td><td>その行を選択して再生</td></tr>
+      <tr><td>ダブルクリック</td><td>フローティングモードで字幕編集ボックスを表示</td></tr>
+      <tr><td>Ctrl + クリック</td><td>複数選択</td></tr>
+      <tr><td>Shift + クリック</td><td>範囲選択</td></tr>
+      <tr><td>ホイール</td><td>ツールバー設定に従って内容または行をスクロール</td></tr>
+      <tr><td>右クリック</td><td>メインメニューを表示</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.7 ホイールモード</h3>
+  <p>ツールバーの「ホイール」ボタンで 3 つを循環します：</p>
+  <ul>
+    <li>内容をスクロール（デフォルト）</li>
+    <li>現在行をスクロール</li>
+    <li>スムーズスクロール（パフォーマンス最適化あり）</li>
+  </ul>
+</section>
+
+<!-- ============== 6 ============== -->
+<section id="s6">
+  <h2>6. 字幕編集エリア</h2>
+  <p>詳細エリアの右上にあり、RichEdit コントロールです。</p>
+
+  <h3>6.1 表示ルール</h3>
+  <ul>
+    <li>1 段落目は字幕一（原文）を表示。原文にカラーマークがあれば、対応する色で描画されます</li>
+    <li>2 段落目は字幕二（訳文）を表示。より小さいフォントを使用</li>
+    <li>ディクテーションモードでは、字幕一は短いダッシュの行で表示（原文を隠す）</li>
+  </ul>
+
+  <h3>6.2 編集動作</h3>
+  <ul>
+    <li>直接編集。入力後、フォーカスを失うか 1 秒経過すると SRT に自動保存</li>
+    <li>Enter を押すと 2 段落に分かれます：1 段落目が字幕一、2 段落目が字幕二</li>
+    <li>編集中の入力はすぐにはディスクに書き込まれず、クールダウン後にコミットされ、頻繁なディスク書き込みを回避します</li>
+  </ul>
+
+  <h3>6.3 フローティング編集ボックス</h3>
+  <p>オプションで「フローティング字幕編集ボックス」を有効にすると：</p>
+  <ul>
+    <li>編集ボックスがパネルから離れ、テーブルの上に浮かびます</li>
+    <li>テーブル行をダブルクリックすると表示されます</li>
+    <li>マウスが離れるかフォーカスを失うと自動的に非表示</li>
+    <li>位置は行の高さに応じて自動調整</li>
+    <li>高さは内容に応じて自動調整。最大で画面の 3 分の 2 を超えません</li>
+  </ul>
+
+  <h3>6.4 右クリックメニュー</h3>
+  <p>編集ボックス内で右クリックすると、以下のメニュー項目が表示されます：</p>
+  <table>
+    <thead><tr><th>メニュー項目</th><th>ショートカット</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>切り取り</td><td>Ctrl+X</td><td>選択テキストを切り取る</td></tr>
+      <tr><td>コピー</td><td>Ctrl+C</td><td>選択テキストをコピー</td></tr>
+      <tr><td>貼り付け</td><td>Ctrl+V</td><td>カーソル位置に貼り付け</td></tr>
+      <tr><td>メイン字幕をコピー</td><td></td><td>字幕一（訳文を含まない）をコピー</td></tr>
+      <tr><td>メディアクリップを書き出し</td><td></td><td>選択字幕に対応する動画クリップを ffmpeg で書き出す</td></tr>
+      <tr><td>辞書</td><td>Ctrl+D</td><td>選択語の意味を調べる</td></tr>
+      <tr><td>AI 分析</td><td>Ctrl+I</td><td>選択テキストを AI 分析に送る</td></tr>
+      <tr><td>TTS 読み上げ</td><td>Ctrl+T</td><td>選択テキストを Edge TTS で読み上げる</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 7 ============== -->
+<section id="s7">
+  <h2>7. 注釈、ディクテーション、校正エリア</h2>
+  <p>詳細エリアの右下にあります。この領域は現在の状態に応じて以下のいずれかを表示します：</p>
+  <ul>
+    <li>注釈（Remark）</li>
+    <li>ディクテーション（Dictation）</li>
+    <li>校正表示（Proof）</li>
+    <li>ASR 認識結果</li>
+  </ul>
+
+  <h3>7.1 表示ソースの切り替え</h3>
+  <p>上部のボタンバーでどれを表示するかを決めます：</p>
+  <table>
+    <thead><tr><th>ボタン</th><th>表示</th></tr></thead>
+    <tbody>
+      <tr><td>注釈</td><td>現在の字幕の Remark</td></tr>
+      <tr><td>校正 0~3</td><td>対応する校正ファイルの一致結果</td></tr>
+      <tr><td>ディクテーション</td><td>現在の字幕の Dictation（ディクテーションモードで自動切替）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 注釈の編集</h3>
+  <ul>
+    <li>注釈は複数行可能。ボックス内に直接入力</li>
+    <li>入力後、フォーカスを失うか 1 秒経過すると .snt ファイルに自動保存</li>
+    <li>注釈は「注釈あり」フィルターをトリガーします</li>
+  </ul>
+
+  <h3>7.3 校正表示</h3>
+  <p>RTF の色分けで一致結果を表示します：</p>
+  <table>
+    <thead><tr><th>色</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>グレー</td><td>コンテキスト（一致した文の前後 1 文ずつ）</td></tr>
+      <tr><td>緑</td><td>完全一致</td></tr>
+      <tr><td>赤</td><td>不一致または差異</td></tr>
+      <tr><td>青</td><td>差異のある文字</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.4 校正コンテキストの閲覧</h3>
+  <p>校正表示エリアで右クリックし、「さらに字幕を閲覧」を選ぶと、校正ファイル内の現在の時間点の前後 10 件の字幕を表示します。</p>
+</section>
+
+<!-- ============== 8 ============== -->
+<section id="s8">
+  <h2>8. マーク（Flags）</h2>
+
+  <h3>8.1 7 つの色</h3>
+  <p>書式付きテキストタグ <code>&lt;f1&gt;</code> ~ <code>&lt;f7&gt;</code> に対応します。意味はオプションでカスタマイズ可能（デフォルトは重点、表現、発音、文法、スラング、フレーズ、語彙）。</p>
+
+  <h3>8.2 マークの追加</h3>
+  <ol>
+    <li>字幕編集ボックスでマークするテキストを選択</li>
+    <li>マークバーで対応する色の旗をクリック</li>
+    <li>選択テキストが <code>&lt;fN&gt;テキスト&lt;/fN&gt;</code> で包まれ、.snt ファイルに書き込まれる</li>
+  </ol>
+
+  <h3>8.3 マークのクリア</h3>
+  <p>マークされたテキストを選択し、マークバーの最後の「X」アイコンをクリックするとクリアされます。</p>
+
+  <h3>8.4 表示方法</h3>
+  <p>オプションで設定：</p>
+  <table>
+    <thead><tr><th>方法</th><th>効果</th></tr></thead>
+    <tbody>
+      <tr><td>カラー文字</td><td>マークされたテキストが対応する色で表示される</td></tr>
+      <tr><td>カラー下線</td><td>マークされたテキストは元の色のまま、下にカラー下線が表示される</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.5 フィルター表示</h3>
+  <p>マークバーの任意の旗をクリックすると、そのマークのフィルター表示を切り替えられます。例えば <code>&lt;f1&gt;</code> を含む字幕のみを表示します。</p>
+
+  <h3>8.6 段落タグ</h3>
+  <p>7 つのカラーマークのほか、文構造をマークする 3 つの段落タグがあります：</p>
+  <table>
+    <thead><tr><th>タグ</th><th>意味</th><th>話者推測への影響</th></tr></thead>
+    <tbody>
+      <tr><td>s</td><td>新しいシーン開始</td><td>話者を役割 1 にリセット</td></tr>
+      <tr><td>n</td><td>ナレーション</td><td>話者 = 0</td></tr>
+      <tr><td>a</td><td>継続行（同じ役割）</td><td>前の行の話者を引き継ぐ</td></tr>
+    </tbody>
+  </table>
+  <p>推測ルールの完全な記述：</p>
+  <pre>if n を含む → Speaker = 0
+else if 最初の行 または s を含む → Speaker = 1
+else if a を含む → Speaker = 前の行の Speaker
+else if 前の行の Speaker ≠ 1 → Speaker = 1
+else → Speaker = 2</pre>
+
+  <h3>8.7 段落タグの切り替え</h3>
+  <p>編集ボックスで右クリックすると切り替えられます：</p>
+  <ul>
+    <li>新旧シーン（s）の切り替え</li>
+    <li>ナレーション/歌詞（n）の切り替え</li>
+    <li>継続行/単一行（a）の切り替え</li>
+  </ul>
+</section>
+
+<!-- ============== 9 ============== -->
+<section id="s9">
+  <h2>9. 波形エディター</h2>
+  <p>ウィンドウ下部にあり、高さ約 120 ピクセル。上（波形）下（ハンドル）の 2 部分に分かれます。</p>
+
+  <h3>9.1 レイアウト</h3>
+  <table>
+    <thead><tr><th>エリア</th><th>高さ</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>波形エリア</td><td>ClientHeight - 12</td><td>波形、中心線、選択範囲、クリック線、再生線</td></tr>
+      <tr><td>ハンドルエリア</td><td>12</td><td>左右のハンドル、中央ハンドル、時間ルーラー</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 波形エリアの要素</h3>
+  <table>
+    <thead><tr><th>要素</th><th>色</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>中心線</td><td>波形色</td><td>水平方向の中央</td></tr>
+      <tr><td>波形</td><td>波形色</td><td>各列は区間内の最大振幅を取る</td></tr>
+      <tr><td>選択範囲の背景</td><td>選択範囲の背景色</td><td>ドラッグで作成したループ区間</td></tr>
+      <tr><td>選択範囲内の波形</td><td>選択範囲の波形色</td><td>範囲外の波形と区別</td></tr>
+      <tr><td>再生線</td><td>再生線の色</td><td>実線。再生位置に応じて移動</td></tr>
+      <tr><td>クリック線</td><td>クリック線の色</td><td>破線。最後のクリック位置をマーク</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 字幕ハンドル</h3>
+  <p>各字幕はハンドルエリアで 3 つの図形で表現されます：</p>
+  <table>
+    <thead><tr><th>図形</th><th>位置</th><th>色</th></tr></thead>
+    <tbody>
+      <tr><td>└ 左ハンドル</td><td>開始時間の位置</td><td>通常オレンジ / 現在グリーン / 無効オリーブ / ホバーシアン</td></tr>
+      <tr><td>┘ 右ハンドル</td><td>終了時間の位置</td><td>同上</td></tr>
+      <tr><td>▂ 中央ハンドル</td><td>字幕区間の中点</td><td>同上</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.4 色の意味</h3>
+  <table>
+    <thead><tr><th>色</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>オレンジ</td><td>現在の字幕ではない</td></tr>
+      <tr><td>グリーン</td><td>現在の字幕で編集可能</td></tr>
+      <tr><td>オリーブ</td><td>現在の字幕だが編集不可（フィルターモード）</td></tr>
+      <tr><td>シアン</td><td>マウスがハンドル上にある</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.5 マウス操作一覧</h3>
+  <table>
+    <thead><tr><th>操作</th><th>効果</th></tr></thead>
+    <tbody>
+      <tr><td>左ハンドルを左クリックしてドラッグ</td><td>字幕の開始時間を変更</td></tr>
+      <tr><td>右ハンドルを左クリックしてドラッグ</td><td>字幕の終了時間を変更</td></tr>
+      <tr><td>中央ハンドルを左クリックしてドラッグ</td><td>字幕全体を平行移動</td></tr>
+      <tr><td>中央ハンドルをハンドルエリアの下へドラッグ</td><td>その字幕を削除（カーソルが crDumpSubtitle に変わる）</td></tr>
+      <tr><td>波形エリアでドラッグ</td><td>選択範囲を作成し、自動でループ再生</td></tr>
+      <tr><td>波形エリアをクリック</td><td>クリック位置から最も近い文末まで再生</td></tr>
+      <tr><td>選択範囲を右クリック</td><td>選択範囲をクリア</td></tr>
+      <tr><td>現在の字幕の波形エリアを右クリック</td><td>その位置で字幕を分割</td></tr>
+      <tr><td>空白エリアを右クリック</td><td>新しい字幕を挿入（デフォルト 1 秒）</td></tr>
+      <tr><td>マウスを最左/最右の 10 ピクセルへ移動</td><td>ページ送り（左右 1 秒ずつ重複）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.6 ページ送り</h3>
+  <ul>
+    <li>ページの長さはツールバーの波形幅で決まり、デフォルトは 1 ページ 20 秒</li>
+    <li>ページは 5 秒重複し、ページをまたぐ字幕の欠落を防ぎます</li>
+    <li>最後のページに達すると自動的に前へ移動し、音声がページ全体を埋めます</li>
+  </ul>
+
+  <h3>9.7 ドラッグの制約</h3>
+  <ul>
+    <li>左ハンドルは前の字幕の終了時間 + 1ms を下回らない</li>
+    <li>右ハンドルは次の字幕の開始時間 − 1ms を上回らない</li>
+    <li>字幕の最小継続時間はハンドル幅の 2 倍（約 12px に対応する時間）</li>
+    <li>全体を平行移動する場合、前後の境界が同時に制約されます</li>
+  </ul>
+  <div class="note">ドラッグ中は一時的な変更のみが行われ、マウスボタンを離したときに初めて元に戻せる操作として記録されます。</div>
+</section>
+
+<!-- ============== 10 ============== -->
+<section id="s10">
+  <h2>10. プレーヤーと再生モード</h2>
+
+  <h3>10.1 再生エンジン</h3>
+  <table>
+    <thead><tr><th>エンジン</th><th>長所</th><th>短所</th></tr></thead>
+    <tbody>
+      <tr><td>MPV（デフォルト）</td><td>時間精度が高く、再生が滑らか</td><td>mpv ランタイムが必要</td></tr>
+      <tr><td>VLC</td><td>互換性が良い</td><td>時間精度は約 150ms</td></tr>
+    </tbody>
+  </table>
+  <p>エンジンを切り替えた後は、メディアファイルを再読み込みする必要があります。</p>
+
+  <h3>10.2 再生モード</h3>
+  <table>
+    <thead><tr><th>モード</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>通常</td><td>現在位置からメディアの最後まで再生</td></tr>
+      <tr><td>単文</td><td>文ごとに再生し、各文の終了後に一時停止設定に従って処理</td></tr>
+      <tr><td>役割1を演じる</td><td>役割 2 のセリフをミュートし、役割 1 とナレーションのみ再生</td></tr>
+      <tr><td>役割2を演じる</td><td>役割 1 のセリフをミュートし、役割 2 とナレーションのみ再生</td></tr>
+      <tr><td>範囲ループ</td><td>選択区間をループ再生（波形エリアでのドラッグでトリガー）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 一時停止設定</h3>
+  <p>単文モードでのみ有効。各文の再生終了後の一時停止時間：</p>
+  <table>
+    <thead><tr><th>オプション</th><th>時間</th></tr></thead>
+    <tbody>
+      <tr><td>一時停止</td><td>一時停止せず、そのまま次の文へ</td></tr>
+      <tr><td>文の長さ</td><td>この文の再生時間</td></tr>
+      <tr><td>1s / 2s / 3s / 9s</td><td>固定時間</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.4 リピート回数</h3>
+  <p>単文モードで有効：1、2、3、6、9、無限。</p>
+
+  <h3>10.5 音量</h3>
+  <ul>
+    <li><strong>メディア音量</strong>：0 ~ 100%</li>
+    <li><strong>ノイズ音量</strong>：0 ~ 100%（メディア音量とミックスして出力）</li>
+    <li><strong>ミックススイッチ</strong>：オンにするとメディア再生時に同時に背景ノイズを再生</li>
+  </ul>
+  <p>ノイズ源はプログラムディレクトリの <code>lib\noises\</code> にある mp3 ファイルからランダムに選ばれます。</p>
+
+  <h3>10.6 再生終了時の動作</h3>
+  <table>
+    <thead><tr><th>オプション</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>一時停止</td><td>最後で停止</td></tr>
+      <tr><td>リプレイ</td><td>最初から再生し直す</td></tr>
+      <tr><td>次のエピソードを再生</td><td>ファイルリストの次の SRT に切り替え</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.7 全画面</h3>
+  <ul>
+    <li>ショートカット <span class="key">Ctrl+Enter</span> で全画面に入る</li>
+    <li>全画面時はすべてのパネルが非表示になり、動画が画面全体を占めます</li>
+    <li><span class="key">Esc</span> または再度 <span class="key">Ctrl+Enter</span> で終了</li>
+    <li>終了後は元のパネルレイアウトに戻ります</li>
+  </ul>
+
+  <h3>10.8 再生位置の精度</h3>
+  <ul>
+    <li>MPV：mpv ネイティブの時間を使用し、誤差はごくわずか</li>
+    <li>VLC：自前で維持する高精度タイマーを使用。再生中の誤差は約 50ms で、一時停止後はネイティブ時間を読み取ります</li>
+  </ul>
+</section>
+
+<!-- ============== 11 ============== -->
+<section id="s11">
+  <h2>11. シャドーイングと録音</h2>
+
+  <h3>11.1 有効化</h3>
+  <p>ツールバーの「シャドーイング」ボタンをクリックすると、録音パネルがウィンドウ下部に展開し、波形エディターが上に移動します。</p>
+
+  <h3>11.2 録音パネル</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>録音</td><td>録音開始 / 停止。録音中はアイコンが赤くなる</td></tr>
+      <tr><td>録音を再生</td><td>今回録音した音声を再生</td></tr>
+      <tr><td>自動シャドーイング</td><td>現在の文をループ再生し、繰り返しシャドーイングしやすくする</td></tr>
+      <tr><td>書き出し</td><td>選択した字幕のすべての録音を 1 つの MP3 に結合</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.3 録音パラメータ</h3>
+  <table>
+    <thead><tr><th>パラメータ</th><th>値</th></tr></thead>
+    <tbody>
+      <tr><td>サンプルレート</td><td>16 kHz</td></tr>
+      <tr><td>チャンネル</td><td>2（保存時に ASR 用のモノラルコピーも出力）</td></tr>
+      <tr><td>ビット深度</td><td>16 bit</td></tr>
+      <tr><td>最大時間</td><td>現在の字幕時間の 5 倍</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.4 自動認識</h3>
+  <p>録音停止後：</p>
+  <ol>
+    <li>プログラムが ASR モデルを呼び出して録音を認識</li>
+    <li>認識結果を字幕の原文と比較し、単語レベルの類似度を計算</li>
+    <li>類似度 ≥ 0.85 は緑、それ以外は赤で表示</li>
+    <li>結果は注釈エリアに表示</li>
+  </ol>
+
+  <h3>11.5 録音ファイル</h3>
+  <p>録音は以下に保存されます：</p>
+  <pre>プログラムディレクトリ\record\字幕ファイル名\字幕名_番号.wav</pre>
+  <p>例：<code>record\某シリーズ\某シリーズ_0001.wav</code>。</p>
+
+  <h3>11.6 MP3 の書き出し</h3>
+  <ol>
+    <li>テーブルで範囲を指定して字幕を選択</li>
+    <li>録音パネルの「書き出し」ボタンをクリック</li>
+    <li>保存先を選択</li>
+    <li>プログラムが ffmpeg で録音を 192kbps の MP3 に結合</li>
+  </ol>
+  <p>録音ファイルが存在する字幕のみが書き出され、欠落しているものはスキップされます。</p>
+</section>
+
+<!-- ============== 12 ============== -->
+<section id="s12">
+  <h2>12. ディクテーションモード</h2>
+
+  <h3>12.1 開始</h3>
+  <p>ツールバーの「ディクテーション」ボタンをクリック（アイコンがハイライト状態）。</p>
+
+  <h3>12.2 画面の変化</h3>
+  <ul>
+    <li>テーブルの字幕一が、原文と同じ長さの短いダッシュの行に置き換わります</li>
+    <li>注釈エリアがディクテーション入力ボックスに切り替わり、現在の字幕のディクテーション内容を表示</li>
+    <li>字幕編集エリアが編集可能な空白エリアになります</li>
+  </ul>
+
+  <h3>12.3 使用方法</h3>
+  <ol>
+    <li>現在の文を再生</li>
+    <li>編集エリアに聞き取った内容を入力</li>
+    <li>フォーカスを失うか 1 秒経過すると .dic ファイルに自動保存</li>
+    <li>「次の文」をクリックして続行</li>
+  </ol>
+
+  <h3>12.4 終了</h3>
+  <p>もう一度「ディクテーション」ボタンをクリックすると終了し、テーブルに原文が再表示されます。</p>
+
+  <h3>12.5 ディクテーション内容の保存場所</h3>
+  <p>ディクテーション内容は SRT と同名の .dic ファイルに保存され、形式は次のとおりです：</p>
+  <pre>@t@:時間ミリ秒
+ディクテーション内容</pre>
+  <p>各ディクテーションは <code>@t@</code> 行で区切られ、プログラムは時間の中間値で対応する字幕にマッチングします。</p>
+</section>
+
+<!-- ============== 13 ============== -->
+<section id="s13">
+  <h2>13. ASR 音声認識</h2>
+
+  <h3>13.1 システム構成</h3>
+  <pre>Delphi プログラム
+   │
+   ├─ sherpa-onnx-offline-websocket-server.exe を起動（ポート 6006）
+   │
+   ├─ asr_engine.py を起動（Python ブリッジ、ポート 9001）
+   │
+   └─ HTTP POST WAV → 9001 → WebSocket → 6006 → JSON を返す</pre>
+
+  <h3>13.2 前提条件</h3>
+  <ul>
+    <li>Python がインストール済みで、<code>pip install numpy websockets</code> を実行済み</li>
+    <li>プログラムディレクトリの <code>sherpa\</code> に以下がある：
+      <ul>
+        <li><code>sherpa-onnx-offline-websocket-server.exe</code></li>
+        <li><code>asr_engine.py</code></li>
+        <li>モデルディレクトリ（小/中/大、オプションで選択）</li>
+      </ul>
+    </li>
+    <li>ポート 6006 と 9001 が他のプログラムに占有されていない</li>
+  </ul>
+
+  <h3>13.3 モデル選択</h3>
+  <table>
+    <thead><tr><th>モデル</th><th>サイズ</th><th>読み込み時間</th></tr></thead>
+    <tbody>
+      <tr><td>小モデル</td><td>120 MB</td><td>約 30 秒</td></tr>
+      <tr><td>中モデル</td><td>420 MB</td><td>約 90 秒</td></tr>
+      <tr><td>大モデル</td><td>1.2 GB</td><td>約 5 分</td></tr>
+    </tbody>
+  </table>
+  <p>モデルが大きいほど正確ですが遅くなります。初回読み込み後はメモリに常駐し、以降の呼び出しでは再読み込みが不要です。</p>
+
+  <h3>13.4 字幕セグメントの認識</h3>
+  <ol>
+    <li>テーブルで認識したい字幕行を選択（複数選択すると音声が結合されます）</li>
+    <li>注釈ボックス上部の「ASR」ボタンをクリック</li>
+    <li>プログラムが ffmpeg でセグメント音声を抽出し、ASR を呼び出して認識</li>
+    <li>結果は注釈エリアに表示され、認識テキストと類似度を含みます</li>
+  </ol>
+
+  <h3>13.5 結果の意味</h3>
+  <table>
+    <thead><tr><th>色</th><th>類似度</th></tr></thead>
+    <tbody>
+      <tr><td>緑</td><td>≥ 0.85</td></tr>
+      <tr><td>赤</td><td>&lt; 0.85</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.6 認識時間の適用</h3>
+  <p>認識後、ASR が返した正確な開始/終了時間を現在の字幕に適用できます（認識結果が現在の字幕と一致する場合のみ使用可能）。</p>
+
+  <h3>13.7 シングルトン保護</h3>
+  <p>ASR リソースはシングルトンで、同時に 1 つのプログラムだけが使用できます。すでに 1 つのプログラムが使用している場合、別のプログラムは起動に失敗し、メッセージが表示されます。</p>
+</section>
+
+<!-- ============== 14 ============== -->
+<section id="s14">
+  <h2>14. 字幕の校正</h2>
+
+  <h3>14.1 校正ファイルリスト</h3>
+  <p>SRT と同じディレクトリに <code>ProofSrt.lst</code> を作成し、1 行に 1 件ずつ記述します：</p>
+  <pre>識別子|フォルダパス|字幕タイプ番号</pre>
+  <ul>
+    <li><strong>識別子</strong>：ボタンに表示される 1 文字（A、B、C、D を推奨）</li>
+    <li><strong>フォルダパス</strong>：校正字幕のあるディレクトリ。末尾にスラッシュを付けることを推奨</li>
+    <li><strong>字幕タイプ番号</strong>：0~4。第 5 節の字幕タイプに対応</li>
+  </ul>
+  <p>最大 4 つの校正ファイルを同時に読み込めます。</p>
+
+  <h3>14.2 オプションからの追加</h3>
+  <ol>
+    <li>オプション → 一般 を開く</li>
+    <li>「校正フォルダ」エリアで <span class="btn">+</span> をクリック</li>
+    <li>ディレクトリを選択し、識別子と字幕タイプを入力</li>
+    <li>確定すると ProofSrt.lst に書き込まれます</li>
+  </ol>
+
+  <h3>14.3 校正の使用</h3>
+  <ol>
+    <li>メインの SRT ファイルを開く</li>
+    <li>注釈エリア上部の校正ボタン（0~3）をクリック</li>
+    <li>プログラムはメイン字幕の現在行を使って校正ファイル内を検索</li>
+    <li>一致結果はカラー RTF で表示されます</li>
+  </ol>
+
+  <h3>14.4 マッチングアルゴリズム</h3>
+  <p>校正処理はタイムライン整列と同じ検索アルゴリズムを使用します：</p>
+  <ol>
+    <li>現在の文の先頭文字列でメイン字幕内を特定</li>
+    <li>前の文の末尾文字列で特定を補助</li>
+    <li>現在の文の単語数で特定</li>
+    <li>段階的にフォールバックし、最適な一致を見つける</li>
+  </ol>
+
+  <h3>14.5 表示エリアの色</h3>
+  <table>
+    <thead><tr><th>色</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>グレー</td><td>一致した文の前後のコンテキスト</td></tr>
+      <tr><td>緑</td><td>完全一致</td></tr>
+      <tr><td>赤</td><td>一致しない部分</td></tr>
+      <tr><td>青</td><td>文字レベルの差異</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.6 コンテキストの閲覧</h3>
+  <p>校正表示エリアで右クリックし、「さらに字幕を閲覧」を選ぶと、校正ファイル内の現在の時間点の前後 10 件の字幕の原文を表示します。</p>
+</section>
+
+<!-- ============== 15 ============== -->
+<section id="s15">
+  <h2>15. フィルター表示</h2>
+
+  <h3>15.1 注釈によるフィルター</h3>
+  <p>ツールバーの「注釈」ボタン：</p>
+  <ul>
+    <li>押下：注釈のある字幕のみ表示</li>
+    <li>解除：すべての字幕を表示</li>
+  </ul>
+
+  <h3>15.2 マークによるフィルター</h3>
+  <p>ツールバーのマークバーは複数のマークフィルターを同時に有効にできます。ルール：</p>
+  <ul>
+    <li>選択されたマークを少なくとも 1 つ含めば表示</li>
+    <li>複数のマークは「OR」の関係</li>
+  </ul>
+
+  <h3>15.3 複合フィルター</h3>
+  <p>注釈とマークは同時に有効にでき、これらも「OR」の関係です。</p>
+
+  <h3>15.4 フィルターモードでの制限</h3>
+  <div class="note">
+    フィルターモード（FUseMapping = True）では以下の操作が禁止されます：
+    <ul>
+      <li>字幕の挿入</li>
+      <li>字幕の削除</li>
+      <li>字幕の結合</li>
+      <li>字幕の分割</li>
+      <li>時間の一括変更</li>
+    </ul>
+    既存の字幕のテキスト、注釈、マーク、ディクテーション、時間の変更のみが許可されます。
+  </div>
+  <p>違反した場合、対応するボタンがグレーアウトし、クリックできません。</p>
+
+  <h3>15.5 フィルターの解除</h3>
+  <p>すべてのフィルター条件を解除すると完全な表示に戻ります。フィルター状態は INI に保存されます。</p>
+</section>
+
+<!-- ============== 16 ============== -->
+<section id="s16">
+  <h2>16. 辞書 / AI / TTS</h2>
+
+  <h3>16.1 辞書</h3>
+  <p>字幕または注釈で調べたい単語やフレーズを選択し、次のいずれかを行います：</p>
+  <ul>
+    <li>右クリック → 辞書</li>
+    <li>またはツールバーの「辞書」ボタンをクリック</li>
+    <li>または <span class="key">Ctrl+D</span> を押す</li>
+  </ul>
+
+  <h4>ローカル辞書</h4>
+  <p>URL Scheme を使ってローカル辞書プログラム（Eudic など）を開きます：</p>
+  <pre>eudic://dict/%s</pre>
+  <p>%s は検索語に置き換えられます。</p>
+
+  <h4>オンライン辞書</h4>
+  <p>チェックすると順にブラウザーで開きます。プリセットの 8 つの URL に対応し、カスタマイズも可能です。</p>
+
+  <h3>16.2 AI 分析</h3>
+  <p>操作は辞書と同じです。プログラムは次を行います：</p>
+  <ol>
+    <li>AI Prompt + 選択テキストをクリップボードに入れる</li>
+    <li>対応する AI サイトを開く（または既に開いているタブを再利用）</li>
+    <li>自動的に貼り付けて送信</li>
+  </ol>
+
+  <h4>プリセット AI サイト</h4>
+  <ul>
+    <li>ChatGPT（chatgpt.com）</li>
+    <li>Claude（claude.ai）</li>
+    <li>Gemini（gemini.google.com）</li>
+    <li>通義千問</li>
+    <li>豆包</li>
+    <li>DeepSeek</li>
+    <li>Kimi</li>
+  </ul>
+
+  <h4>AI Prompt</h4>
+  <p>デフォルトの Prompt は、AI に直訳と英語の知識ポイントの分析を求め、プレーンテキストで出力させます。オプションで変更できます。</p>
+
+  <h3>16.3 内蔵ブラウザー</h3>
+  <p>「内蔵ブラウザーを使用」をチェックすると：</p>
+  <ul>
+    <li>辞書と AI はプログラムに埋め込まれた Edge WebView2 で開きます</li>
+    <li>外部ブラウザーに飛び出すことはありません</li>
+    <li>複数の AI サイトは上部のボタンで切り替えます</li>
+    <li>ブラウザーウィンドウはメインウィンドウとは独立に移動でき、メインウィンドウの端に吸着させることもできます</li>
+  </ul>
+
+  <h3>16.4 TTS 読み上げ</h3>
+  <p>テキストを選択し、右クリック → TTS、または <span class="key">Ctrl+T</span> を押します。</p>
+  <p>実装方法：</p>
+  <ol>
+    <li>選択テキストを含む HTML ファイルを生成</li>
+    <li>Microsoft Edge で開く</li>
+    <li><span class="key">Ctrl+Shift+U</span> をシミュレートして Edge の読み上げ機能をトリガー</li>
+  </ol>
+  <p>初回呼び出しで Edge ウィンドウが開き、以降の呼び出しではそのウィンドウを再利用して内容を更新します。</p>
+</section>
+
+<!-- ============== 17 ============== -->
+<section id="s17">
+  <h2>17. ツールボックス</h2>
+
+  <h3>17.1 SRT ツールボックス</h3>
+  <p>字幕リストパネルの SRT ツールボックスボタンをクリックして開きます。独立した外部プログラム VlsSrtTools.exe です。機能には字幕の一括処理、AI 翻訳テキストの生成、字幕による動画分割、Anki エクスポートなどがあります。詳細は付属の『SRT ツールボックス操作マニュアル』を参照してください。</p>
+
+  <h3>17.2 TXT ツールボックス</h3>
+  <p>プログラム内で小さなウィンドウを開きます。機能：プレーンテキストファイルを文単位に分割し、SRT 字幕を生成します。</p>
+
+  <h4>使用手順</h4>
+  <ol>
+    <li>処理する TXT ファイルを選択</li>
+    <li>SRT 出力ディレクトリを選択</li>
+    <li>分割基準を設定（例：<code>Chapter</code>。この接頭辞で新しいファイルを開始）</li>
+    <li>OK をクリック</li>
+  </ol>
+
+  <h4>出力</h4>
+  <ul>
+    <li>分割なし：TXT と同名の SRT を 1 つ生成</li>
+    <li>分割マーカーで分割：複数の SRT を生成し、ファイル名に番号 <code>_01.srt</code>、<code>_02.srt</code>... を付与</li>
+  </ul>
+
+  <h4>時間の割り当て</h4>
+  <p>各文はデフォルトで 10 秒、間隔は 1 秒です。生成されたタイムラインはあくまでプレースホルダーで、ASR 整列で修正できます。</p>
+
+  <h3>17.3 ASR ツールボックス</h3>
+  <p>字幕リストパネルの ASR ツールボックスボタンをクリックして開きます。独立した外部プログラム VlsAsrTools.exe です。機能にはセグメント ASR による字幕生成、タイムライン整列などがあります。詳細は付属の『音声認識ツールボックス操作マニュアル』を参照してください。</p>
+</section>
+
+<!-- ============== 18 ============== -->
+<section id="s18">
+  <h2>18. オプション設定</h2>
+  <p>ツールバー右端の歯車ボタンでオプションを開きます。一般、辞書とAI、テーマの 3 つのパネルに分かれています。</p>
+
+  <h3>18.1 一般パネル</h3>
+
+  <h4>言語とモデル</h4>
+  <table>
+    <thead><tr><th>オプション</th><th>値</th><th>デフォルト</th></tr></thead>
+    <tbody>
+      <tr><td>言語</td><td>英語 / 簡体字中国語 / 繁体字中国語 / 日本語</td><td>英語</td></tr>
+      <tr><td>ASR モデル</td><td>小 / 中 / 大</td><td>小</td></tr>
+      <tr><td>プレーヤー</td><td>MPV / VLC</td><td>MPV</td></tr>
+    </tbody>
+  </table>
+  <p>言語を切り替えた後、一部のインターフェースはプログラムを再起動しないと完全に反映されません。</p>
+
+  <h4>再生</h4>
+  <table>
+    <thead><tr><th>オプション</th><th>値</th></tr></thead>
+    <tbody>
+      <tr><td>再生終了時</td><td>一時停止 / リプレイ / 次のエピソードを再生</td></tr>
+    </tbody>
+  </table>
+
+  <h4>表示</h4>
+  <table>
+    <thead><tr><th>オプション</th><th>値</th><th>デフォルト</th></tr></thead>
+    <tbody>
+      <tr><td>字幕を表示</td><td>字幕一 / 字幕二 / 字幕一+二</td><td>字幕一</td></tr>
+      <tr><td>テーブル行間隔</td><td>小 / 中 / 大 / 最大</td><td>中</td></tr>
+      <tr><td>テキスト水平揃え</td><td>左 / 中央 / 両端</td><td>両端</td></tr>
+      <tr><td>テキスト垂直揃え</td><td>上 / 中 / 下</td><td>上</td></tr>
+      <tr><td>カラー注釈表示</td><td>カラー文字 / カラー下線</td><td>カラー文字</td></tr>
+      <tr><td>時間形式</td><td>5 種類</td><td>完全形式</td></tr>
+      <tr><td>字幕終了時間を表示</td><td>スイッチ</td><td>オフ</td></tr>
+      <tr><td>字幕を 1 行で表示</td><td>スイッチ</td><td>オフ</td></tr>
+      <tr><td>フローティング字幕編集ボックス</td><td>スイッチ</td><td>オフ</td></tr>
+    </tbody>
+  </table>
+
+  <h4>保存とバックアップ</h4>
+  <table>
+    <thead><tr><th>オプション</th><th>範囲</th><th>デフォルト</th></tr></thead>
+    <tbody>
+      <tr><td>自動保存間隔</td><td>3 ~ 999 分</td><td>3 分</td></tr>
+      <tr><td>最大バックアップ数</td><td>3 ~ 999</td><td>99</td></tr>
+      <tr><td>削除前の確認</td><td>スイッチ</td><td>オフ</td></tr>
+    </tbody>
+  </table>
+
+  <h4>マークのヒント語</h4>
+  <p>7 つのマークの意味をカスタマイズし、ツールバーのホバーヒントに表示します。デフォルトは：重点 / 表現 / 発音 / 文法 / スラング / フレーズ / 語彙。</p>
+
+  <h4>校正フォルダ</h4>
+  <ul>
+    <li>現在の ProofSrt.lst 内のすべての項目を一覧表示</li>
+    <li><span class="btn">+</span> ディレクトリを追加</li>
+    <li><span class="btn">−</span> 選択項目を削除</li>
+    <li>項目をダブルクリックで変更</li>
+    <li>最大 4 つ</li>
+  </ul>
+
+  <h3>18.2 辞書とAIパネル</h3>
+  <table>
+    <thead><tr><th>項目</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>ローカル辞書 URL</td><td>例：<code>eudic://dict/%s</code></td></tr>
+      <tr><td>オンライン辞書 URL リスト</td><td>チェックで有効化。ドラッグで並べ替え可能</td></tr>
+      <tr><td>AI チャット URL リスト</td><td>チェックで有効化</td></tr>
+      <tr><td>AI Prompt</td><td>AI に送る前置きプロンプト</td></tr>
+      <tr><td>内蔵ブラウザーを使用</td><td>スイッチ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>18.3 テーマパネル</h3>
+  <p>次の節を参照。</p>
+</section>
+
+<!-- ============== 19 ============== -->
+<section id="s19">
+  <h2>19. テーマシステム</h2>
+
+  <h3>19.1 組み込みテーマ</h3>
+  <p>全部で 16 種類。主なカテゴリ：</p>
+  <table>
+    <thead><tr><th>カテゴリ</th><th>テーマ</th></tr></thead>
+    <tbody>
+      <tr><td>クラシック</td><td>Light、Dark、Money Green</td></tr>
+      <tr><td>Solarized</td><td>Solarized Light、Solarized Dark</td></tr>
+      <tr><td>ダーク系</td><td>Charcoal、Nebula、Greeny、Choco、Purpy、Nord、Tokyo Night、Palenight、Gruvbox、GitHub Dark</td></tr>
+      <tr><td>ライト系</td><td>Light Warm</td></tr>
+    </tbody>
+  </table>
+
+  <h3>19.2 テーマの内容</h3>
+  <p>各テーマは次を定義します：</p>
+  <ul>
+    <li><strong>15 のフォント設定</strong>：
+      <ul>
+        <li>メイン UI、ハイライト</li>
+        <li>テーブルの番号列、時間列、字幕一列、字幕二列</li>
+        <li>選択行、選択範囲、再生行</li>
+        <li>字幕ボックスの字幕一、字幕二、注釈</li>
+        <li>校正のコンテキスト、正しい、誤り</li>
+      </ul>
+    </li>
+    <li><strong>24 の色</strong>：
+      <ul>
+        <li>アイコン：有効、無効、選択中</li>
+        <li>ウィンドウ：枠線、ボタン、ホバー</li>
+        <li>波形：背景、波形、ハンドル（通常/アクティブ/読み取り専用/ホバー）、タイムライン（クリック/再生）、選択範囲（背景/波形）</li>
+        <li>マーク色 1~8</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>19.3 テーマの切り替え</h3>
+  <p>ツールバーの「テーマ」ボタンにホバーするとテーマ一覧がポップアップし、クリックで切り替えられます。切り替え後、すべてのコントロールの色とフォントが即座に更新されます。</p>
+
+  <h3>19.4 カスタムテーマ</h3>
+  <ol>
+    <li>オプションでベーステーマを選択</li>
+    <li>「カスタマイズ」ボタンをクリックし、新しいテーマ名を入力</li>
+    <li>新しいテーマでフォント、サイズ、色、背景を変更</li>
+    <li>「プレビュー」をクリックしてリアルタイムで確認</li>
+    <li>OK をクリックして保存</li>
+  </ol>
+  <p>カスタムテーマは INI の <code>[Theme]</code> セクションに保存されます。</p>
+
+  <h3>19.5 テーマ編集テーブル</h3>
+  <table>
+    <thead><tr><th>列</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td>フォント</td><td>ドロップダウンで選択</td></tr>
+      <tr><td>サイズ</td><td>数値ボックス 8~24</td></tr>
+      <tr><td>色</td><td>クリックでカラーピッカーを開く</td></tr>
+      <tr><td>背景色</td><td>クリックでカラーピッカーを開く</td></tr>
+      <tr><td>サンプル</td><td>効果をプレビュー</td></tr>
+    </tbody>
+  </table>
+
+  <h3>19.6 テーマの継承</h3>
+  <p>一部の組み込みテーマ（Light Warm など）は Light テーマを継承し、前景色と背景色のみを上書きし、それ以外は親テーマを使用します。カスタムテーマは継承せず、独立して完全です。</p>
+</section>
+
+<!-- ============== 20 ============== -->
+<section id="s20">
+  <h2>20. ファイル形式とディレクトリ構造</h2>
+
+  <h3>20.1 関連ファイル</h3>
+  <table>
+    <thead><tr><th>拡張子</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>.srt</td><td>字幕本文</td></tr>
+      <tr><td>.snt</td><td>注釈 + 段落タグ + 書式付きテキスト</td></tr>
+      <tr><td>.dic</td><td>ディクテーション内容</td></tr>
+      <tr><td>.wfm</td><td>波形キャッシュ</td></tr>
+      <tr><td>ProofSrt.lst</td><td>校正ファイルリスト（任意）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>20.2 SNT ファイル形式</h3>
+  <pre>@t@:時間中間値ミリ秒
+@p@:段落タグ
+@f@:書式付きテキスト
+注釈 1 行目
+注釈 2 行目
+@t@:次の項目の時間中間値
+...</pre>
+  <ul>
+    <li><code>@t@:</code> は 1 件の字幕の開始を表します</li>
+    <li><code>@p@:</code> 段落タグ（s/n/a）</li>
+    <li><code>@f@:</code> 書式付きテキスト（&lt;f1&gt;~&lt;f7&gt; マークを含む）</li>
+    <li>その他の行はすべて注釈本文</li>
+  </ul>
+  <p>ある字幕に注釈、タグ、書式付きテキストのいずれもない場合、.snt には書き込まれません。.snt 全体が空の場合は自動的に削除されます。</p>
+
+  <h3>20.3 DIC ファイル形式</h3>
+  <pre>@t@:時間中間値ミリ秒
+ディクテーション 1 行目
+ディクテーション 2 行目
+@t@:次の項目...</pre>
+
+  <h3>20.4 ディレクトリ構造の例</h3>
+  <pre>字幕ディレクトリ\
+├── 某シリーズ.srt
+├── 某シリーズ.snt
+├── 某シリーズ.dic
+├── 某シリーズ.wfm
+├── 某シリーズ.mp4
+├── ProofSrt.lst
+└── backup\
+    ├── 某シリーズ_20240101_1200.srt
+    └── 某シリーズ_20240101_1200.snt</pre>
+
+  <h3>20.5 INI 設定ファイル</h3>
+  <p>プログラムディレクトリの <code>VlsPlayer.ini</code> にあります。主なセクション：</p>
+  <table>
+    <thead><tr><th>セクション</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>[Main]</td><td>言語、テーマ、プレーヤー、ASR モデル、自動保存、バックアップ数、AI 設定</td></tr>
+      <tr><td>[Display]</td><td>字幕表示方法、フィルター、行間隔、揃え、時間形式</td></tr>
+      <tr><td>[Play]</td><td>再生モード、速度、リピート、一時停止、音量、ノイズ</td></tr>
+      <tr><td>[SrtDir]</td><td>最近使用した SRT ディレクトリのリスト</td></tr>
+      <tr><td>[Theme]</td><td>カスタムテーマ</td></tr>
+      <tr><td>[WfEditor]</td><td>波形のページ長、振幅</td></tr>
+      <tr><td>[Last]</td><td>ウィンドウ位置、最後に開いた字幕、再生時間</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 21 ============== -->
+<section id="s21">
+  <h2>21. ショートカットキー一覧</h2>
+
+  <h3>21.1 グローバル</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Space</span></td><td>再生 / 一時停止</td></tr>
+      <tr><td><span class="key">Ctrl+Enter</span></td><td>全画面 / 全画面終了</td></tr>
+      <tr><td><span class="key">Esc</span></td><td>全画面時に全画面を終了</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.2 ファイルと編集</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+S</span></td><td>字幕を保存</td></tr>
+      <tr><td><span class="key">Ctrl+Z</span></td><td>元に戻す</td></tr>
+      <tr><td><span class="key">Ctrl+Y</span></td><td>やり直し</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.3 字幕操作</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+N</span></td><td>字幕を挿入</td></tr>
+      <tr><td><span class="key">Ctrl+L</span></td><td>字幕を削除</td></tr>
+      <tr><td><span class="key">Ctrl+M</span></td><td>字幕を結合</td></tr>
+      <tr><td><span class="key">Ctrl+P</span></td><td>再生 / 一時停止（Space と同等）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.4 学習ツール</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+D</span></td><td>辞書検索</td></tr>
+      <tr><td><span class="key">Ctrl+I</span></td><td>AI 分析</td></tr>
+      <tr><td><span class="key">Ctrl+T</span></td><td>TTS 読み上げ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.5 段落タグの切り替え</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+Shift+1</span></td><td>新旧シーン（s）の切り替え</td></tr>
+      <tr><td><span class="key">Ctrl+Shift+2</span></td><td>継続行/単一行（a）の切り替え</td></tr>
+      <tr><td><span class="key">Ctrl+Shift+3</span></td><td>ナレーション/歌詞（n）の切り替え</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.6 編集ボックス共通</h3>
+  <table>
+    <thead><tr><th>ショートカット</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+X</span></td><td>切り取り</td></tr>
+      <tr><td><span class="key">Ctrl+C</span></td><td>コピー</td></tr>
+      <tr><td><span class="key">Ctrl+V</span></td><td>貼り付け</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 22 ============== -->
+<section id="s22">
+  <h2>22. よくある質問とトラブルシューティング</h2>
+
+  <div class="qa">
+    <div class="q">Q1：字幕リストにファイルが見えない</div>
+    <div class="a">SRT ディレクトリが正しいか、ディレクトリ内に .srt ファイルがあるかを確認してください。更新方法：ディレクトリを切り替えてから戻す。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：波形エリアが空</div>
+    <div class="a">
+      原因は通常次のいずれかです：
+      <ul>
+        <li>同じディレクトリにメディアファイルがない</li>
+        <li>メディアファイル名が SRT と異なる</li>
+        <li>プログラムディレクトリの lib フォルダに ffmpeg.exe がない</li>
+        <li>ffmpeg が wfm を生成する際に失敗（メディア形式が非対応、または長すぎる）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：字幕時間を変更した後、プログラムを再起動すると失われる</div>
+    <div class="a">保存されていません。SRT 変更後は手動で保存（Ctrl+S）するか、自動保存を待つ必要があります。「終了時に自動保存」オプションも使用できます。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：フィルターモードで字幕を挿入できない</div>
+    <div class="a">これは設計上の動作です。フィルターモードでは字幕構造の変更が禁止されています。まずフィルターを解除してください（ツールバーの注釈/マークフィルターをクリックして解除）。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：ASR 認識が失敗する</div>
+    <div class="a">
+      以下を確認してください：
+      <ul>
+        <li>モデルが <code>sherpa\モデル名\</code> にダウンロードされているか</li>
+        <li><code>sherpa\sherpa-onnx-offline-websocket-server.exe</code> が存在するか</li>
+        <li><code>sherpa\asr_engine.py</code> が存在するか</li>
+        <li>Python がインストールされ、<code>pip install numpy websockets</code> を実行済みか</li>
+        <li>ポート 6006 と 9001 が占有されていないか</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：辞書 / AI が開けない</div>
+    <div class="a">
+      オプションで URL が有効か確認してください。内蔵ブラウザーを使用する場合、Edge WebView2 ランタイムが必要です。
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：シャドーイングの採点がいつも低い</div>
+    <div class="a">
+      確認：
+      <ul>
+        <li>マイクが正常に動作し、音量が適切か</li>
+        <li>録音環境が静かか</li>
+        <li>ASR モデルが正しく読み込まれているか</li>
+        <li>字幕の原文と録音内容の言語が一致しているか（モデルは英語モデルで、中国語の認識精度は低い）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：カラーマークが失われた</div>
+    <div class="a">カラーマークは .snt ファイルに保存されます。.snt が保存されていないか失われた場合、マークは通常のテキストに退化します。backup サブディレクトリから復元を試みてください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：自動保存で変更が上書きされた</div>
+    <div class="a">プログラムは保存前に backup サブディレクトリへ自動バックアップします。そこからタイムスタンプで過去のバージョンを探せます。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：テーマ切り替え後、一部のコントロールの色がおかしい</div>
+    <div class="a">一部のサードパーティコントロールはテーマの制御外です。オプションのテーマパネルで色を微調整できます。一部のコントロールはプログラムを再起動しないと完全に反映されません。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：全画面を終了する方法がわからない</div>
+    <div class="a"><span class="key">Esc</span> または <span class="key">Ctrl+Enter</span> を押してください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12：字幕時間を調整した後、音声とずれる</div>
+    <div class="a">
+      確認：
+      <ul>
+        <li>再生エンジンが VLC の場合、誤差が大きくなります。MPV に切り替えてみてください</li>
+        <li>波形エディターでハンドルをドラッグし、正確な位置に調整してください</li>
+        <li>ASR ツールボックスの「タイムライン整列」機能で自動修正してください</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13：再生中に字幕のスクロールがカクつく</div>
+    <div class="a">
+      行の高さ計算や再描画の負荷が原因かもしれません。次を試してください：
+      <ul>
+        <li>「字幕を 1 行で表示」をオフにする</li>
+        <li>テーブルの行間隔を小さくする</li>
+        <li>カラーマーク表示をオフにする</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14：内蔵ブラウザーが開けない</div>
+    <div class="a">Microsoft Edge WebView2 Runtime をインストールする必要があります。Microsoft の公式サイトからダウンロードできます。</div>
+  </div>
+</section>
+
+<footer>
+  VlsPlayer 操作マニュアル · バージョン 1.0（詳細版）
+</footer>
+
+</div>
+</body>
+</html>

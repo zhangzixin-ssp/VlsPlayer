@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASR Toolbox User Manual</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    color: var(--accent);
+  }
+  header .meta {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft);
+    color: var(--accent);
+  }
+  h3 {
+    font-size: 16px;
+    margin: 22px 0 10px;
+  }
+  h4 {
+    font-size: 15px;
+    margin: 18px 0 8px;
+    color: #333;
+  }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+  code {
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+  }
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 32px;
+    margin-bottom: 20px;
+  }
+  .toc h2 {
+    border: none;
+    font-size: 16px;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .toc ol { margin: 0; }
+  .toc a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: #fff8e6;
+    border-left: 4px solid #e8a200;
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .qa {
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    margin: 16px 0;
+  }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>ASR Toolbox User Manual</h1>
+  <div class="meta">Version 1.0 &nbsp;|&nbsp; ASR Toolbox</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">Program Overview</a></li>
+    <li><a href="#s2">System Requirements</a></li>
+    <li><a href="#s3">Interface</a></li>
+    <li><a href="#s4">Quick Start</a></li>
+    <li><a href="#s5">Parameter Details</a></li>
+    <li><a href="#s6">Processing Flow</a></li>
+    <li><a href="#s7">FAQ</a></li>
+    <li><a href="#s8">Notes</a></li>
+    <li><a href="#s9">Appendix: Chinese-English UI Text Reference</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. Program Overview</h2>
+  <p>The ASR Toolbox processes video/audio subtitles and provides two working modes:</p>
+  <table>
+    <thead>
+      <tr><th>Mode</th><th>Function</th><th>Output Location</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ASR Generate SRT File</td><td>Use an ASR model to recognize speech and generate subtitles</td><td>ASR folder</td></tr>
+      <tr><td>Align SRT Timeline</td><td>Align existing ASR subtitles with source subtitles</td><td>Source folder (overwrites original files)</td></tr>
+    </tbody>
+  </table>
+  <p>The program supports batch processing of multiple files and can be canceled midway.</p>
+</section>
+
+<section id="s2">
+  <h2>2. System Requirements</h2>
+  <ul>
+    <li>Windows</li>
+    <li><code>lib\ffmpeg.exe</code> must exist in the program directory</li>
+    <li>When using generation mode, the corresponding ASR model must be downloaded</li>
+    <li>ASR models come in small, medium, and large sizes; larger is more accurate but slower</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. Interface</h2>
+
+  <h3>3.1 Left Area</h3>
+  <h4>Mode Selection</h4>
+  <ul>
+    <li><code>Align SRT Timeline</code>: align existing subtitles</li>
+    <li><code>ASR Generate SRT File</code>: generate new subtitles</li>
+  </ul>
+  <h4>File List</h4>
+  <ul>
+    <li>Align mode: shows only <code>.srt</code> files in the source folder</li>
+    <li>Generate mode: shows only video/audio files in the source folder</li>
+    <li>Multi-select supported</li>
+  </ul>
+  <h4>File Progress Bar</h4>
+  <p>Located below the file list; shows overall progress when processing multiple files.</p>
+
+  <h3>3.2 Right Parameter Area</h3>
+  <h4>Directory Settings</h4>
+  <table>
+    <thead><tr><th>Item</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Source folder</td><td>Directory containing source files</td></tr>
+      <tr><td>ASR folder</td><td>Directory containing ASR files</td></tr>
+    </tbody>
+  </table>
+  <p>Both directories have a <code>...</code> button on the right; click to select a folder.</p>
+
+  <h4>Options</h4>
+  <table>
+    <thead><tr><th>Option</th><th>Display Condition</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Merge sentence fragments before alignment?</td><td>Align mode only</td><td>If checked, merge fragments before alignment</td></tr>
+      <tr><td>If ASR-generated SRT file exists, overwrite it?</td><td>Generate mode only</td><td>If checked, overwrite existing SRT files</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Alignment Parameters</h4>
+  <table>
+    <thead><tr><th>Parameter</th><th>Range</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Time Drift Window (s)</td><td>10 ~ 180</td><td>30</td><td>Allowed time offset range</td></tr>
+      <tr><td>Search Text Length</td><td>10 ~ 60</td><td>16</td><td>Length of the search text window during alignment</td></tr>
+      <tr><td>Min Time Gap (ms)</td><td>1 ~ 100</td><td>1</td><td>Minimum interval between subtitles</td></tr>
+      <tr><td>Max Error Threshold</td><td>0.01 ~ 0.39</td><td>0.15</td><td>Maximum allowed matching error rate</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Default Button</h4>
+  <p>Click to restore the four alignment parameters to their default values.</p>
+
+  <h3>3.3 Right Log Area</h3>
+  <ul>
+    <li>Shows the processing status of each step</li>
+    <li>Shows failure reasons</li>
+    <li>Shows success statistics</li>
+    <li>In generation mode, the bottom shows an ASR segment progress bar</li>
+  </ul>
+
+  <h3>3.4 Bottom Buttons</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>OK</td><td>Start processing</td></tr>
+      <tr><td>Cancel</td><td>Can be clicked during processing; stops after the current segment ends</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s4">
+  <h2>4. Quick Start</h2>
+
+  <h3>4.1 Generate SRT Subtitles</h3>
+  <ol>
+    <li>Select <code>ASR Generate SRT File</code></li>
+    <li>Set the <strong>Source folder</strong> (directory containing media files)</li>
+    <li>Set the <strong>ASR folder</strong> (SRT output directory)</li>
+    <li>In the left list, select the media files to process (multi-select supported)</li>
+    <li>Check <code>If ASR-generated SRT file exists, overwrite it?</code> as needed</li>
+    <li>Click <strong>OK</strong></li>
+    <li>Watch the log area and wait for processing to finish</li>
+    <li>Get the same-named <code>.srt</code> file from the <strong>ASR folder</strong></li>
+  </ol>
+
+  <h3>4.2 Align SRT Timeline</h3>
+  <ol>
+    <li>Select <code>Align SRT Timeline</code></li>
+    <li>Set the <strong>Source folder</strong> (containing the <code>.srt</code> to be corrected)</li>
+    <li>Set the <strong>ASR folder</strong> (containing the same-named ASR <code>.srt</code>)</li>
+    <li>Check <code>Merge sentence fragments before alignment?</code> as needed</li>
+    <li>Adjust the four alignment parameters as needed, or click <strong>Default</strong></li>
+    <li>Select files in the left list</li>
+    <li>Click <strong>OK</strong></li>
+    <li>When finished, the <code>.srt</code> in the <strong>Source folder is updated</strong></li>
+  </ol>
+</section>
+
+<section id="s5">
+  <h2>5. Parameter Details</h2>
+
+  <h4>Time Drift Window (s)</h4>
+  <p>The maximum offset allowed between subtitle timestamps and audio. Default is 30 seconds. If the subtitles are offset overall by a large amount, increase this value appropriately.</p>
+
+  <h4>Search Text Length</h4>
+  <p>The length of the text window used for matching during alignment. Default is 16. Larger is more stable but slower; smaller is faster but may match inaccurately.</p>
+
+  <h4>Min Time Gap (ms)</h4>
+  <p>The minimum interval allowed between two subtitles. Default is 1 millisecond. Used to prevent subtitles from overlapping on the timeline.</p>
+
+  <h4>Max Error Threshold</h4>
+  <p>The maximum error rate allowed during matching. Default is 0.15. Larger is more permissive; smaller is stricter.</p>
+</section>
+
+<section id="s6">
+  <h2>6. Processing Flow</h2>
+
+  <h3>6.1 Generation Mode</h3>
+  <ol>
+    <li>Open the media file and read the total duration</li>
+    <li>Split into <strong>120-second</strong> segments</li>
+    <li>Use <code>lib\ffmpeg.exe</code> to extract 16 kHz mono wav</li>
+    <li>Call the ASR model for recognition</li>
+    <li>For non-final segments, discard the last sentence to avoid overlap with the next segment</li>
+    <li>When all done, write to the ASR folder</li>
+  </ol>
+
+  <h3>6.2 Alignment Mode</h3>
+  <ol>
+    <li>Read the source SRT and ASR SRT</li>
+    <li>If checked, merge sentence fragments first</li>
+    <li>Align according to the four parameters</li>
+    <li>Write the result back to the source SRT</li>
+  </ol>
+</section>
+
+<section id="s7">
+  <h2>7. FAQ</h2>
+
+  <div class="qa">
+    <div class="q">Q1: Failed to read media file information</div>
+    <div class="a">The media file cannot be opened or its format is not supported. Check whether the file is intact and whether the path contains special characters.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: No ASR subtitle file</div>
+    <div class="a">In align mode, the ASR folder does not contain a file with the same name as the source SRT. Run generation mode first, or confirm that the file names match.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: Automatic speech recognition failed</div>
+    <div class="a">Model loading failed or audio extraction failed. Check whether the model has been downloaded and whether <code>lib\ffmpeg.exe</code> exists.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: No result for the last few minutes</div>
+    <div class="a">Possible causes: the total media duration could not be read or was underestimated; a segment failed and caused an interruption; the last segment produced no recognized content. Check the last few lines of the log to see where it stopped.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: Will the SRT in the source folder be overwritten?</div>
+    <div class="a">Align mode overwrites the source SRT, so back it up first. In generation mode, if an SRT with the same name already exists in the ASR folder and "overwrite" is not checked, it will be skipped.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: Can it be canceled midway?</div>
+    <div class="a">Yes. After clicking Cancel, it stops when the current segment finishes. Already-recognized parts are not saved.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Why can't I see a certain file in the file list?</div>
+    <div class="a">The list only shows supported extensions. Align mode shows only <code>.srt</code>; generation mode shows only video/audio extensions. If the extension is not in the supported list, it will not appear.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: Changes to parameters did not take effect?</div>
+    <div class="a">Parameters are read when you click OK. After changing them, simply click OK. If an input value is out of range, a dialog will prompt you and correct it automatically.</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. Notes</h2>
+  <ol>
+    <li>Processing long files takes a long time; it is recommended to test with a short video first.</li>
+    <li>Larger models are more accurate but slower and use more memory.</li>
+    <li>Temporary wav files are deleted automatically, but abnormal exit may leave residue.</li>
+    <li>Align mode directly rewrites the <code>.srt</code> in the source directory; please back up first.</li>
+    <li>Current settings are saved when the program exits and restored automatically next time.</li>
+    <li>It is recommended to keep <code>lib\ffmpeg.exe</code> matching the program version.</li>
+  </ol>
+</section>
+
+<section id="s9">
+  <h2>9. Appendix: Chinese-English UI Text Reference</h2>
+  <table>
+    <thead><tr><th>Chinese</th><th>English</th></tr></thead>
+    <tbody>
+      <tr><td>语音识别工具箱</td><td>ASR Toolbox</td></tr>
+      <tr><td>对齐SRT字幕时间线</td><td>Align SRT timeline</td></tr>
+      <tr><td>ASR生成SRT字幕文件</td><td>ASR Generate SRT file</td></tr>
+      <tr><td>源文件夹</td><td>Source dir</td></tr>
+      <tr><td>ASR文件夹</td><td>ASR SRT dir</td></tr>
+      <tr><td>在对齐时间线之前合并句子碎片?</td><td>Merger sentence fragments before alignment ?</td></tr>
+      <tr><td>如果ASR生成的SRT文件存在，覆盖吗?</td><td>If ASR SRT file exists, ovverwrite it ?</td></tr>
+      <tr><td>时间漂移窗口 (秒)</td><td>Time Drift Window (s)</td></tr>
+      <tr><td>搜索文本长度</td><td>Search Text Length</td></tr>
+      <tr><td>最小时间间隙 (毫秒)</td><td>Min Time Gap (ms)</td></tr>
+      <tr><td>最大错误阈值</td><td>Max Error Threshold</td></tr>
+      <tr><td>默认值</td><td>Default</td></tr>
+      <tr><td>取消</td><td>Cancel</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  ASR Toolbox User Manual · Version 1.0
+</footer>
+
+</div>
+</body>
+</html>

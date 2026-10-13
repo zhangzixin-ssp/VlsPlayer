@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT Toolbox User Manual</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+    --warn-bg: #fff8e6;
+    --warn-border: #e8a200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 16px; margin: 22px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.5;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .cmd {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 14px 18px; margin: 14px 0; background: #fafbfc;
+  }
+  .cmd .name {
+    font-weight: 600; color: var(--accent); font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .cmd .desc { color: #444; margin: 6px 0; font-size: 14px; }
+  .cmd .io {
+    color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: Consolas, monospace;
+  }
+  .cmd .hint {
+    background: var(--accent-soft); border-radius: 4px;
+    padding: 6px 10px; margin-top: 8px; font-size: 13px; color: #234;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, .cmd { page-break-inside: avoid; }
+    .toc ol { column-count: 2; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SRT Toolbox User Manual</h1>
+  <div class="meta">Version 1.0 &nbsp;|&nbsp; SRT Toolbox / VlsSrtTools</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">Program Overview</a></li>
+    <li><a href="#s2">Interface Layout</a></li>
+    <li><a href="#s3">Left Panel: Directory and Files</a></li>
+    <li><a href="#s4">Subtitle Line Types</a></li>
+    <li><a href="#s5">Middle Panel: 17 Commands</a></li>
+    <li><a href="#s6">Subtitle-Text Conversion (Commands 1-8)</a></li>
+    <li><a href="#s7">Subtitle Content Operations (Commands 9-15)</a></li>
+    <li><a href="#s8">Video Splitting (Commands 16-17)</a></li>
+    <li><a href="#s9">Right Panel: Anki Export</a></li>
+    <li><a href="#s10">FAQ</a></li>
+    <li><a href="#s11">Notes</a></li>
+    <li><a href="#s12">Appendix: File Naming Rules</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. Program Overview</h2>
+  <p>SRT Toolbox (VlsSrtTools) is a batch processing tool for SRT subtitles, used to perform common organization, conversion, and export tasks on a set of subtitle files.</p>
+  <p>Main capabilities:</p>
+  <ul>
+    <li>Convert between subtitles and plain text (export, refill)</li>
+    <li>Merge, split, swap, and delete subtitle content</li>
+    <li>Simplified/Traditional Chinese conversion</li>
+    <li>Timeline extension</li>
+    <li>Generate text for AI translation / translation checking</li>
+    <li>Split video by subtitle timeline (generate ffmpeg batch files)</li>
+    <li>Export Anki player text, series cards, and sentence note cards</li>
+  </ul>
+  <p>The program supports batch processing of multiple files, and all modifying operations automatically back up the original files.</p>
+</section>
+
+<section id="s2">
+  <h2>2. Interface Layout</h2>
+  <p>The main window is divided into three areas:</p>
+  <table>
+    <thead><tr><th>Area</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Left panel</td><td>SRT directory selection, subtitle line type, SRT file list</td></tr>
+      <tr><td>Middle panel</td><td>17 command buttons</td></tr>
+      <tr><td>Right panel</td><td>Anki export settings (shown when hovering over Command 1) + SRT preview</td></tr>
+      <tr><td>Bottom status bar</td><td>Current file name + subtitle count</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s3">
+  <h2>3. Left Panel: Directory and Files</h2>
+
+  <h3>3.1 SRT Directory</h3>
+  <ul>
+    <li>Use the drop-down box to select a saved SRT directory.</li>
+    <li>Green <code>+</code> button: add an SRT directory.</li>
+    <li>Red <code>−</code> button: remove the current SRT directory.</li>
+    <li><code>Include subdirectories?</code>: if checked, scanning includes subdirectories.</li>
+  </ul>
+  <p>The program remembers each directory's configuration (including subtitle line type, Anki parameters, etc.) and restores it automatically when switching directories.</p>
+
+  <h3>3.2 SRT File List</h3>
+  <ul>
+    <li>Lists all <code>.srt</code> files in the current directory.</li>
+    <li>Multi-select supported; batch operations target the selected files.</li>
+    <li>Click a single file to show its content in the right preview area; the status bar shows the subtitle count.</li>
+    <li>The list header shows the total count and the currently selected count.</li>
+  </ul>
+</section>
+
+<section id="s4">
+  <h2>4. Subtitle Line Types</h2>
+  <p>Each subtitle in an SRT file may have only one line of text, or two lines for original and translation. The program needs to know how to split them into "Subtitle 1" and "Subtitle 2".</p>
+  <table>
+    <thead><tr><th>Option</th><th>Splitting Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Auto-detect</td><td>Judged by language features: English lines go to Subtitle 1, the rest go to Subtitle 2</td></tr>
+      <tr><td>First line as Subtitle 1</td><td>The first line of each subtitle goes to Subtitle 1, the rest are merged into Subtitle 2</td></tr>
+      <tr><td>All lines as Subtitle 1</td><td>All text is treated as Subtitle 1; Subtitle 2 is left empty</td></tr>
+      <tr><td>Last line as Subtitle 2</td><td>The last line of each subtitle goes to Subtitle 2, the rest are merged into Subtitle 1</td></tr>
+      <tr><td>Odd/even subtitle lines paired</td><td>Lines 1 and 2 form a pair, lines 3 and 4 form a pair, etc. (default)</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    This option directly affects the results of all commands, especially operations that only process Subtitle 2, such as "Swap Subtitle 1 and Subtitle 2" and "Simplified/Traditional conversion". Choosing the wrong one will misalign the target of processing.
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. Middle Panel: 17 Commands</h2>
+  <p>The middle is a group of command buttons, 17 commands in total. Hovering the mouse over a button highlights it and shows a tooltip. When hovering over Command 1, the Anki export panel is shown on the right.</p>
+  <p>The commands are divided into three groups by purpose:</p>
+  <ul>
+    <li><strong>Subtitle-text conversion</strong>: Commands 1–8</li>
+    <li><strong>Subtitle content operations</strong>: Commands 9–15</li>
+    <li><strong>Video splitting</strong>: Commands 16–17</li>
+  </ul>
+  <div class="note">
+    Before executing any command, you must first select an SRT directory and select at least one SRT file; otherwise a dialog will prompt you.
+  </div>
+</section>
+
+<section id="s6">
+  <h2>6. Subtitle-Text Conversion (Commands 1-8)</h2>
+
+  <div class="cmd">
+    <div class="name">1. Export Anki Player Text</div>
+    <div class="desc">This command does not perform the export itself; it displays the Anki settings panel on the right, and the export is done from that panel. See Section 9 for details.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">2. Export Subtitle 1 to Text File</div>
+    <div class="desc">Export Subtitle 1 of the selected SRTs line by line as plain text. Each line is in the format <code>line number|content</code>, with line numbers starting from 1 and zero-padded to 4 digits.</div>
+    <div class="io">Output file: *_1.txt (UTF-8)</div>
+    <div class="hint">Used to hand subtitles to external tools (such as AI or translation software) for modification, then use Command 4 to refill.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">3. Export Subtitle 2 to Text File</div>
+    <div class="desc">Same as above, but exports Subtitle 2.</div>
+    <div class="io">Output file: *_2.txt (UTF-8)</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">4. Update Subtitle 1 from Text</div>
+    <div class="desc">Read <code>*_1.txt</code> in the same directory and update Subtitle 1 by line number. The text format must be <code>line number|content</code>; only valid line numbers are updated, out-of-range ones are ignored.</div>
+    <div class="io">Input file: *_1.txt</div>
+    <div class="hint">The original SRT is automatically backed up before processing.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">5. Update Subtitle 2 from Text</div>
+    <div class="desc">Same as above, but updates Subtitle 2.</div>
+    <div class="io">Input file: *_2.txt</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">6. Generate Text Needed for AI Translation</div>
+    <div class="desc">A Prompt input window pops up; after confirmation, text for AI translation is generated. Content = Prompt + all Subtitle 1 (in <code>line number|content</code> format). The Prompt is saved in the configuration and loaded automatically next time.</div>
+    <div class="io">Output file: *_t.txt (UTF-8)</div>
+    <div class="hint">The default Prompt requires line-by-line literal translation, strictly forbids splitting or merging lines, and outputs in the format <code>line number|translation</code>. You can modify it yourself.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">7. Generate Text Needed for AI Translation Check</div>
+    <div class="desc">A Prompt input window pops up; after confirmation, text for AI translation checking is generated. Content = Prompt + full SRT content (original + translation side by side).</div>
+    <div class="io">Output file: *_c.txt (UTF-8)</div>
+    <div class="hint">The default Prompt asks the AI to find omissions, mistranslations, and areas for improvement, and to output only the corrected lines.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">8. Export Selected SRTs to One Text</div>
+    <div class="desc">Merge all selected SRTs into a single text file. Each file starts with <code>[file name]</code>, followed by lines in the format <code>timestamp (MM:SS) Tab Subtitle 1</code>. A blank line separates files.</div>
+    <div class="io">Output file: _all.txt in the SRT directory (UTF-8)</div>
+    <div class="hint">Used for quickly browsing a whole season's subtitles or doing an overall proofread.</div>
+  </div>
+</section>
+
+<section id="s7">
+  <h2>7. Subtitle Content Operations (Commands 9-15)</h2>
+
+  <div class="cmd">
+    <div class="name">9. Swap Subtitle 1 and Subtitle 2</div>
+    <div class="desc">Swap the original text and translation of each subtitle.</div>
+    <div class="hint">The original is automatically backed up before processing. If the subtitle line type is set incorrectly, the swap result will be unexpected; check the settings in Section 4 first.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">10. Delete Subtitle 2</div>
+    <div class="desc">Clear all Subtitle 2 content, keeping only Subtitle 1.</div>
+    <div class="hint">Suitable for scenarios where only the original text is kept.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">11. Merge Sentence Fragments in Subtitles</div>
+    <div class="desc">Automatically detect adjacent subtitle lines that belong to the same sentence and merge them. Merge rules: time takes the union, text is joined with a space, translation is joined with a space. It can recognize abbreviations, unclosed quotes, endings with commas/semicolons, etc.</div>
+    <div class="hint">Used to repair overly fragmented ASR output or manually split subtitles.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">12. Split Role Subtitle Lines by -</div>
+    <div class="desc">For each subtitle, split the text at <code> -</code> (space + hyphen) into two lines. Time is allocated proportionally by text length: the first half takes the earlier segment, the second half takes the later segment. If the translation also contains <code> -</code>, it is split in sync.</div>
+    <div class="hint">Used to roughly separate different characters' lines in the same time period before fine-tuning the timeline. If a subtitle does not contain <code> -</code>, it is left unchanged.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">13. Extend Timeline</div>
+    <div class="desc">A time input window pops up; extend the start and end times of each subtitle by the specified offset. During extension, overlap with adjacent subtitles is automatically avoided; each side extends at most to the midpoint of the adjacent subtitle.</div>
+    <div class="hint">Used to fix subtitles whose time is too short and whose display duration is insufficient.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">14. Convert Subtitle from Simplified to Traditional Chinese</div>
+    <div class="desc">Convert Subtitle 2 from Simplified to Traditional Chinese. Subtitle 1 is unchanged.</div>
+    <div class="hint">Only Subtitle 2 is processed; the conversion uses the system LCMapString and does not affect English subtitles.</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">15. Convert Subtitle from Traditional to Simplified Chinese</div>
+    <div class="desc">Convert Subtitle 2 from Traditional to Simplified Chinese. Subtitle 1 is unchanged.</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. Video Splitting (Commands 16-17)</h2>
+
+  <div class="cmd">
+    <div class="name">16. Split into Multiple Videos by Subtitle</div>
+    <div class="desc">A media type selection window pops up (mp4, mkv, etc.). After confirmation, ffmpeg commands are generated sentence by sentence according to the subtitle timeline and written into a batch file. The media file is assumed to have the same name as the SRT, only with a different extension.</div>
+    <div class="io">Output file: *_cut.bat</div>
+    <div class="hint">
+      The batch file must be run manually by double-clicking. When running, ffmpeg must be installed and in PATH, or ffmpeg.exe must be in the same directory.<br>
+      The split command uses <code>-c copy</code> and does not re-encode, so it is extremely fast.
+    </div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">17. Split into Two Subtitles and Videos</div>
+    <div class="desc">A media type + split time window pops up. After confirmation:</div>
+    <ul>
+      <li>Split the SRT at the specified time point into <code>*_1.srt</code> and <code>*_2.srt</code>, with the latter's timeline shifted forward as a whole</li>
+      <li>Generate <code>*_cut_2.bat</code> containing two ffmpeg commands, cutting the first half and the second half of the video respectively</li>
+    </ul>
+    <div class="io">Output files: *_1.srt, *_2.srt, *_cut_2.bat</div>
+    <div class="hint">
+      If the specified time point falls in the middle of a subtitle, the program automatically adjusts it to the gap between two adjacent subtitles.<br>
+      If the time point is outside the subtitle range, that file is skipped.
+    </div>
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. Right Panel: Anki Export</h2>
+  <p>When the mouse hovers over Command 1, <code>Export Anki Player Text</code>, the Anki export panel is shown on the right.</p>
+
+  <h3>9.1 Panel Options</h3>
+  <table>
+    <thead><tr><th>Item</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Series deck name</td><td>When checked, enables selection of the deck in Anki used for series</td></tr>
+      <tr><td>Title (keyword)</td><td>Series title, composed of three parts: main title + season/chapter + episode/unit</td></tr>
+      <tr><td>Note deck</td><td>When checked, enables export of sentence cards with notes</td></tr>
+      <tr><td>Also save as text file?</td><td>When checked, also saves as a local text file</td></tr>
+      <tr><td>Sync Anki after update?</td><td>When checked, automatically triggers Anki sync</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 Season/Episode Number Extraction</h3>
+  <table>
+    <thead><tr><th>Item</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Media file name prefix</td><td>Prefix of the timeline field, e.g. <code>fr</code></td></tr>
+      <tr><td>Season number source</td><td>Can be "From SRT folder" or "From SRT file name"</td></tr>
+      <tr><td>Season number start position</td><td>From which character to start extracting</td></tr>
+      <tr><td>Season number length</td><td>How many characters to extract</td></tr>
+      <tr><td>Episode number start position</td><td>Same as above, for the episode number</td></tr>
+      <tr><td>Episode number length</td><td>Same as above</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 Export Content</h3>
+  <ul>
+    <li><strong>Series deck</strong>: all subtitle text of a season, archived into the corresponding field by season</li>
+    <li><strong>Note deck</strong>: exports only sentences with notes or format markers, as study cards</li>
+  </ul>
+
+  <h3>9.4 Steps</h3>
+  <ol>
+    <li>Select the SRT files to export on the left.</li>
+    <li>Hover the mouse over Command 1 to show the Anki panel.</li>
+    <li>Set the deck, title, and season/episode number extraction parameters.</li>
+    <li>Click the <strong>Export</strong> button at the top right of the panel.</li>
+    <li>The log area shows the export result.</li>
+  </ol>
+
+  <h3>9.5 Prerequisites</h3>
+  <ul>
+    <li>Anki is running</li>
+    <li>AnkiConnect add-on is installed</li>
+    <li>Port 8765 is not occupied</li>
+  </ul>
+  <div class="note">
+    If the note type does not exist, the program will try to create it automatically. If creation fails, the template file is missing; check the <code>lib\anki\</code> subdirectory in the program directory.
+  </div>
+</section>
+
+<section id="s10">
+  <h2>10. FAQ</h2>
+
+  <div class="qa">
+    <div class="q">Q1: It says "Please select an SRT folder"</div>
+    <div class="a">The SRT directory drop-down at the top is empty. Click the green <code>+</code> button to add a directory.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: It says "Please select an SRT file"</div>
+    <div class="a">No file is selected in the left file list. Click a file name to select it; multi-select is supported.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: Processing is slow</div>
+    <div class="a">There are many files, many subtitle lines, or Anki export is enabled. Process in batches.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: Original/translation recognition is wrong</div>
+    <div class="a">Manually specify the splitting method in <strong>Subtitle line type</strong> on the left; do not use "Auto-detect".</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: After exporting *_1.txt and modifying it, refilling did not take effect</div>
+    <div class="a">Check whether the text format is <code>line number|content</code> (line number zero-padded to 4 digits, separated by a vertical bar), and whether the line numbers are within the valid range.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: Anki export failed</div>
+    <div class="a">Check whether Anki is running, whether the AnkiConnect add-on is installed, and whether the deck exists. Export failure does not affect the local SRT files.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Can changes be undone?</div>
+    <div class="a">No. Modifying operations automatically back up the original files, and the backups are in the <code>backup\</code> subdirectory of the same directory. To restore, manually rename the backup file back to the original name.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: The media file cannot be found when splitting video</div>
+    <div class="a">The program assumes the media file has the same name as the SRT, only with a different extension. If the media file name is different, rename it to match first.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9: How do I use the generated batch file?</div>
+    <div class="a">Copy the batch file to the directory containing the media files and double-click to run. ffmpeg must be installed and in PATH, or ffmpeg.exe must be in the same directory.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10: What if the split time point falls in the middle of a subtitle?</div>
+    <div class="a">The program automatically adjusts the split point to the gap between two adjacent subtitles. If there are no more subtitles after the whole segment, it uses the original time point.</div>
+  </div>
+</section>
+
+<section id="s11">
+  <h2>11. Notes</h2>
+  <ol>
+    <li>Before batch operations, it is recommended to back up the entire SRT directory.</li>
+    <li>Modifying operations overwrite the original files; the program automatically backs up to the <code>backup\</code> subdirectory, but the number of backups is limited.</li>
+    <li>The AI translation and checking functions only generate text; they do not directly modify the SRT. You need to use the "Update subtitle from text" command to write the results back.</li>
+    <li>The video splitting function only generates batch files; it does not directly execute ffmpeg. Confirm that paths and file names are correct before running the batch.</li>
+    <li>Anki-related functions require the AnkiConnect add-on and a running Anki.</li>
+    <li>The program saves the current directory, parameters, and window position when exiting, and restores them automatically next time.</li>
+    <li>Simplified/Traditional conversion only processes Subtitle 2. If Subtitle 1 also needs conversion, use "Swap Subtitle 1 and Subtitle 2" first, convert, then swap back.</li>
+  </ol>
+</section>
+
+<section id="s12">
+  <h2>12. Appendix: File Naming Rules</h2>
+  <table>
+    <thead><tr><th>Suffix</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>_1.txt</td><td>Text exported from Subtitle 1</td></tr>
+      <tr><td>_2.txt</td><td>Text exported from Subtitle 2</td></tr>
+      <tr><td>_t.txt</td><td>Text used for AI translation</td></tr>
+      <tr><td>_c.txt</td><td>Text used for AI translation checking</td></tr>
+      <tr><td>_series.txt</td><td>Anki series text</td></tr>
+      <tr><td>_sentence.txt</td><td>Anki sentence note text</td></tr>
+      <tr><td>_cut.bat</td><td>Batch file for splitting video sentence by sentence by subtitle</td></tr>
+      <tr><td>_cut_2.bat</td><td>Batch file for splitting into two videos by time point</td></tr>
+      <tr><td>_1.srt / _2.srt</td><td>The two subtitle files after splitting</td></tr>
+      <tr><td>_all.txt</td><td>Text merging all selected SRTs</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Backup Directory</h3>
+  <p>Before each modifying operation, the original file is automatically backed up to the <code>backup\</code> subdirectory of the same directory, with a timestamped file name, for example:</p>
+  <pre>Subtitle directory\backup\SomeSeries_20240101_1200.srt</pre>
+</section>
+
+<footer>
+  SRT Toolbox User Manual · Version 1.0
+</footer>
+
+</div>
+</body>
+</html>

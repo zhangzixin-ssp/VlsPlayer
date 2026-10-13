@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki プレーヤー (VlsPlayer Series) 操作マニュアル</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .tip {
+    background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key {
+    display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333;
+  }
+  .btn {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center;
+  }
+  .glyph {
+    display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki プレーヤー (VlsPlayer Series) 操作マニュアル</h1>
+  <div class="meta">バージョン 1.0 &nbsp;|&nbsp; Anki と組み合わせて使うシーズン/ユニット単位の字幕学習カード</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">これは何か</a></li>
+    <li><a href="#s2">カードのフィールドと作成</a></li>
+    <li><a href="#s3">画面レイアウト</a></li>
+    <li><a href="#s4">ボタンパネル</a></li>
+    <li><a href="#s5">単文モードとタイムライン</a></li>
+    <li><a href="#s6">再生モード</a></li>
+    <li><a href="#s7">ループモードとチャンネル/ユニット</a></li>
+    <li><a href="#s8">シャドーイングとロールプレイ</a></li>
+    <li><a href="#s9">フラッシュ再生</a></li>
+    <li><a href="#s10">リピート再生と間隔</a></li>
+    <li><a href="#s11">お気に入り</a></li>
+    <li><a href="#s12">字幕表示と言語</a></li>
+    <li><a href="#s13">録音とノイズ</a></li>
+    <li><a href="#s14">長押し操作</a></li>
+    <li><a href="#s15">オプションパネル詳細</a></li>
+    <li><a href="#s16">キーボードショートカット</a></li>
+    <li><a href="#s17">オプションの永続化</a></li>
+    <li><a href="#s18">Srts フィールド形式</a></li>
+    <li><a href="#s19">よくある質問</a></li>
+  </ol>
+</nav>
+
+<!-- ========== 1 ========== -->
+<section id="s1">
+  <h2>1. これは何か</h2>
+  <p>これは、<b>シーズン全体またはユニット全体</b>の字幕データを 1 枚のカードに詰め込んだ特殊な Anki カードです。復習時にエピソードごとにカードをめくる必要はなく、1 枚のカード内で次のことができます：</p>
+  <ul>
+    <li>動画を見ながら字幕を同期表示する</li>
+    <li>文ごとにシャドーイング、精聴、ディクテーションを行う</li>
+    <li>ロールプレイ：あなたが一方の役を読み、プレーヤーがもう一方の役を読む</li>
+    <li>フラッシュ再生：区間全体を速度を変えて速く再生し、素早く通す</li>
+    <li>お気に入りの文をマークして後で集中的に復習する</li>
+    <li>録音して比較する</li>
+  </ul>
+  <p>これはデスクトップ版 VlsPlayer とは別物です。VlsPlayer は Windows アプリケーションで、このカードテンプレートは Anki 内部で動作する JavaScript です。両者は同じ字幕ファイル形式と字幕ツールボックスを共有しています。</p>
+
+  <h3>1.1 主な特徴</h3>
+  <ul>
+    <li>黒背景に黄色のボタン。長時間の動画学習向けに設計</li>
+    <li>ボタンパネルはドラッグ可能、上部/下部にドッキング可能、2 行に折りたたみ可能</li>
+    <li>設定はすべてカードのフィールド、または iOS では localStorage に保存される</li>
+    <li>デスクトップ、iPhone、iPad、Android、macOS に対応</li>
+    <li>Windows ではクリップボード API のために Anki アドオン 1020366288 が必要</li>
+  </ul>
+</section>
+
+<!-- ========== 2 ========== -->
+<section id="s2">
+  <h2>2. カードのフィールドと作成</h2>
+
+  <h3>2.1 カードのフィールド</h3>
+  <table>
+    <thead><tr><th>フィールド</th><th>役割</th></tr></thead>
+    <tbody>
+      <tr><td>Title</td><td>シリーズタイトル。メインタイトル、シーズン/章、エピソード/ユニットの 3 部分で構成</td></tr>
+      <tr><td>Media</td><td>メディア拡張子 + ポスター（任意）。<code>|</code> で区切る</td></tr>
+      <tr><td>Options</td><td>オプション文字列（デスクトップ Anki のみ。第 17 節参照）</td></tr>
+      <tr><td>Srts_00</td><td>インデックス/概要トラック。字幕なし。ユニット数のみ記録</td></tr>
+      <tr><td>Srts_01 ～ Srts_10</td><td>最大 10 チャンネル。各チャンネルは同じエピソードの多言語/複数シーズンの字幕</td></tr>
+      <tr><td>Tags</td><td>オプションもここに保存される（base62 エンコード）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 作成元</h3>
+  <p>カードはデスクトップ版 VlsPlayer の「Anki プレーヤーテキスト」エクスポート機能、または SRT ツールボックスの Anki エクスポート機能で生成されます。フィールド内容は自動で入力され、手書きは不要です。</p>
+
+  <h3>2.3 読み込みの流れ</h3>
+  <ol>
+    <li>カードの表面を表示（実際にはプレーヤー全体が表面にある）</li>
+    <li>Title と Media を解析</li>
+    <li>Srts_01 ～ Srts_10 をスキャンしてチャンネルリストを構築</li>
+    <li>Srts_00 からユニット番号の範囲を読み取る</li>
+    <li>前回のオプションと再生位置を読み込む</li>
+    <li>前回のチャンネルとユニットを開く</li>
+    <li>200 ミリ秒後に自動的に再生開始</li>
+  </ol>
+</section>
+
+<!-- ========== 3 ========== -->
+<section id="s3">
+  <h2>3. 画面レイアウト</h2>
+
+  <h3>3.1 3 つの領域</h3>
+  <table>
+    <thead><tr><th>領域</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>上部メディア領域</td><td>動画映像。動画のない音声カードではレコードアイコンを表示</td></tr>
+      <tr><td>中央字幕領域</td><td>行ごとに字幕を表示。スクロール可能。各行に役割を示す色付きドット</td></tr>
+      <tr><td>下部ボタン領域</td><td>再生コントロールとオプション入口。ドラッグとドッキング可能</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 字幕行の視覚的エンコード</h3>
+  <table>
+    <thead><tr><th>色</th><th>行クラス</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>オレンジのドット</td><td>srt1</td><td>役割 1</td></tr>
+      <tr><td>緑のドット</td><td>srt2</td><td>役割 2</td></tr>
+      <tr><td>灰色のドット</td><td>srtN</td><td>ナレーション</td></tr>
+      <tr><td>黄色のドット</td><td>srtT</td><td>歌詞/字幕グループ</td></tr>
+      <tr><td>ピンクのドット</td><td>srtG</td><td>その他のマーク</td></tr>
+    </tbody>
+  </table>
+  <p>各字幕行の右側にハートアイコンがあります：空心 ♡ は未お気に入り、実心 ♥ はお気に入り済み。クリックで切り替えます。</p>
+
+  <h3>3.3 字幕内のカラーマーク</h3>
+  <p>字幕行には <code>&lt;f1&gt;</code> から <code>&lt;f7&gt;</code> のマークを含めることができ、異なる色で描画されます：</p>
+  <table>
+    <thead><tr><th>マーク</th><th>色</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>赤</td></tr>
+      <tr><td>f2</td><td>緑</td></tr>
+      <tr><td>f3</td><td>青</td></tr>
+      <tr><td>f4</td><td>黄</td></tr>
+      <tr><td>f5</td><td>マゼンタ</td></tr>
+      <tr><td>f6</td><td>オレンジ</td></tr>
+      <tr><td>f7</td><td>暗赤</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.4 時間情報</h3>
+  <p>動画画面をタップすると、下部に表示されます：</p>
+  <ul>
+    <li>左側：現在の再生時間（hh:mm:ss）</li>
+    <li>右側：合計時間</li>
+    <li>中央：進行バー。ドラッグでシーク可能</li>
+  </ul>
+  <p>5 秒後に自動的に非表示になります。</p>
+</section>
+
+<!-- ========== 4 ========== -->
+<section id="s4">
+  <h2>4. ボタンパネル</h2>
+  <p>ボタンパネルは 3 行あり、2 行に折りたたむことも、ウィンドウの上部または下部にドラッグすることもできます。すべての設定はカードオプションに保存され、次にカードを開いたときに自動的に復元されます。</p>
+
+  <h3>4.1 3 行レイアウト</h3>
+  <p>デフォルトは 3 行。左から右へ：</p>
+  <table>
+    <thead><tr><th>行</th><th>ボタン</th></tr></thead>
+    <tbody>
+      <tr><td>1 行目</td><td>
+        <span class="btn">－ / ＋</span> 折りたたみ/展開 &nbsp;
+        <span class="btn">1.0 / 2.0</span> 速度切替 &nbsp;
+        <span class="glyph">⏮</span> 前の文 &nbsp;
+        <span class="glyph">↺</span> リプレイ &nbsp;
+        <span class="glyph">⏭</span> 次の文 &nbsp;
+        <span class="glyph">AB</span> 選択区間を再生 &nbsp;
+        <span class="glyph">🔍</span> 辞書/AI
+      </td></tr>
+      <tr><td>2 行目</td><td>
+        <span class="btn">M</span> 再生モード &nbsp;
+        <span class="btn">0.5 / 1.5</span> 速度切替 &nbsp;
+        <span class="glyph">⬆AB</span> 画面上端の行から現在行まで再生 &nbsp;
+        <span class="glyph">▶</span> 再生/一時停止 &nbsp;
+        <span class="glyph">⬇AB</span> 現在行から画面下端の行まで再生 &nbsp;
+        <span class="glyph">⚡²</span> 上端からフラッシュ再生 &nbsp;
+        <span class="btn">N</span> ノイズ
+      </td></tr>
+      <tr><td>3 行目</td><td>
+        <span class="glyph">📊</span> 再生速度メニュー &nbsp;
+        <span class="glyph">♡</span> お気に入り切替 &nbsp;
+        <span class="glyph">▶🎤</span> 録音を再生 &nbsp;
+        <span class="glyph">🎤</span> 録音 &nbsp;
+        <span class="glyph">🌐</span> 訳文の表示/非表示 &nbsp;
+        <span class="glyph">⚡</span> フラッシュ再生 &nbsp;
+        <span class="glyph">⚙</span> オプション
+      </td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 2 行レイアウト</h3>
+  <p>オプションで「2 行ボタン」を選ぶと、レイアウトは 2 行になり、ボタンがより大きくタップしやすくなります。スマートフォンの縦画面に適しています。</p>
+
+  <h3>4.3 メディアなしカード</h3>
+  <p>カードに音声のみ、またはメディアファイルが欠落している場合、ボタンパネルは 1 行に縮小され、次のものだけが残ります：</p>
+  <ul>
+    <li>デッキに戻る</li>
+    <li>お気に入り切替</li>
+    <li>辞書/AI</li>
+    <li>訳文の表示/非表示</li>
+    <li>オプション</li>
+  </ul>
+
+  <h3>4.4 パネルのドラッグ</h3>
+  <p>ボタンパネル上で<b>任意のボタンを長押し</b>（前/次の文ボタンを除く）1.5 秒すると、ドラッグモードに入ります。次のことができます：</p>
+  <ul>
+    <li>ウィンドウの下部へドラッグ → 下部にドッキング</li>
+    <li>ウィンドウの上部へドラッグ → 上部にドッキング（ボタンが上下反転）</li>
+    <li>中央へドラッグ → フロート</li>
+  </ul>
+
+  <h3>4.5 折りたたみ/展開</h3>
+  <p><span class="btn">－</span> または <span class="btn">＋</span> をクリックして 3 行と 2 行を切り替えます。展開時には、元の「リプレイ」ボタンが「再生」ボタンに変わります。</p>
+</section>
+
+<!-- ========== 5 ========== -->
+<section id="s5">
+  <h2>5. 単文モードとタイムライン</h2>
+  <p>単文モードでは、ボタンパネルの上にタイムラインが表示され、現在の文の調整可能な再生範囲を示します。</p>
+
+  <h3>5.1 タイムラインの要素</h3>
+  <table>
+    <thead><tr><th>要素</th><th>色</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>2 つの黄色い点</td><td>黄色</td><td>元の再生区間</td></tr>
+      <tr><td>2 つの灰色のスライダー</td><td>灰色</td><td>現在調整可能な開始/終了時間</td></tr>
+      <tr><td>白いスライダー</td><td>白</td><td>再生位置インジケーター</td></tr>
+      <tr><td>両端の短い縦線</td><td>暗黄色</td><td>タイムラインの境界装飾</td></tr>
+      <tr><td>◁ ▷ ボタン</td><td>黄色</td><td>開始/終了時間をそれぞれ 0.5 秒ずつ微調整</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 開始/終了時間の調整</h3>
+  <ul>
+    <li>左側の灰色スライダーをドラッグして開始時間を調整</li>
+    <li>右側の灰色スライダーをドラッグして終了時間を調整</li>
+    <li><span class="btn">◁</span> をクリックして開始時間を 0.5 秒戻す</li>
+    <li><span class="btn">▷</span> をクリックして終了時間を 0.5 秒進める</li>
+  </ul>
+  <p>調整は即座に反映され、次回の再生は新しい位置から始まります。</p>
+
+  <h3>5.3 「タイムライン拡張」オプションとの併用</h3>
+  <p>オプションの「タイムライン拡張」はミリ秒単位で、各字幕の開始/終了時間を両側に少しずつ拡張し、字幕境界がきつすぎて音が途切れるのを防ぎます。拡張量は隣接する字幕との間隔の半分を超えません。</p>
+</section>
+
+<!-- ========== 6 ========== -->
+<section id="s6">
+  <h2>6. 再生モード</h2>
+  <p><span class="btn">M</span> ボタンをクリックするとモードメニューが開きます。現在のモード文字がボタンに表示されます。</p>
+
+  <h3>6.1 5 つのモード</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>モード</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>M</td><td>通常モード</td><td>区間全体を順番に再生し、字幕を自動スクロール</td></tr>
+      <tr><td>Ms</td><td>単文モード</td><td>文ごとに再生し、各文の終了時にリピート設定に従って処理</td></tr>
+      <tr><td>Mo</td><td>奇数行を演じる</td><td>奇数行（srt1）はミュートされ、あなたが読む</td></tr>
+      <tr><td>Me</td><td>偶数行を演じる</td><td>偶数行（srt2）はミュートされ、あなたが読む</td></tr>
+      <tr><td>Ma</td><td>全行を演じる</td><td>すべてミュートされ、あなたが読む</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 モード切替の影響</h3>
+  <ul>
+    <li><b>通常/単文モード</b>と<b>ロールプレイモード</b>の間で切り替えると、現在のユニットが再読み込みされます</li>
+    <li>その他の場合は、現在の行を選択し直すだけで、再読み込みは行いません</li>
+    <li>タイムラインは単文モードで表示され、その他のモードでは非表示になります</li>
+  </ul>
+</section>
+
+<!-- ========== 7 ========== -->
+<section id="s7">
+  <h2>7. ループモードとチャンネル/ユニット</h2>
+
+  <h3>7.1 チャンネルとユニット</h3>
+  <ul>
+    <li>1 枚のカードには最大 10 個の<b>チャンネル</b>を含めることができます（Srts_01 ～ Srts_10 に対応）</li>
+    <li>各チャンネルには複数の<b>ユニット</b>があります（エピソードや章に対応）</li>
+    <li>現在再生中のユニットは字幕領域の上部に表示されます</li>
+  </ul>
+
+  <h3>7.2 チャンネル/ユニットの切替</h3>
+  <p>オプションパネルの下部にチャンネルとユニットのセレクターがあります：</p>
+  <ul>
+    <li>左側はチャンネルリスト（チャンネルが 1 つだけの場合は自動的に非表示）</li>
+    <li>右側はユニットグリッド。クリックで切替</li>
+  </ul>
+  <p>切り替えると、そのユニットにジャンプして最初から再生されます。</p>
+
+  <h3>7.3 ループモード</h3>
+  <p>ユニットの末尾に達したときの動作を決定します：</p>
+  <table>
+    <thead><tr><th>モード</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>現在のユニット</td><td>再生後、このユニットの先頭に戻る</td></tr>
+      <tr><td>現在のチャンネル</td><td>再生後、次のユニットへジャンプ。チャンネルの末尾でこのチャンネルの先頭に戻る</td></tr>
+      <tr><td>すべてのコンテンツ</td><td>チャンネルをまたいで連続再生。末尾で最初のチャンネルに戻る</td></tr>
+    </tbody>
+  </table>
+  <p>オプションパネルでループモードを選択します。</p>
+</section>
+
+<!-- ========== 8 ========== -->
+<section id="s8">
+  <h2>8. シャドーイングとロールプレイ</h2>
+
+  <h3>8.1 役割の判定</h3>
+  <p>字幕の役割は行内のマークから推測されます：</p>
+  <table>
+    <thead><tr><th>マーク</th><th>役割</th></tr></thead>
+    <tbody>
+      <tr><td>[n]</td><td>ナレーション（演じられない）</td></tr>
+      <tr><td>[t]</td><td>歌詞/字幕グループ（演じられない）</td></tr>
+      <tr><td>[g]</td><td>その他（演じられない）</td></tr>
+      <tr><td>[a]</td><td>前の行の役割を継続</td></tr>
+      <tr><td>[s]</td><

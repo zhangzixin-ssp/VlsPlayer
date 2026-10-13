@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT 工具箱 操作說明書</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+    --warn-bg: #fff8e6;
+    --warn-border: #e8a200;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 16px; margin: 22px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.5;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .cmd {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 14px 18px; margin: 14px 0; background: #fafbfc;
+  }
+  .cmd .name {
+    font-weight: 600; color: var(--accent); font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .cmd .desc { color: #444; margin: 6px 0; font-size: 14px; }
+  .cmd .io {
+    color: var(--muted); font-size: 13px; margin-top: 6px;
+    font-family: Consolas, monospace;
+  }
+  .cmd .hint {
+    background: var(--accent-soft); border-radius: 4px;
+    padding: 6px 10px; margin-top: 8px; font-size: 13px; color: #234;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, .cmd { page-break-inside: avoid; }
+    .toc ol { column-count: 2; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SRT 工具箱 操作說明書</h1>
+  <div class="meta">版本 1.0 &nbsp;|&nbsp; SRT Toolbox / VlsSrtTools</div>
+</header>
+
+<nav class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s1">程式簡介</a></li>
+    <li><a href="#s2">介面佈局</a></li>
+    <li><a href="#s3">左側面板：目錄與檔案</a></li>
+    <li><a href="#s4">字幕行類型</a></li>
+    <li><a href="#s5">中間面板：17 個命令</a></li>
+    <li><a href="#s6">字幕與文字互轉（命令 1-8）</a></li>
+    <li><a href="#s7">字幕內容操作（命令 9-15）</a></li>
+    <li><a href="#s8">影片分割（命令 16-17）</a></li>
+    <li><a href="#s9">右側面板：Anki 匯出</a></li>
+    <li><a href="#s10">常見問題</a></li>
+    <li><a href="#s11">注意事項</a></li>
+    <li><a href="#s12">附錄：檔案命名規則</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. 程式簡介</h2>
+  <p>SRT 工具箱（VlsSrtTools）是一款 SRT 字幕批次處理工具，用於對一組字幕檔案執行常見的整理、轉換、匯出工作。</p>
+  <p>主要能力：</p>
+  <ul>
+    <li>字幕與純文字互轉（匯出、回填）</li>
+    <li>字幕內容的合併、拆分、交換、刪除</li>
+    <li>簡繁轉換</li>
+    <li>時間軸擴展</li>
+    <li>產生 AI 翻譯 / 檢查譯文用的文字</li>
+    <li>按字幕時間軸分割影片（產生 ffmpeg 批次檔）</li>
+    <li>匯出 Anki 播放器文字、劇集卡片、句子筆記卡片</li>
+  </ul>
+  <p>程式支援多檔案批次處理，所有修改類操作都會自動備份原檔案。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 介面佈局</h2>
+  <p>主視窗分為三個區域：</p>
+  <table>
+    <thead><tr><th>區域</th><th>內容</th></tr></thead>
+    <tbody>
+      <tr><td>左側面板</td><td>SRT 目錄選擇、字幕行類型、SRT 檔案清單</td></tr>
+      <tr><td>中間面板</td><td>17 個命令按鈕</td></tr>
+      <tr><td>右側面板</td><td>Anki 匯出設定（懸停命令 1 時顯示）+ SRT 預覽</td></tr>
+      <tr><td>底部狀態列</td><td>目前檔名 + 字幕數量</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s3">
+  <h2>3. 左側面板：目錄與檔案</h2>
+
+  <h3>3.1 SRT 目錄</h3>
+  <ul>
+    <li>下拉框選擇已儲存的 SRT 目錄。</li>
+    <li>綠色 <code>+</code> 按鈕：新增 SRT 目錄。</li>
+    <li>紅色 <code>−</code> 按鈕：移除目前 SRT 目錄。</li>
+    <li><code>含子目錄?</code>：勾選後掃描時包括子目錄。</li>
+  </ul>
+  <p>程式會記住每個目錄的設定（包括字幕行類型、Anki 參數等），切換目錄時自動恢復。</p>
+
+  <h3>3.2 SRT 檔案清單</h3>
+  <ul>
+    <li>列出目前目錄下所有 <code>.srt</code> 檔案。</li>
+    <li>支援多選，批次操作的對象就是選中的檔案。</li>
+    <li>點擊單一檔案，右側預覽區顯示其內容，狀態列顯示字幕數量。</li>
+    <li>清單標題顯示總數和目前選中數。</li>
+  </ul>
+</section>
+
+<section id="s4">
+  <h2>4. 字幕行類型</h2>
+  <p>SRT 檔案每條字幕可能只有一行文字，也可能有原文和譯文兩行。程式需要知道怎麼拆分成「字幕一」和「字幕二」。</p>
+  <table>
+    <thead><tr><th>選項</th><th>拆分規則</th></tr></thead>
+    <tbody>
+      <tr><td>自動識別</td><td>按語言特徵判斷：英文行歸字幕一，其餘歸字幕二</td></tr>
+      <tr><td>第一行作為字幕一</td><td>每條字幕的第一行歸字幕一，其餘合併到字幕二</td></tr>
+      <tr><td>所有行作為字幕一</td><td>全部文字視為字幕一，字幕二留空</td></tr>
+      <tr><td>最後行作為字幕二</td><td>每條字幕的最後一行歸字幕二，其餘合併到字幕一</td></tr>
+      <tr><td>奇偶字幕行成對</td><td>第 1、2 行成對，第 3、4 行成對……（預設）</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    這個選項直接影響所有命令的處理結果，尤其是「交換字幕一和字幕二」、「簡繁轉換」這類只處理字幕二的操作。選錯會導致處理對象錯位。
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. 中間面板：17 個命令</h2>
+  <p>中間是命令按鈕組，共 17 個命令，滑鼠懸停時按鈕高亮並顯示提示。懸停第 1 個命令時，右側會顯示 Anki 匯出面板。</p>
+  <p>命令按用途分為三組：</p>
+  <ul>
+    <li><strong>字幕與文字互轉</strong>：命令 1 ~ 8</li>
+    <li><strong>字幕內容操作</strong>：命令 9 ~ 15</li>
+    <li><strong>影片分割</strong>：命令 16 ~ 17</li>
+  </ul>
+  <div class="note">
+    執行任何命令前，必須先選好 SRT 目錄、選中至少一個 SRT 檔案，否則會彈窗提示。
+  </div>
+</section>
+
+<section id="s6">
+  <h2>6. 字幕與文字互轉（命令 1-8）</h2>
+
+  <div class="cmd">
+    <div class="name">1. 匯出 Anki 播放器文字</div>
+    <div class="desc">此命令本身不執行匯出，而是顯示右側 Anki 設定面板，匯出操作在面板中進行。詳見第 9 節。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">2. 匯出字幕一到文字檔</div>
+    <div class="desc">把選中 SRT 的字幕一逐行匯出為純文字。每行格式為 <code>行號|內容</code>，行號從 1 開始，4 位補零。</div>
+    <div class="io">輸出檔案：*_1.txt（UTF-8）</div>
+    <div class="hint">用於把字幕交給外部工具（如 AI、翻譯軟體）修改後，再用命令 4 回填。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">3. 匯出字幕二到文字檔</div>
+    <div class="desc">同上，匯出的是字幕二。</div>
+    <div class="io">輸出檔案：*_2.txt（UTF-8）</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">4. 從文字中更新字幕一</div>
+    <div class="desc">讀取同目錄下的 <code>*_1.txt</code>，按行號更新字幕一。文字格式必須是 <code>行號|內容</code>，行號有效才更新，越界的忽略。</div>
+    <div class="io">輸入檔案：*_1.txt</div>
+    <div class="hint">處理前自動備份原 SRT。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">5. 從文字中更新字幕二</div>
+    <div class="desc">同上，更新字幕二。</div>
+    <div class="io">輸入檔案：*_2.txt</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">6. 產生 AI 翻譯所需要的文字</div>
+    <div class="desc">彈出 Prompt 輸入視窗，確認後產生用於 AI 翻譯的文字。內容 = Prompt + 所有字幕一（按 <code>行號|內容</code> 格式）。Prompt 會保存在設定中，下次自動載入。</div>
+    <div class="io">輸出檔案：*_t.txt（UTF-8）</div>
+    <div class="hint">預設 Prompt 要求逐行直譯、嚴禁拆分合併行、輸出格式為 <code>行號|譯文</code>，可自行修改。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">7. 產生 AI 檢查翻譯所需文字</div>
+    <div class="desc">彈出 Prompt 輸入視窗，確認後產生用於 AI 檢查譯文的文字。內容 = Prompt + 完整 SRT 內容（原文 + 譯文對照）。</div>
+    <div class="io">輸出檔案：*_c.txt（UTF-8）</div>
+    <div class="hint">預設 Prompt 要求 AI 找出漏譯、錯譯、可改進處，只輸出修正行。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">8. 匯出選中的 SRT 到一個文字</div>
+    <div class="desc">把所有選中的 SRT 合併輸出到一個文字檔。每個檔案以 <code>[檔名]</code> 開頭，之後每行是 <code>時間戳（MM:SS）Tab 字幕一</code>。檔案之間空一行。</div>
+    <div class="io">輸出檔案：SRT 目錄下的 _all.txt（UTF-8）</div>
+    <div class="hint">用於快速瀏覽整季字幕或做總體校對。</div>
+  </div>
+</section>
+
+<section id="s7">
+  <h2>7. 字幕內容操作（命令 9-15）</h2>
+
+  <div class="cmd">
+    <div class="name">9. 交換字幕一和字幕二</div>
+    <div class="desc">把每條字幕的原文和譯文對調。</div>
+    <div class="hint">處理前自動備份。如果字幕行類型選錯，會導致交換結果不如預期，先檢查第 4 節的設定。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">10. 刪除字幕二</div>
+    <div class="desc">清空所有字幕二的內容，只保留字幕一。</div>
+    <div class="hint">適合只保留原文的情境。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">11. 合併字幕中的句子碎片</div>
+    <div class="desc">自動判斷屬於同一句子的相鄰字幕行並合併。合併規則：時間取聯集，文字用空格連接，譯文用空格連接。可識別縮寫、未閉合引號、逗號/分號結尾等情形。</div>
+    <div class="hint">用於修復 ASR 輸出或人工切分過碎的字幕。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">12. 按 - 分割角色字幕行</div>
+    <div class="desc">對每條字幕，按文字中的 <code> -</code>（空格+短橫線）切成兩行。時間按文字長度比例分配：前半部分佔前段，後半部分佔後段。如果譯文裡也有 <code> -</code>，同步切分。</div>
+    <div class="hint">用於在精調時間軸前，把同一時間段內的不同角色台詞粗略分離。若某條字幕不包含 <code> -</code>，保持不變。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">13. 擴展時間軸</div>
+    <div class="desc">彈出時間輸入視窗，按指定偏移量前後擴展每條字幕的起止時間。擴展時自動避免與相鄰字幕重疊，每側最多擴展到相鄰字幕的中間位置。</div>
+    <div class="hint">用於修復字幕時間過短、顯示停留不足的問題。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">14. 字幕簡體轉繁體中文</div>
+    <div class="desc">把字幕二由簡體轉換為繁體。字幕一不變。</div>
+    <div class="hint">只處理字幕二，轉換時使用系統 LCMapString，不會影響英文字幕。</div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">15. 字幕繁體轉簡體中文</div>
+    <div class="desc">把字幕二由繁體轉換為簡體。字幕一不變。</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. 影片分割（命令 16-17）</h2>
+
+  <div class="cmd">
+    <div class="name">16. 按字幕分割為多個影片</div>
+    <div class="desc">彈出媒體類型選擇視窗（mp4、mkv 等）。確認後，按字幕時間軸逐句產生 ffmpeg 命令，寫入批次檔。媒體檔案假設與 SRT 同名，只是副檔名不同。</div>
+    <div class="io">輸出檔案：*_cut.bat</div>
+    <div class="hint">
+      批次檔需手動雙擊執行。執行時需保證系統已安裝 ffmpeg 並加入 PATH，或把 ffmpeg.exe 放在同目錄。<br>
+      切分命令使用 <code>-c copy</code>，不重新編碼，速度極快。
+    </div>
+  </div>
+
+  <div class="cmd">
+    <div class="name">17. 分割為兩個字幕及影片</div>
+    <div class="desc">彈出媒體類型 + 分割時間視窗。確認後：</div>
+    <ul>
+      <li>在指定時間點把 SRT 切成 <code>*_1.srt</code> 和 <code>*_2.srt</code>，後者的時間軸整體前移</li>
+      <li>產生 <code>*_cut_2.bat</code>，包含兩條 ffmpeg 命令，分別切出前半段和後半段影片</li>
+    </ul>
+    <div class="io">輸出檔案：*_1.srt、*_2.srt、*_cut_2.bat</div>
+    <div class="hint">
+      如果指定的時間點正好落在某條字幕中間，程式會自動把它調整到相鄰兩條字幕之間的空隙。<br>
+      時間點超出字幕範圍時會跳過該檔案。
+    </div>
+  </div>
+</section>
+
+<section id="s9">
+  <h2>9. 右側面板：Anki 匯出</h2>
+  <p>滑鼠懸停在命令 1 <code>匯出 Anki 播放器文字</code> 上時，右側顯示 Anki 匯出面板。</p>
+
+  <h3>9.1 面板選項</h3>
+  <table>
+    <thead><tr><th>項目</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>劇集牌組名稱</td><td>勾選後啟用，選擇 Anki 中用於劇集的牌組</td></tr>
+      <tr><td>標題(關鍵字)</td><td>劇集標題，由三段組成：主標題 + 季/章節 + 集/單元</td></tr>
+      <tr><td>筆記牌組</td><td>勾選後啟用，用於匯出帶備註的句子卡片</td></tr>
+      <tr><td>另存為文字檔?</td><td>勾選後同時儲存為本機文字檔</td></tr>
+      <tr><td>更新後同步 Anki?</td><td>勾選後自動觸發 Anki 同步</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 季/集編號提取</h3>
+  <table>
+    <thead><tr><th>項目</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>媒體檔案名前綴</td><td>時間軸欄位的前綴，例如 <code>fr</code></td></tr>
+      <tr><td>取得季編號來源</td><td>可選「從 SRT 資料夾取得」或「從 SRT 檔名取得」</td></tr>
+      <tr><td>季編號開始位置</td><td>從第幾個字元開始提取</td></tr>
+      <tr><td>季編號長度</td><td>提取多少位字元</td></tr>
+      <tr><td>劇集編號開始位置</td><td>同上，對應劇集編號</td></tr>
+      <tr><td>劇集編號長度</td><td>同上</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 匯出內容</h3>
+  <ul>
+    <li><strong>劇集牌組</strong>：一季的所有字幕文字，按季歸檔到對應欄位</li>
+    <li><strong>筆記牌組</strong>：只匯出帶備註或格式標記的句子，作為學習卡片</li>
+  </ul>
+
+  <h3>9.4 操作步驟</h3>
+  <ol>
+    <li>在左側選中要匯出的 SRT 檔案。</li>
+    <li>滑鼠懸停在命令 1 上，顯示 Anki 面板。</li>
+    <li>設定牌組、標題、季集編號提取參數。</li>
+    <li>點擊面板右上角的 <strong>匯出</strong> 按鈕。</li>
+    <li>日誌區顯示匯出結果。</li>
+  </ol>
+
+  <h3>9.5 前置條件</h3>
+  <ul>
+    <li>Anki 正在執行</li>
+    <li>已安裝 AnkiConnect 外掛</li>
+    <li>連接埠 8765 未被佔用</li>
+  </ul>
+  <div class="note">
+    若筆記類型不存在，程式會嘗試自動建立。若建立失敗，說明模板檔案缺失，需檢查程式目錄下的 <code>lib\anki\</code> 子目錄。
+  </div>
+</section>
+
+<section id="s10">
+  <h2>10. 常見問題</h2>
+
+  <div class="qa">
+    <div class="q">Q1：提示「請選擇 SRT 資料夾」</div>
+    <div class="a">頂部的 SRT 目錄下拉框為空。點擊綠色 <code>+</code> 按鈕新增目錄。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：提示「請選擇 SRT 檔案」</div>
+    <div class="a">左側檔案清單中沒有選中任何檔案。點擊檔名即可選中，可多選。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：處理速度慢</div>
+    <div class="a">檔案數量多、字幕行數多，或啟用了 Anki 匯出功能。可分批處理。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：原文/譯文識別不對</div>
+    <div class="a">在左側 <strong>字幕行類型</strong> 中手動指定拆分方式，不要用「自動識別」。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：匯出 *_1.txt 後修改，回填沒有生效</div>
+    <div class="a">檢查文字格式是否為 <code>行號|內容</code>（行號 4 位補零，豎線分隔），行號是否在有效範圍內。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：Anki 匯出失敗</div>
+    <div class="a">檢查 Anki 是否在執行、AnkiConnect 外掛是否安裝、牌組是否存在。匯出失敗不影響本機 SRT 檔案。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：修改後能撤銷嗎？</div>
+    <div class="a">不能。修改類操作會自動備份原檔案，備份檔案在同目錄的 <code>backup\</code> 子目錄中。如需恢復，手動把備份檔案改回原名。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：分割影片時找不到媒體檔案</div>
+    <div class="a">程式假設媒體檔案與 SRT 同名，只是副檔名不同。若媒體檔名不同，需要先改成同名。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：產生的批次檔怎麼用？</div>
+    <div class="a">把批次檔複製到媒體檔案所在目錄，雙擊執行。需要系統已安裝 ffmpeg 並加入 PATH，或把 ffmpeg.exe 放在同目錄。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：分割時間點落在字幕中間怎麼辦？</div>
+    <div class="a">程式會自動把分割點調整到相鄰兩條字幕之間的空隙。若整段字幕之後沒有更多字幕，則按原時間點處理。</div>
+  </div>
+</section>
+
+<section id="s11">
+  <h2>11. 注意事項</h2>
+  <ol>
+    <li>批次操作前建議先備份整個 SRT 目錄。</li>
+    <li>修改類操作會覆寫原檔案，程式會自動備份到 <code>backup\</code> 子目錄，但備份數量有限。</li>
+    <li>AI 翻譯和檢查功能只產生文字，不直接修改 SRT。需要用「從文字中更新字幕」命令把結果寫回。</li>
+    <li>分割影片功能只產生批次檔，不會直接執行 ffmpeg。執行批次前請確認路徑和檔名正確。</li>
+    <li>Anki 相關功能需要 AnkiConnect 外掛和執行中的 Anki。</li>
+    <li>程式退出時會儲存目前目錄、參數和視窗位置，下次啟動自動恢復。</li>
+    <li>簡繁轉換只處理字幕二，如果字幕一也需要轉換，先用「交換字幕一和字幕二」，轉換後再交換回來。</li>
+  </ol>
+</section>
+
+<section id="s12">
+  <h2>12. 附錄：檔案命名規則</h2>
+  <table>
+    <thead><tr><th>後綴</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>_1.txt</td><td>字幕一匯出的文字</td></tr>
+      <tr><td>_2.txt</td><td>字幕二匯出的文字</td></tr>
+      <tr><td>_t.txt</td><td>AI 翻譯用的文字</td></tr>
+      <tr><td>_c.txt</td><td>AI 檢查翻譯用的文字</td></tr>
+      <tr><td>_series.txt</td><td>Anki 劇集文字</td></tr>
+      <tr><td>_sentence.txt</td><td>Anki 句子筆記文字</td></tr>
+      <tr><td>_cut.bat</td><td>按字幕逐句分割影片的批次檔</td></tr>
+      <tr><td>_cut_2.bat</td><td>按時間點分割為兩個影片的批次檔</td></tr>
+      <tr><td>_1.srt / _2.srt</td><td>分割後的兩個字幕檔</td></tr>
+      <tr><td>_all.txt</td><td>所有選中 SRT 合併的文字</td></tr>
+    </tbody>
+  </table>
+
+  <h3>備份目錄</h3>
+  <p>每次修改類操作前，原檔案自動備份到同目錄的 <code>backup\</code> 子目錄，檔名帶時間戳，例如：</p>
+  <pre>字幕目錄\backup\某劇集_20240101_1200.srt</pre>
+</section>
+
+<footer>
+  SRT 工具箱 操作說明書 · 版本 1.0
+</footer>
+
+</div>
+</body>
+</html>

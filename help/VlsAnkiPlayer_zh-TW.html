@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki 播放器 (VlsPlayer Series) 操作說明書</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .tip {
+    background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key {
+    display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333;
+  }
+  .btn {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center;
+  }
+  .glyph {
+    display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki 播放器 (VlsPlayer Series) 操作說明書</h1>
+  <div class="meta">版本 1.0 &nbsp;|&nbsp; 配合 Anki 使用的整季/整單元字幕學習卡片</div>
+</header>
+
+<nav class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s1">這是什麼</a></li>
+    <li><a href="#s2">卡片欄位與製作</a></li>
+    <li><a href="#s3">介面佈局</a></li>
+    <li><a href="#s4">按鈕面板</a></li>
+    <li><a href="#s5">單句模式與時間軸</a></li>
+    <li><a href="#s6">播放模式</a></li>
+    <li><a href="#s7">循環模式與頻道/單元</a></li>
+    <li><a href="#s8">跟讀與角色扮演</a></li>
+    <li><a href="#s9">閃播</a></li>
+    <li><a href="#s10">重複播放與間隔</a></li>
+    <li><a href="#s11">收藏</a></li>
+    <li><a href="#s12">字幕顯示與語言</a></li>
+    <li><a href="#s13">錄音與噪音</a></li>
+    <li><a href="#s14">長按操作</a></li>
+    <li><a href="#s15">選項面板詳解</a></li>
+    <li><a href="#s16">鍵盤快速鍵</a></li>
+    <li><a href="#s17">選項持久化機制</a></li>
+    <li><a href="#s18">Srts 欄位格式說明</a></li>
+    <li><a href="#s19">常見問題</a></li>
+  </ol>
+</nav>
+
+<!-- ========== 1 ========== -->
+<section id="s1">
+  <h2>1. 這是什麼</h2>
+  <p>這是一張特殊的 Anki 卡片，把<b>整季或整單元</b>的字幕資料裝進一張卡裡。複習時你不需要一集一集地翻卡片，而是在一張卡片裡就能：</p>
+  <ul>
+    <li>看影片並同步顯示字幕</li>
+    <li>逐句跟讀、精聽、聽寫</li>
+    <li>角色扮演：你念一個角色，讓播放器念另一個角色</li>
+    <li>閃播：變速快放整段，快速過一遍</li>
+    <li>標記收藏句，回頭集中複習</li>
+    <li>錄音對比</li>
+  </ul>
+  <p>它和桌面版 VlsPlayer 不是一回事。VlsPlayer 是 Windows 應用程式，這個卡片模板是執行在 Anki 內部的 JavaScript，兩邊共享相同的字幕檔案格式和字幕工具箱。</p>
+
+  <h3>1.1 主要特徵</h3>
+  <ul>
+    <li>黑底黃鍵，為長時間看影片學習設計</li>
+    <li>按鈕面板可拖動、可停靠頂部/底部、可收起為兩行</li>
+    <li>設定全部儲存在卡片欄位裡，或 iOS 端的 localStorage 中</li>
+    <li>支援桌面、iPhone、iPad、Android、macOS</li>
+    <li>Windows 下需要 Anki 外掛 1020366288 提供剪貼簿 API</li>
+  </ul>
+</section>
+
+<!-- ========== 2 ========== -->
+<section id="s2">
+  <h2>2. 卡片欄位與製作</h2>
+
+  <h3>2.1 卡片欄位</h3>
+  <table>
+    <thead><tr><th>欄位</th><th>作用</th></tr></thead>
+    <tbody>
+      <tr><td>Title</td><td>劇集標題，由三段組成：主標題、季/章節、集/單元</td></tr>
+      <tr><td>Media</td><td>媒體副檔名 + 海報（可選），用 <code>|</code> 分隔</td></tr>
+      <tr><td>Options</td><td>選項字串（僅桌面 Anki 使用，見第 17 節）</td></tr>
+      <tr><td>Srts_00</td><td>索引/總覽軌道，無字幕，只記錄單元數</td></tr>
+      <tr><td>Srts_01 到 Srts_10</td><td>最多 10 個頻道，每個頻道是同一集的多語言/多季字幕</td></tr>
+      <tr><td>Tags</td><td>選項也儲存在這裡（用 base62 編碼）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 製作來源</h3>
+  <p>卡片由桌面版 VlsPlayer 的「Anki 播放器文字」匯出功能生成，或由 SRT 工具箱的 Anki 匯出功能生成。欄位內容自動填充，不需要手寫。</p>
+
+  <h3>2.3 載入流程</h3>
+  <ol>
+    <li>顯示卡片正面（其實整個播放器就在正面）</li>
+    <li>解析 Title 和 Media</li>
+    <li>掃描 Srts_01 到 Srts_10，建立頻道清單</li>
+    <li>讀取 Srts_00 裡的單元號範圍</li>
+    <li>載入上次的選項和播放位置</li>
+    <li>開啟上次所在的頻道和單元</li>
+    <li>200 毫秒後自動開始播放</li>
+  </ol>
+</section>
+
+<!-- ========== 3 ========== -->
+<section id="s3">
+  <h2>3. 介面佈局</h2>
+
+  <h3>3.1 三個區域</h3>
+  <table>
+    <thead><tr><th>區域</th><th>內容</th></tr></thead>
+    <tbody>
+      <tr><td>頂部媒體區</td><td>影片畫面。無影片的音訊卡片顯示一個唱片圖示</td></tr>
+      <tr><td>中部字幕區</td><td>按行顯示字幕，可捲動。每行有顏色圓點表示角色</td></tr>
+      <tr><td>底部按鈕區</td><td>播放控制和選項入口，可拖動和停靠</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 字幕行的視覺編碼</h3>
+  <table>
+    <thead><tr><th>顏色</th><th>行類</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>橙色圓點</td><td>srt1</td><td>角色 1</td></tr>
+      <tr><td>綠色圓點</td><td>srt2</td><td>角色 2</td></tr>
+      <tr><td>灰色圓點</td><td>srtN</td><td>旁白</td></tr>
+      <tr><td>黃色圓點</td><td>srtT</td><td>歌詞/字幕組</td></tr>
+      <tr><td>粉色圓點</td><td>srtG</td><td>其他標記</td></tr>
+    </tbody>
+  </table>
+  <p>每條字幕行右側有一個心形圖示：空心 ♡ 表示未收藏，實心 ♥ 表示已收藏。點擊即可切換。</p>
+
+  <h3>3.3 字幕內的彩色標記</h3>
+  <p>字幕行內可包含 <code>&lt;f1&gt;</code> 到 <code>&lt;f7&gt;</code> 標記，渲染為不同顏色：</p>
+  <table>
+    <thead><tr><th>標記</th><th>顏色</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>紅</td></tr>
+      <tr><td>f2</td><td>綠</td></tr>
+      <tr><td>f3</td><td>藍</td></tr>
+      <tr><td>f4</td><td>黃</td></tr>
+      <tr><td>f5</td><td>洋紅</td></tr>
+      <tr><td>f6</td><td>橙</td></tr>
+      <tr><td>f7</td><td>暗紅</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.4 時間資訊</h3>
+  <p>點一下影片畫面，底部會顯示：</p>
+  <ul>
+    <li>左側：目前播放時間（hh:mm:ss）</li>
+    <li>右側：總時長</li>
+    <li>中間：進度條，可拖動定位</li>
+  </ul>
+  <p>5 秒後自動隱藏。</p>
+</section>
+
+<!-- ========== 4 ========== -->
+<section id="s4">
+  <h2>4. 按鈕面板</h2>
+  <p>按鈕面板有三行，可以收起為兩行，也可以拖到視窗頂部或底部。所有設定都儲存在卡片選項裡，下次開啟卡片時自動恢復。</p>
+
+  <h3>4.1 三行佈局</h3>
+  <p>預設三行，從左到右：</p>
+  <table>
+    <thead><tr><th>行</th><th>按鈕</th></tr></thead>
+    <tbody>
+      <tr><td>第一行</td><td>
+        <span class="btn">－ / ＋</span> 收起/展開 &nbsp;
+        <span class="btn">1.0 / 2.0</span> 倍速切換 &nbsp;
+        <span class="glyph">⏮</span> 上一句 &nbsp;
+        <span class="glyph">↺</span> 重播 &nbsp;
+        <span class="glyph">⏭</span> 下一句 &nbsp;
+        <span class="glyph">AB</span> 播放已選區 &nbsp;
+        <span class="glyph">🔍</span> 詞典/AI
+      </td></tr>
+      <tr><td>第二行</td><td>
+        <span class="btn">M</span> 播放模式 &nbsp;
+        <span class="btn">0.5 / 1.5</span> 倍速切換 &nbsp;
+        <span class="glyph">⬆AB</span> 從螢幕頂行播到當前行 &nbsp;
+        <span class="glyph">▶</span> 播放/暫停 &nbsp;
+        <span class="glyph">⬇AB</span> 從當前行播到螢幕底行 &nbsp;
+        <span class="glyph">⚡²</span> 從頂部閃播 &nbsp;
+        <span class="btn">N</span> 噪音
+      </td></tr>
+      <tr><td>第三行</td><td>
+        <span class="glyph">📊</span> 播放速度選單 &nbsp;
+        <span class="glyph">♡</span> 收藏切換 &nbsp;
+        <span class="glyph">▶🎤</span> 播放錄音 &nbsp;
+        <span class="glyph">🎤</span> 錄音 &nbsp;
+        <span class="glyph">🌐</span> 顯隱譯文 &nbsp;
+        <span class="glyph">⚡</span> 閃播 &nbsp;
+        <span class="glyph">⚙</span> 選項
+      </td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 兩行佈局</h3>
+  <p>在選項裡選「兩行按鈕」後，佈局變為兩行，按鈕更大、更易點。適合手機直向螢幕。</p>
+
+  <h3>4.3 無媒體卡片</h3>
+  <p>當卡片只有音訊、或媒體檔案缺失時，按鈕面板收縮為一行，只保留：</p>
+  <ul>
+    <li>返回牌組</li>
+    <li>收藏切換</li>
+    <li>詞典/AI</li>
+    <li>顯隱譯文</li>
+    <li>選項</li>
+  </ul>
+
+  <h3>4.4 拖動面板</h3>
+  <p>在按鈕面板上<b>長按任意按鈕</b>（上下句按鈕除外）1.5 秒，進入拖動模式。可以：</p>
+  <ul>
+    <li>拖到視窗底部 → 自動停靠在底部</li>
+    <li>拖到視窗頂部 → 自動停靠在頂部（按鈕會上下翻轉）</li>
+    <li>拖到中間 → 懸浮</li>
+  </ul>
+
+  <h3>4.5 收起/展開</h3>
+  <p>點擊 <span class="btn">－</span> 或 <span class="btn">＋</span> 在三行與兩行之間切換。展開時，原本「重播」按鈕會變成「播放」按鈕。</p>
+</section>
+
+<!-- ========== 5 ========== -->
+<section id="s5">
+  <h2>5. 單句模式與時間軸</h2>
+  <p>單句模式下，按鈕面板上方會出現一條時間軸，顯示目前句的可調整播放範圍。</p>
+
+  <h3>5.1 時間軸元素</h3>
+  <table>
+    <thead><tr><th>元素</th><th>顏色</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>兩個黃點</td><td>黃色</td><td>原始播放區間</td></tr>
+      <tr><td>兩個灰色滑桿</td><td>灰</td><td>目前可調整的起止時間</td></tr>
+      <tr><td>白色滑桿</td><td>白</td><td>播放位置指示器</td></tr>
+      <tr><td>兩端短豎線</td><td>暗黃</td><td>時間軸的邊界裝飾</td></tr>
+      <tr><td>◁ ▷ 按鈕</td><td>黃</td><td>起止時間各前後微調 0.5 秒</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 調整起止時間</h3>
+  <ul>
+    <li>拖動左側灰色滑桿調整起始時間</li>
+    <li>拖動右側灰色滑桿調整結束時間</li>
+    <li>點擊 <span class="btn">◁</span> 起始時間後退 0.5 秒</li>
+    <li>點擊 <span class="btn">▷</span> 結束時間前進 0.5 秒</li>
+  </ul>
+  <p>調整後立即生效，下次播放從新位置開始。</p>
+
+  <h3>5.3 與「擴展時間軸」選項配合</h3>
+  <p>選項裡的「擴展時間軸」會以毫秒為單位，把每條字幕的起止時間向兩側各擴展一點，避免字幕邊界太緊導致的聲音截斷。擴展量不會超過相鄰字幕間距的一半。</p>
+</section>
+
+<!-- ========== 6 ========== -->
+<section id="s6">
+  <h2>6. 播放模式</h2>
+  <p>點擊 <span class="btn">M</span> 按鈕彈出選單，選擇播放模式。目前模式字母會顯示在按鈕上。</p>
+
+  <h3>6.1 五種模式</h3>
+  <table>
+    <thead><tr><th>按鈕</th><th>模式</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>M</td><td>普通模式</td><td>順序播放整段，自動捲動字幕</td></tr>
+      <tr><td>Ms</td><td>單句模式</td><td>逐句播放，每句結束按重複設定處理</td></tr>
+      <tr><td>Mo</td><td>扮演奇數行</td><td>播放到奇數行（srt1）靜音，你念</td></tr>
+      <tr><td>Me</td><td>扮演偶數行</td><td>播放到偶數行（srt2）靜音，你念</td></tr>
+      <tr><td>Ma</td><td>扮演全部行</td><td>全部靜音，你念</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 模式切換的影響</h3>
+  <ul>
+    <li>在<b>普通/單句模式</b>與<b>扮演模式</b>之間切換時，會重新載入目前單元</li>
+    <li>在其他情況下，只重新選中目前行，不重新載入</li>
+    <li>單句模式下時間軸可見，其他模式隱藏</li>
+  </ul>
+</section>
+
+<!-- ========== 7 ========== -->
+<section id="s7">
+  <h2>7. 循環模式與頻道/單元</h2>
+
+  <h3>7.1 頻道與單元</h3>
+  <ul>
+    <li>一張卡片最多包含 10 個<b>頻道</b>（對應 Srts_01 到 Srts_10）</li>
+    <li>每個頻道有多個<b>單元</b>（對應集數或章節）</li>
+    <li>目前播放的單元顯示在字幕區頂部</li>
+  </ul>
+
+  <h3>7.2 切換頻道/單元</h3>
+  <p>在選項面板底部有頻道和單元選擇器：</p>
+  <ul>
+    <li>左側是頻道清單（若只有一個頻道，清單自動隱藏）</li>
+    <li>右側是單元網格，點選即可切換</li>
+  </ul>
+  <p>切換後自動跳轉到該單元並從頭播放。</p>
+
+  <h3>7.3 循環模式</h3>
+  <p>決定播放到單元末尾時的行為：</p>
+  <table>
+    <thead><tr><th>模式</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>目前單元</td><td>播完後回到本單元開頭</td></tr>
+      <tr><td>目前頻道</td><td>播完後跳到下一單元，頻道末尾後回到本頻道開頭</td></tr>
+      <tr><td>所有內容</td><td>跨頻道連續播放，到末尾回到第一個頻道</td></tr>
+    </tbody>
+  </table>
+  <p>在選項面板中選擇循環模式。</p>
+</section>
+
+<!-- ========== 8 ========== -->
+<section id="s8">
+  <h2>8. 跟讀與角色扮演</h2>
+
+  <h3>8.1 角色判定</h3>
+  <p>字幕的角色由行內標記推斷：</p>
+  <table>
+    <thead><tr><th>標記</th><th>角色</th></tr></thead>
+    <tbody>
+      <tr><td>[n]</td><td>旁白（不被扮演）</td></tr>
+      <tr><td>[t]</td><td>歌詞/字幕組（不被扮演）</td></tr>
+      <tr><td>[g]</td><td>其他（不被扮演）</td></tr>
+      <tr><td>[a]</td><td>延續上一行角色</td></tr>
+      <tr><td>[s]</td><td>新場景開始</td></tr>
+      <tr><td>[p]</td><td>段落分隔</td></tr>
+      <tr><td>無標記</td><td>交替 srt1 / srt2</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 扮演流程</h3>
+  <p>選好扮演模式（奇數/偶數/全部）後，播放時：</p>
+  <ol>
+    <li>播放到你要念的行 → 自動暫停並靜音 → 該行加 <code>speaking</code> 高亮</li>
+    <li>你念完後再次點擊播放 → 從該行結束處繼續</li>
+    <li>若選項裡開啟了「扮演後重播原聲」，會倒回該行開始位置，播放原聲</li>
+    <li>原聲播放完畢後繼續下一句</li>
+  </ol>
+
+  <h3>8.3 跳過空白區</h3>
+  <p>「扮演時跳過空白區時長」選項：當兩句之間的靜音間隔超過設定秒數時，自動跳過。例如設為 5 秒，則間隔大於 5 秒的部分會被跳過，節省時間。</p>
+
+  <h3>8.4 角色字幕顯示</h3>
+  <p>「角色字幕」選項決定扮演行的高亮方式：</p>
+  <table>
+    <thead><tr><th>選項</th><th>效果</th></tr></thead>
+    <tbody>
+      <tr><td>預設</td><td>扮演行整行高亮</td></tr>
+      <tr><td>譯文</td><td>顯示譯文，隱藏原文</td></tr>
+      <tr><td>隱藏</td><td>每個單詞加邊框，隱藏具體內容</td></tr>
+    </tbody>
+  </table>
+  <p>「隱藏」模式適合聽寫練習：你能看到句子長度和斷詞，但看不到具體單詞。</p>
+</section>
+
+<!-- ========== 9 ========== -->
+<section id="s9">
+  <h2>9. 閃播</h2>
+  <p>閃播是一種變速快放整段的功能，用於快速過一遍已經熟悉的內容。</p>
+
+  <h3>9.1 兩種閃播</h3>
+  <table>
+    <thead><tr><th>按鈕</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td><span class="glyph">⚡</span></td><td>從目前句開始，逐塊變速快放</td></tr>
+      <tr><td><span class="glyph">⚡²</span></td><td>從螢幕頂部行開始，逐塊變速快放</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 分塊機制</h3>
+  <ul>
+    <li>把字幕按「至少 N 秒一塊」切分（N 由「閃播塊最小時長」決定）</li>
+    <li>每塊按不同速度播放（速度清單由「閃播播放速度」決定）</li>
+    <li>塊與塊之間有間隔（由「多行重複間隔」決定）</li>
+  </ul>
+
+  <h3>9.3 閃播速度清單</h3>
+  <p>最多支援 6 個速度，每個速度在 1.00x 到 3.00x 之間。預設 4 個：1.25x、2.00x、2.25x、2.50x。</p>
+  <p>也可以使用快捷模板：</p>
+  <ul>
+    <li>A：塊 10 秒，速度 1.25x / 1.75x</li>
+    <li>B：塊 20 秒，速度 1.25x / 1.75x / 2.00x</li>
+    <li>C：塊 30 秒，速度 1.25x / 1.75x / 2.00x / 2.00x</li>
+  </ul>
+
+  <h3>9.4 結束條件</h3>
+  <p>閃播到最後一個速度後，回到塊起點，重新開始新一輪，直到手動停止。</p>
+</section>
+
+<!-- ========== 10 ========== -->
+<section id="s10">
+  <h2>10. 重複播放與間隔</h2>
+
+  <h3>10.1 重複次數</h3>
+  <p>單句模式下，每句重複播放的次數：</p>
+  <ul>
+    <li>1 到 9：固定次數</li>
+    <li>10：無限循環，直到手動停止</li>
+  </ul>
+
+  <h3>10.2 單句間隔</h3>
+  <p>單句重複之間的間隔：</p>
+  <table>
+    <thead><tr><th>值</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>1 到 30</td><td>固定秒數</td></tr>
+      <tr><td>31</td><td>本句時長（念完後停等一會兒）</td></tr>
+      <tr><td>32</td><td>下一句時長</td></tr>
+      <tr><td>33</td><td>停止播放（等使用者點播放才繼續）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 多行間隔</h3>
+  <p>當一段有多個連續句時（例如你選了從螢幕頂行到當前行播放），段與段之間的間隔，單位秒，範圍 1 到 30。</p>
+
+  <h3>10.4 典型配置</h3>
+  <table>
+    <thead><tr><th>場景</th><th>重複次數</th><th>單句間隔</th><th>多行間隔</th></tr></thead>
+    <tbody>
+      <tr><td>逐句跟讀</td><td>1</td><td>本句時長</td><td>—</td></tr>
+      <tr><td>精聽新內容</td><td>無限</td><td>暫停</td><td>3 秒</td></tr>
+      <tr><td>快速過一遍</td><td>1</td><td>1 秒</td><td>1 秒</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 11 ========== -->
+<section id="s11">
+  <h2>11. 收藏</h2>
+
+  <h3>11.1 新增收藏</h3>
+  <p>每條字幕行右側有一個心形圖示，點擊即可切換：</p>
+  <ul>
+    <li>空心 ♡ → 實心 ♥：把該句加入收藏</li>
+    <li>實心 ♥ → 空心 ♡：取消收藏</li>
+  </ul>
+  <p>收藏點儲存的是該句的時間中點，因此即使字幕內容修改，只要時間還在同一區間，收藏依然有效。</p>
+
+  <h3>11.2 只看收藏</h3>
+  <p>點擊 <span class="btn">♡</span> 按鈕切換到 <span class="btn">♥</span>，只顯示收藏的字幕。再點一次恢復全部顯示。</p>
+
+  <h3>11.3 收藏範圍</h3>
+  <p>收藏按頻道和單元分別儲存。切換到其他單元時，只顯示該單元的收藏。</p>
+
+  <h3>11.4 儲存方式</h3>
+  <ul>
+    <li>iPhone/iPad：儲存在 localStorage，按卡片 ID + 頻道 + 單元劃分</li>
+    <li>Android：同上</li>
+    <li>桌面版：呼叫 Anki 外掛寫入卡片欄位</li>
+  </ul>
+</section>
+
+<!-- ========== 12 ========== -->
+<section id="s12">
+  <h2>12. 字幕顯示與語言</h2>
+
+  <h3>12.1 顯示模式</h3>
+  <p>「顯示字幕」選項控制：</p>
+  <table>
+    <thead><tr><th>模式</th><th>顯示</th></tr></thead>
+    <tbody>
+      <tr><td>英文</td><td>只顯示原文</td></tr>
+      <tr><td>譯文</td><td>只顯示譯文</td></tr>
+      <tr><td>雙語</td><td>原文 + 譯文同時顯示</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.2 快速切換</h3>
+  <p>點擊 <span class="glyph">🌐</span> 按鈕：</p>
+  <ul>
+    <li>短按：切換目前行的顯示語言（英文 → 譯文 → 雙語循環）</li>
+    <li>長按 1.5 秒：對螢幕頂部到當前行之間的所有行執行同樣切換</li>
+  </ul>
+
+  <h3>12.3 字幕位置</h3>
+  <p>「字幕位置」選項控制目前行捲動到螢幕的哪個位置：</p>
+  <table>
+    <thead><tr><th>模式</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>預設</td><td>僅當目前行不在可視區時才捲動</td></tr>
+      <tr><td>頂部</td><td>總是把目前行捲到螢幕頂部</td></tr>
+      <tr><td>中部</td><td>總是把目前行捲到螢幕中部</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.4 字幕字體</h3>
+  <p>在選項中可切換 4 種字體：預設、Verdana、Helvetica、Times New Roman。</p>
+
+  <h3>12.5 字體大小</h3>
+  <p>4 個等級：預設（18px）、稍大（19.5px）、較大（21px）、最大（22.5px）。</p>
+</section>
+
+<!-- ========== 13 ========== -->
+<section id="s13">
+  <h2>13. 錄音與噪音</h2>
+
+  <h3>13.1 錄音</h3>
+  <p>點擊 <span class="glyph">🎤</span> 按鈕開始錄音：</p>
+  <ul>
+    <li>需要瀏覽器授權麥克風權限</li>
+    <li>錄音中圖示變為停止錄製圖示</li>
+    <li>點擊停止後自動開始回放</li>
+    <li>最長錄音 5 分鐘</li>
+    <li>錄音只保留最近一次，再次錄音會覆蓋</li>
+  </ul>
+  <p>錄音檔案儲存在記憶體中，不寫到磁碟。切換到下一張卡片時自動清除。</p>
+
+  <h3>13.2 播放錄音</h3>
+  <p>點擊 <span class="glyph">▶🎤</span> 按鈕回放上一次錄音。再次點擊可停止播放。</p>
+
+  <h3>13.3 噪音</h3>
+  <p>點擊 <span class="btn">N</span> 按鈕循環切換：</p>
+  <table>
+    <thead><tr><th>值</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>N</td><td>無噪音</td></tr>
+      <tr><td>N1 / N2 / N3</td><td>混入三個不同噪音源之一</td></tr>
+    </tbody>
+  </table>
+  <p>噪音與影片同步播放和暫停。開啟噪音時影片音量自動降到 50%，噪音從隨機位置開始，循環播放。</p>
+  <p>噪音檔案來自卡片模板目錄下的 <code>u_noise_1.mp3</code>、<code>u_noise_2.mp3</code>、<code>u_noise_3.mp3</code>。</p>
+</section>
+
+<!-- ========== 14 ========== -->
+<section id="s14">
+  <h2>14. 長按操作</h2>
+  <p>很多按鈕支援長按 1.5 秒觸發附加功能：</p>
+  <table>
+    <thead><tr><th>按鈕</th><th>長按效果</th></tr></thead>
+    <tbody>
+      <tr><td>上一句</td><td>跳到上一個單元</td></tr>
+      <tr><td>下一句</td><td>跳到下一個單元</td></tr>
+      <tr><td>顯隱譯文</td><td>對螢幕頂部到當前行之間的所有行切換顯隱</td></tr>
+      <tr><td>播放速度選單</td><td>返回牌組（頂部返回）</td></tr>
+      <tr><td>其他任意按鈕</td><td>進入按鈕面板拖動模式</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 15 ========== -->
+<section id="s15">
+  <h2>15. 選項面板詳解</h2>
+  <p>點擊 <span class="glyph">⚙</span> 按鈕開啟選項面板。所有選項立即生效並儲存。</p>
+
+  <h3>15.1 介面選項</h3>
+  <table>
+    <thead><tr><th>選項</th><th>可選值</th></tr></thead>
+    <tbody>
+      <tr><td>使用簡體中文</td><td>開關，切換介面語言</td></tr>
+      <tr><td>使用兩行按鈕</td><td>開關，切換按鈕行數</td></tr>
+      <tr><td>按鈕顏色</td><td>黃 / 綠 / 橙 / 粉 / 白</td></tr>
+      <tr><td>按鈕高度</td><td>最高 / 較高 / 較低 / 最低</td></tr>
+      <tr><td>字幕字體</td><td>預設 / Verdana / Helvetica / Times New Roman</td></tr>
+      <tr><td>字體大小</td><td>預設 / 稍大 / 較大 / 最大</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.2 播放選項</h3>
+  <table>
+    <thead><tr><th>選項</th><th>範圍</th><th>預設</th></tr></thead>
+    <tbody>
+      <tr><td>影片高度</td><td>32 ~ 320 像素</td><td>240</td></tr>
+      <tr><td>播放倍速</td><td>0.30x ~ 3.00x</td><td>1.00x</td></tr>
+      <tr><td>循環模式</td><td>目前單元 / 目前頻道 / 所有內容</td><td>目前頻道</td></tr>
+      <tr><td>顯示字幕</td><td>英文 / 譯文 / 雙語</td><td>雙語</td></tr>
+      <tr><td>字幕位置</td><td>預設 / 頂部 / 中部</td><td>預設</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.3 學習選項</h3>
+  <table>
+    <thead><tr><th>選項</th><th>範圍</th><th>預設</th></tr></thead>
+    <tbody>
+      <tr><td>擴展時間軸</td><td>0 ~ 500 毫秒</td><td>0</td></tr>
+      <tr><td>扮演時跳過空白區時長</td><td>3 ~ 30 秒</td><td>5</td></tr>
+      <tr><td>扮演之後播放原聲</td><td>開關</td><td>開</td></tr>
+      <tr><td>角色字幕</td><td>預設 / 譯文 / 隱藏</td><td>隱藏</td></tr>
+      <tr><td>重複播放次數</td><td>1 ~ 10</td><td>10（無限）</td></tr>
+      <tr><td>單句重複間隔</td><td>1 ~ 33</td><td>33（停止）</td></tr>
+      <tr><td>多行重複間隔</td><td>1 ~ 30 秒</td><td>1</td></tr>
+      <tr><td>閃播每段最小時長</td><td>10 ~ 99 秒</td><td>20</td></tr>
+      <tr><td>閃播播放速度</td><td>最多 6 個</td><td>1.25 / 2.00 / 2.25 / 2.50</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.4 頻道/單元選擇</h3>
+  <p>面板底部是頻道和單元選擇器。如果只有一個頻道，頻道清單自動隱藏，單元清單鋪滿寬度。</p>
+</section>
+
+<!-- ========== 16 ========== -->
+<section id="s16">
+  <h2>16. 鍵盤快速鍵</h2>
+  <p>僅桌面版支援：</p>
+  <table>
+    <thead><tr><th>按鍵</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">←</span></td><td>上一句</td></tr>
+      <tr><td><span class="key">→</span></td><td>下一句</td></tr>
+      <tr><td><span class="key">↓</span></td><td>播放 / 暫停</td></tr>
+      <tr><td><span class="key">Esc</span></td><td>關閉選項面板</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 17 ========== -->
+<section id="s17">
+  <h2>17. 選項持久化機制</h2>
+  <p>選項需要儲存，下一次開啟卡片時恢復。不同平台儲存方式不同：</p>
+
+  <h3>17.1 桌面版</h3>
+  <p>把選項字串寫入卡片欄位 <code>Options</code> 或 <code>Tags</code>。需要 Anki 外掛 1020366288。</p>
+
+  <h3>17.2 iPhone / iPad</h3>
+  <p>儲存在瀏覽器的 localStorage 中，鍵名格式為 <code>卡片ID_series_opts_6</code>。</p>
+
+  <h3>17.3 Android</h3>
+  <p>同 iPhone，儲存在 localStorage。</p>
+
+  <h3>17.4 編碼方式</h3>
+  <p>選項字串用 base62 編碼壓縮，再以 <code>a</code> 為分隔符儲存各個欄位。例如：</p>
+  <pre>欄位順序：語言 / 按鈕顏色 / 按鈕高度 / 按鈕行數 /
+播放模式 / 循環模式 / 字幕語言 / 字幕位置 /
+角色字幕 / 字幕字體 / 字體大小 / 扮演後重播 /
+只看收藏 / 影片高度 / 播放倍速 / 擴展時間軸 /
+跳過空白時長 / 單句次數 / 單句間隔 / 多行間隔 /
+閃播時長 / 閃播速度清單 / 頻道 / 單元 / 播放位置</pre>
+
+  <h3>17.5 收藏單獨儲存</h3>
+  <p>收藏資料不在選項字串裡，而是單獨儲存。鍵名格式：<code>卡片ID_頻道_單元</code>。值為一串 7 位數字的拼接，每個數字代表一個收藏點的毫秒時間。</p>
+</section>
+
+<!-- ========== 18 ========== -->
+<section id="s18">
+  <h2>18. Srts 欄位格式說明</h2>
+  <p>了解格式有助於手動修改或生成卡片。Srts_00 到 Srts_10 都是純文字欄位，每行一條字幕。</p>
+
+  <h3>18.1 行格式</h3>
+  <pre>時間資訊\t原文\t譯文</pre>
+  <ul>
+    <li><b>時間資訊</b>：逗號分隔，格式為 <code>前綴,季,集,媒體源,開始時間-結束時間</code></li>
+    <li><b>原文</b>：可帶標記前綴 <code>[s]</code>、<code>[n]</code>、<code>[a]</code> 等</li>
+    <li><b>譯文</b>：可為空</li>
+  </ul>
+
+  <h3>18.2 時間資訊詳解</h3>
+  <p>以 <code>ddm,,053,sf_s05e08,-251093-251873</code> 為例：</p>
+  <table>
+    <thead><tr><th>部分</th><th>值</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>前綴</td><td>ddm</td><td>時間線欄位前綴</td></tr>
+      <tr><td>季</td><td>（空）</td><td>未指定季</td></tr>
+      <tr><td>集</td><td>053</td><td>第 53 單元</td></tr>
+      <tr><td>媒體源</td><td>sf_s05e08</td><td>媒體檔案名（可選）</td></tr>
+      <tr><td>時間範圍</td><td>-251093-251873</td><td>從 251093ms 到 251873ms</td></tr>
+    </tbody>
+  </table>
+
+  <h3>18.3 單元判定</h3>
+  <p>每條字幕的「集」欄位決定它屬於哪個單元。程式在載入單元時，只把集欄位匹配的字幕挑出來顯示。</p>
+
+  <h3>18.4 頻道判定</h3>
+  <p>Srts_00 是所有頻道的公共索引。Srts_01 到 Srts_10 各自獨立，可以是同一集的不同語言版本，也可以是不同集。</p>
+</section>
+
+<!-- ========== 19 ========== -->
+<section id="s19">
+  <h2>19. 常見問題</h2>
+
+  <div class="qa">
+    <div class="q">Q1：卡片開啟後一片黑，什麼都沒有</div>
+    <div class="a">
+      檢查：
+      <ul>
+        <li>卡片是否有 Srts_01 欄位內容</li>
+        <li>卡片 ID 是否能被 <code>document.getElementById("fld-srts-01")</code> 找到</li>
+        <li>瀏覽器控制台是否有 JavaScript 錯誤</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：影片不播放</div>
+    <div class="a">
+      檢查：
+      <ul>
+        <li>Media 欄位是否填寫了副檔名</li>
+        <li>媒體檔案是否放在 Anki 的 collection.media 目錄下</li>
+        <li>Windows 版本只支援 .webm，其他平台只支援 .mp4</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：選項面板打不開</div>
+    <div class="a">檢查按鈕面板是否被拖出螢幕。重新整理卡片重新開啟。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：選項不能儲存</div>
+    <div class="a">
+      檢查：
+      <ul>
+        <li>桌面版是否安裝了 Anki 外掛 1020366288</li>
+        <li>iPhone 是否允許 localStorage（隱私模式下會禁用）</li>
+        <li>卡片 Tags 欄位是否被其他模板占用了</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：收藏遺失</div>
+    <div class="a">收藏按頻道和單元分別儲存。切換到其他單元時看不到目前單元的收藏。清理瀏覽器快取會遺失 localStorage 裡的收藏。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：閃播速度清單只有兩個</div>
+    <div class="a">閃播至少需要 2 個速度。如果設定裡少於 2 個，會自動回退到預設的 1.25 / 1.75。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：噪音無法播放</div>
+    <div class="a">確認卡片模板目錄下有 <code>u_noise_1.mp3</code> 到 <code>u_noise_3.mp3</code>，並且已加入 Anki 媒體庫。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：錄音按鈕無反應</div>
+    <div class="a">
+      <ul>
+        <li>Windows 桌面版不支援錄音</li>
+        <li>其他平台需要授權麥克風權限</li>
+        <li>HTTPS 環境下才能使用錄音 API</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：長按沒反應</div>
+    <div class="a">長按需要持續 1.5 秒。如果手指稍微移動，會被識別為拖動而不是長按。可以嘗試用滑鼠（桌面版）或更穩定的手指按壓。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：字幕顯示不全或錯位</div>
+    <div class="a">
+      <ul>
+        <li>檢查 Srts 欄位每行是否用 Tab 分隔（不是空格）</li>
+        <li>檢查時間資訊的逗號數量是否正確</li>
+        <li>檢查字幕是否包含異常字元</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：跟讀時影片被靜音但沒有「該你念」的提示</div>
+    <div class="a">檢查「角色字幕」選項是否設為「隱藏」。此模式下扮演行會顯示為帶邊框的方塊，是提示而非內容。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12：切換到其他單元後播放位置沒有重置</div>
+    <div class="a">這是設計行為。切換單元時若指定了「從頭播放」，位置會重置。否則會記住上次的位置。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13：顯隱譯文長按後整個螢幕亂了</div>
+    <div class="a">長按顯隱譯文會對螢幕頂部到當前行之間的所有行切換。若不希望這樣，短按即可，只切換當前行。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14：按鈕面板突然變成一行</div>
+    <div class="a">說明卡片被識別為無媒體卡片（Media 欄位為 NaN，或影片檔案缺失）。檢查 Media 欄位和媒體檔案。</div>
+  </div>
+</section>
+
+<footer>
+  Anki 播放器 (VlsPlayer Series) 操作說明書 · 版本 1.0
+</footer>
+
+</div>
+</body>
+</html>

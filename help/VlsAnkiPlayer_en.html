@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki Player (VlsPlayer Series) User Manual</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .tip {
+    background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key {
+    display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333;
+  }
+  .btn {
+    display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center;
+  }
+  .glyph {
+    display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki Player (VlsPlayer Series) User Manual</h1>
+  <div class="meta">Version 1.0 &nbsp;|&nbsp; Full-season / full-unit subtitle learning cards for use with Anki</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">What This Is</a></li>
+    <li><a href="#s2">Card Fields and Creation</a></li>
+    <li><a href="#s3">Interface Layout</a></li>
+    <li><a href="#s4">Button Panel</a></li>
+    <li><a href="#s5">Single-Sentence Mode and Timeline</a></li>
+    <li><a href="#s6">Playback Modes</a></li>
+    <li><a href="#s7">Loop Mode and Channels/Units</a></li>
+    <li><a href="#s8">Shadowing and Role-Play</a></li>
+    <li><a href="#s9">Flash Play</a></li>
+    <li><a href="#s10">Repeat Playback and Intervals</a></li>
+    <li><a href="#s11">Favorites</a></li>
+    <li><a href="#s12">Subtitle Display and Language</a></li>
+    <li><a href="#s13">Recording and Noise</a></li>
+    <li><a href="#s14">Long-Press Actions</a></li>
+    <li><a href="#s15">Options Panel in Detail</a></li>
+    <li><a href="#s16">Keyboard Shortcuts</a></li>
+    <li><a href="#s17">Options Persistence</a></li>
+    <li><a href="#s18">Srts Field Format</a></li>
+    <li><a href="#s19">FAQ</a></li>
+  </ol>
+</nav>
+
+<!-- ========== 1 ========== -->
+<section id="s1">
+  <h2>1. What This Is</h2>
+  <p>This is a special Anki card that packs the subtitle data of an <b>entire season or unit</b> into a single card. During review you don't need to flip through cards episode by episode—within one card you can:</p>
+  <ul>
+    <li>Watch the video with synchronized subtitles</li>
+    <li>Shadow sentence by sentence, do intensive listening, or take dictation</li>
+    <li>Role-play: you read one role while the player reads the other</li>
+    <li>Flash play: speed through a whole passage at varying speeds</li>
+    <li>Mark favorite sentences for focused review later</li>
+    <li>Record yourself for comparison</li>
+  </ul>
+  <p>It is not the same as the desktop VlsPlayer. VlsPlayer is a Windows application; this card template is JavaScript running inside Anki. Both share the same subtitle file format and subtitle toolbox.</p>
+
+  <h3>1.1 Key Features</h3>
+  <ul>
+    <li>Black background with yellow buttons, designed for long video study sessions</li>
+    <li>Button panel is draggable, dockable to top/bottom, and collapsible to two rows</li>
+    <li>All settings are saved in card fields or, on iOS, in localStorage</li>
+    <li>Supports desktop, iPhone, iPad, Android, and macOS</li>
+    <li>On Windows, Anki add-on 1020366288 is required for the clipboard API</li>
+  </ul>
+</section>
+
+<!-- ========== 2 ========== -->
+<section id="s2">
+  <h2>2. Card Fields and Creation</h2>
+
+  <h3>2.1 Card Fields</h3>
+  <table>
+    <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Title</td><td>Series title, composed of three parts: main title, season/chapter, episode/unit</td></tr>
+      <tr><td>Media</td><td>Media extension + poster (optional), separated by <code>|</code></td></tr>
+      <tr><td>Options</td><td>Options string (desktop Anki only, see Section 17)</td></tr>
+      <tr><td>Srts_00</td><td>Index/overview track, no subtitles, only records the number of units</td></tr>
+      <tr><td>Srts_01 to Srts_10</td><td>Up to 10 channels; each channel holds multiple languages or seasons of the same episode</td></tr>
+      <tr><td>Tags</td><td>Options are also stored here (in base62 encoding)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 Source</h3>
+  <p>Cards are generated by the desktop VlsPlayer's "Anki Player Text" export function, or by the SRT toolbox's Anki export function. Field contents are filled automatically; no manual writing is needed.</p>
+
+  <h3>2.3 Loading Sequence</h3>
+  <ol>
+    <li>The front of the card is displayed (the whole player is on the front)</li>
+    <li>Title and Media are parsed</li>
+    <li>Srts_01 through Srts_10 are scanned to build the channel list</li>
+    <li>The unit number range is read from Srts_00</li>
+    <li>Last-used options and playback position are loaded</li>
+    <li>The last channel and unit are opened</li>
+    <li>Playback starts automatically after 200 milliseconds</li>
+  </ol>
+</section>
+
+<!-- ========== 3 ========== -->
+<section id="s3">
+  <h2>3. Interface Layout</h2>
+
+  <h3>3.1 Three Regions</h3>
+  <table>
+    <thead><tr><th>Region</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Top media area</td><td>Video picture. Audio-only cards show a record icon</td></tr>
+      <tr><td>Middle subtitle area</td><td>Subtitles displayed line by line, scrollable. Each line has a colored dot indicating the role</td></tr>
+      <tr><td>Bottom button area</td><td>Playback controls and options entry; draggable and dockable</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 Visual Encoding of Subtitle Lines</h3>
+  <table>
+    <thead><tr><th>Color</th><th>Line class</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Orange dot</td><td>srt1</td><td>Role 1</td></tr>
+      <tr><td>Green dot</td><td>srt2</td><td>Role 2</td></tr>
+      <tr><td>Gray dot</td><td>srtN</td><td>Narration</td></tr>
+      <tr><td>Yellow dot</td><td>srtT</td><td>Lyrics / fansub group</td></tr>
+      <tr><td>Pink dot</td><td>srtG</td><td>Other markers</td></tr>
+    </tbody>
+  </table>
+  <p>Each subtitle line has a heart icon on the right: an empty ♡ means not favorited, a filled ♥ means favorited. Click to toggle.</p>
+
+  <h3>3.3 Colored Markers Inside Subtitles</h3>
+  <p>Subtitle lines may contain <code>&lt;f1&gt;</code> to <code>&lt;f7&gt;</code> markers, rendered in different colors:</p>
+  <table>
+    <thead><tr><th>Marker</th><th>Color</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>Red</td></tr>
+      <tr><td>f2</td><td>Green</td></tr>
+      <tr><td>f3</td><td>Blue</td></tr>
+      <tr><td>f4</td><td>Yellow</td></tr>
+      <tr><td>f5</td><td>Magenta</td></tr>
+      <tr><td>f6</td><td>Orange</td></tr>
+      <tr><td>f7</td><td>Dark red</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.4 Time Information</h3>
+  <p>Tap the video picture and the bottom shows:</p>
+  <ul>
+    <li>Left: current playback time (hh:mm:ss)</li>
+    <li>Right: total duration</li>
+    <li>Middle: progress bar, draggable to seek</li>
+  </ul>
+  <p>It hides automatically after 5 seconds.</p>
+</section>
+
+<!-- ========== 4 ========== -->
+<section id="s4">
+  <h2>4. Button Panel</h2>
+  <p>The button panel has three rows, can be collapsed to two rows, and can be dragged to the top or bottom of the window. All settings are saved in the card options and restored automatically the next time the card is opened.</p>
+
+  <h3>4.1 Three-Row Layout</h3>
+  <p>Three rows by default, left to right:</p>
+  <table>
+    <thead><tr><th>Row</th><th>Buttons</th></tr></thead>
+    <tbody>
+      <tr><td>Row 1</td><td>
+        <span class="btn">－ / ＋</span> Collapse/Expand &nbsp;
+        <span class="btn">1.0 / 2.0</span> Speed toggle &nbsp;
+        <span class="glyph">⏮</span> Previous sentence &nbsp;
+        <span class="glyph">↺</span> Replay &nbsp;
+        <span class="glyph">⏭</span> Next sentence &nbsp;
+        <span class="glyph">AB</span> Play selection &nbsp;
+        <span class="glyph">🔍</span> Dictionary/AI
+      </td></tr>
+      <tr><td>Row 2</td><td>
+        <span class="btn">M</span> Playback mode &nbsp;
+        <span class="btn">0.5 / 1.5</span> Speed toggle &nbsp;
+        <span class="glyph">⬆AB</span> Play from top visible line to current line &nbsp;
+        <span class="glyph">▶</span> Play/Pause &nbsp;
+        <span class="glyph">⬇AB</span> Play from current line to bottom visible line &nbsp;
+        <span class="glyph">⚡²</span> Flash play from top &nbsp;
+        <span class="btn">N</span> Noise
+      </td></tr>
+      <tr><td>Row 3</td><td>
+        <span class="glyph">📊</span> Speed menu &nbsp;
+        <span class="glyph">♡</span> Favorite toggle &nbsp;
+        <span class="glyph">▶🎤</span> Play recording &nbsp;
+        <span class="glyph">🎤</span> Record &nbsp;
+        <span class="glyph">🌐</span> Toggle translation &nbsp;
+        <span class="glyph">⚡</span> Flash play &nbsp;
+        <span class="glyph">⚙</span> Options
+      </td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Two-Row Layout</h3>
+  <p>If "Two-row buttons" is selected in options, the layout becomes two rows with larger, easier-to-tap buttons. Good for portrait phone screens.</p>
+
+  <h3>4.3 Media-Less Cards</h3>
+  <p>When the card has only audio, or the media file is missing, the button panel shrinks to a single row keeping only:</p>
+  <ul>
+    <li>Return to deck</li>
+    <li>Favorite toggle</li>
+    <li>Dictionary/AI</li>
+    <li>Toggle translation</li>
+    <li>Options</li>
+  </ul>
+
+  <h3>4.4 Dragging the Panel</h3>
+  <p><b>Long-press any button</b> on the panel (except previous/next sentence) for 1.5 seconds to enter drag mode. You can:</p>
+  <ul>
+    <li>Drag to the bottom of the window → docks to the bottom</li>
+    <li>Drag to the top of the window → docks to the top (buttons flip vertically)</li>
+    <li>Drag to the middle → floats</li>
+  </ul>
+
+  <h3>4.5 Collapse/Expand</h3>
+  <p>Click <span class="btn">－</span> or <span class="btn">＋</span> to switch between three and two rows. When expanded, the "Replay" button becomes a "Play" button.</p>
+</section>
+
+<!-- ========== 5 ========== -->
+<section id="s5">
+  <h2>5. Single-Sentence Mode and Timeline</h2>
+  <p>In single-sentence mode, a timeline appears above the button panel showing the adjustable playback range of the current sentence.</p>
+
+  <h3>5.1 Timeline Elements</h3>
+  <table>
+    <thead><tr><th>Element</th><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Two yellow dots</td><td>Yellow</td><td>Original playback interval</td></tr>
+      <tr><td>Two gray handles</td><td>Gray</td><td>Current adjustable start/end times</td></tr>
+      <tr><td>White handle</td><td>White</td><td>Playback position indicator</td></tr>
+      <tr><td>Short vertical lines at both ends</td><td>Dark yellow</td><td>Timeline border decoration</td></tr>
+      <tr><td>◁ ▷ buttons</td><td>Yellow</td><td>Fine-tune start/end times by 0.5 seconds each</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Adjusting Start/End Times</h3>
+  <ul>
+    <li>Drag the left gray handle to adjust the start time</li>
+    <li>Drag the right gray handle to adjust the end time</li>
+    <li>Click <span class="btn">◁</span> to move the start time back 0.5 seconds</li>
+    <li>Click <span class="btn">▷</span> to move the end time forward 0.5 seconds</li>
+  </ul>
+  <p>Changes take effect immediately; the next playback starts from the new position.</p>
+
+  <h3>5.3 Combined with the "Extend Timeline" Option</h3>
+  <p>The "Extend timeline" option in milliseconds extends each subtitle's start and end times slightly to both sides, avoiding clipped audio from tight subtitle boundaries. The extension never exceeds half the gap to the adjacent subtitle.</p>
+</section>
+
+<!-- ========== 6 ========== -->
+<section id="s6">
+  <h2>6. Playback Modes</h2>
+  <p>Click the <span class="btn">M</span> button to open the mode menu. The current mode letter is shown on the button.</p>
+
+  <h3>6.1 Five Modes</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Mode</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>M</td><td>Normal mode</td><td>Plays the whole passage in order, auto-scrolling subtitles</td></tr>
+      <tr><td>Ms</td><td>Single-sentence mode</td><td>Plays sentence by sentence; each sentence is handled per the repeat settings</td></tr>
+      <tr><td>Mo</td><td>Role-play odd lines</td><td>Odd lines (srt1) are muted; you read them</td></tr>
+      <tr><td>Me</td><td>Role-play even lines</td><td>Even lines (srt2) are muted; you read them</td></tr>
+      <tr><td>Ma</td><td>Role-play all lines</td><td>All lines muted; you read them</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 Effects of Switching Modes</h3>
+  <ul>
+    <li>Switching between <b>Normal/Single-sentence</b> and <b>Role-play</b> modes reloads the current unit</li>
+    <li>In other cases only the current line is re-selected, without reloading</li>
+    <li>The timeline is visible in single-sentence mode and hidden in other modes</li>
+  </ul>
+</section>
+
+<!-- ========== 7 ========== -->
+<section id="s7">
+  <h2>7. Loop Mode and Channels/Units</h2>
+
+  <h3>7.1 Channels and Units</h3>
+  <ul>
+    <li>A card can contain up to 10 <b>channels</b> (corresponding to Srts_01 through Srts_10)</li>
+    <li>Each channel has multiple <b>units</b> (corresponding to episodes or chapters)</li>
+    <li>The currently playing unit is shown at the top of the subtitle area</li>
+  </ul>
+
+  <h3>7.2 Switching Channels/Units</h3>
+  <p>At the bottom of the options panel are the channel and unit selectors:</p>
+  <ul>
+    <li>Left: channel list (hidden automatically if there is only one channel)</li>
+    <li>Right: unit grid; click to switch</li>
+  </ul>
+  <p>After switching, the player jumps to that unit and plays from the beginning.</p>
+
+  <h3>7.3 Loop Modes</h3>
+  <p>Determines behavior when playback reaches the end of a unit:</p>
+  <table>
+    <thead><tr><th>Mode</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Current unit</td><td>Returns to the start of this unit when finished</td></tr>
+      <tr><td>Current channel</td><td>Jumps to the next unit when finished; at the end of the channel returns to the start of this channel</td></tr>
+      <tr><td>All content</td><td>Plays continuously across channels; at the end returns to the first channel</td></tr>
+    </tbody>
+  </table>
+  <p>Select the loop mode in the options panel.</p>
+</section>
+
+<!-- ========== 8 ========== -->
+<section id="s8">
+  <h2>8. Shadowing and Role-Play</h2>
+
+  <h3>8.1 Role Determination</h3>
+  <p>A subtitle's role is inferred from inline markers:</p>
+  <table>
+    <thead><tr><th>Marker</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>[n]</td><td>Narration (not role-played)</td></tr>
+      <tr><td>[t]</td><td>Lyrics / fansub group (not role-played)</td></tr>
+      <tr><td>[g]</td><td>Other (not role-played)</td></tr>
+      <tr><td>[a]</td><td>Continues the previous line's role</td></tr>
+      <tr><td>[s]</td><td>New scene begins</td></tr>
+      <tr><td>[p]</td><td>Paragraph separator</td></tr>
+      <tr><td>No marker</td><td>Alternates srt1 / srt2</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 Role-Play Flow</h3>
+  <p>After choosing a role-play mode (odd/even/all), during playback:</p>
+  <ol>
+    <li>When playback reaches a line you should read → it pauses automatically and mutes → the line is highlighted with <code>speaking</code></li>
+    <li>After you finish reading, click play again → playback continues from the end of that line</li>
+    <li>If "Replay original audio after role-play" is enabled in options, it rewinds to the start of the line and plays the original audio</li>
+    <li>After the original audio finishes, it continues to the next sentence</li>
+  </ol>
+
+  <h3>8.3 Skipping Silent Gaps</h3>
+  <p>The "Skip silent gaps during role-play" option: when the silence between two sentences exceeds the set number of seconds, it is skipped automatically. For example, if set to 5 seconds, any gap longer than 5 seconds is skipped, saving time.</p>
+
+  <h3>8.4 Role Subtitle Display</h3>
+  <p>The "Role subtitle" option determines how role-play lines are highlighted:</p>
+  <table>
+    <thead><tr><th>Option</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Default</td><td>The whole role-play line is highlighted</td></tr>
+      <tr><td>Translation</td><td>Shows the translation, hides the original text</td></tr>
+      <tr><td>Hidden</td><td>Each word is boxed; the actual content is hidden</td></tr>
+    </tbody>
+  </table>
+  <p>"Hidden" mode is good for dictation practice: you can see sentence length and word breaks but not the actual words.</p>
+</section>
+
+<!-- ========== 9 ========== -->
+<section id="s9">
+  <h2>9. Flash Play</h2>
+  <p>Flash play is a variable-speed fast playback of a whole passage, used to quickly run through content you already know.</p>
+
+  <h3>9.1 Two Kinds of Flash Play</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td><span class="glyph">⚡</span></td><td>Starts from the current sentence, plays block by block at varying speeds</td></tr>
+      <tr><td><span class="glyph">⚡²</span></td><td>Starts from the top visible line, plays block by block at varying speeds</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 Blocking Mechanism</h3>
+  <ul>
+    <li>Subtitles are split into blocks of "at least N seconds each" (N is set by "Minimum flash-play block length")</li>
+    <li>Each block is played at a different speed (the speed list is set by "Flash-play speeds")</li>
+    <li>There is an interval between blocks (set by "Multi-line repeat interval")</li>
+  </ul>
+
+  <h3>9.3 Flash-Play Speed List</h3>
+  <p>Supports up to 6 speeds, each between 1.00x and 3.00x. Default is 4: 1.25x, 2.00x, 2.25x, 2.50x.</p>
+  <p>Quick templates are also available:</p>
+  <ul>
+    <li>A: block 10 s, speeds 1.25x / 1.75x</li>
+    <li>B: block 20 s, speeds 1.25x / 1.75x / 2.00x</li>
+    <li>C: block 30 s, speeds 1.25x / 1.75x / 2.00x / 2.00x</li>
+  </ul>
+
+  <h3>9.4 End Condition</h3>
+  <p>After flash play reaches the last speed, it returns to the block start and begins a new round, until stopped manually.</p>
+</section>
+
+<!-- ========== 10 ========== -->
+<section id="s10">
+  <h2>10. Repeat Playback and Intervals</h2>
+
+  <h3>10.1 Repeat Count</h3>
+  <p>In single-sentence mode, the number of times each sentence is repeated:</p>
+  <ul>
+    <li>1 to 9: fixed number of times</li>
+    <li>10: infinite loop until stopped manually</li>
+  </ul>
+
+  <h3>10.2 Single-Sentence Interval</h3>
+  <p>The interval between repeats of a single sentence:</p>
+  <table>
+    <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>1 to 30</td><td>Fixed number of seconds</td></tr>
+      <tr><td>31</td><td>Duration of this sentence (pause briefly after reading)</td></tr>
+      <tr><td>32</td><td>Duration of the next sentence</td></tr>
+      <tr><td>33</td><td>Stop playback (waits for the user to click play)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 Multi-Line Interval</h3>
+  <p>When a passage has multiple consecutive sentences (for example, you chose to play from the top visible line to the current line), the interval between passages, in seconds, range 1 to 30.</p>
+
+  <h3>10.4 Typical Configurations</h3>
+  <table>
+    <thead><tr><th>Scenario</th><th>Repeat count</th><th>Single-sentence interval</th><th>Multi-line interval</th></tr></thead>
+    <tbody>
+      <tr><td>Sentence-by-sentence shadowing</td><td>1</td><td>Duration of this sentence</td><td>—</td></tr>
+      <tr><td>Intensive listening to new content</td><td>Infinite</td><td>Stop</td><td>3 s</td></tr>
+      <tr><td>Quick run-through</td><td>1</td><td>1 s</td><td>1 s</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 11 ========== -->
+<section id="s11">
+  <h2>11. Favorites</h2>
+
+  <h3>11.1 Adding Favorites</h3>
+  <p>Each subtitle line has a heart icon on the right; click to toggle:</p>
+  <ul>
+    <li>Empty ♡ → filled ♥: adds the sentence to favorites</li>
+    <li>Filled ♥ → empty ♡: removes it from favorites</li>
+  </ul>
+  <p>A favorite stores the midpoint time of that sentence, so even if the subtitle content changes, the favorite remains valid as long as the time stays in the same interval.</p>
+
+  <h3>11.2 Favorites Only</h3>
+  <p>Click the <span class="btn">♡</span> button to switch to <span class="btn">♥</span> and show only favorited subtitles. Click again to restore all.</p>
+
+  <h3>11.3 Favorite Scope</h3>
+  <p>Favorites are saved separately per channel and unit. When switching to another unit, only that unit's favorites are shown.</p>
+
+  <h3>11.4 Storage</h3>
+  <ul>
+    <li>iPhone/iPad: stored in localStorage, keyed by card ID + channel + unit</li>
+    <li>Android: same as above</li>
+    <li>Desktop: uses an Anki add-on to write into card fields</li>
+  </ul>
+</section>
+
+<!-- ========== 12 ========== -->
+<section id="s12">
+  <h2>12. Subtitle Display and Language</h2>
+
+  <h3>12.1 Display Modes</h3>
+  <p>The "Show subtitles" option controls:</p>
+  <table>
+    <thead><tr><th>Mode</th><th>Display</th></tr></thead>
+    <tbody>
+      <tr><td>Original</td><td>Shows the original text only</td></tr>
+      <tr><td>Translation</td><td>Shows the translation only</td></tr>
+      <tr><td>Bilingual</td><td>Shows original and translation together</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.2 Quick Toggle</h3>
+  <p>Click the <span class="glyph">🌐</span> button:</p>
+  <ul>
+    <li>Short press: toggles the display language of the current line (original → translation → bilingual)</li>
+    <li>Long press 1.5 s: applies the same toggle to all lines from the top visible line to the current line</li>
+  </ul>
+
+  <h3>12.3 Subtitle Position</h3>
+  <p>The "Subtitle position" option controls where the current line scrolls to:</p>
+  <table>
+    <thead><tr><th>Mode</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Default</td><td>Scrolls only when the current line is not in the visible area</td></tr>
+      <tr><td>Top</td><td>Always scrolls the current line to the top of the screen</td></tr>
+      <tr><td>Middle</td><td>Always scrolls the current line to the middle of the screen</td></tr>
+    </tbody>
+  </table>
+
+  <h3>12.4 Subtitle Font</h3>
+  <p>Four fonts can be switched in options: Default, Verdana, Helvetica, Times New Roman.</p>
+
+  <h3>12.5 Font Size</h3>
+  <p>Four levels: Default (18 px), Slightly larger (19.5 px), Larger (21 px), Largest (22.5 px).</p>
+</section>
+
+<!-- ========== 13 ========== -->
+<section id="s13">
+  <h2>13. Recording and Noise</h2>
+
+  <h3>13.1 Recording</h3>
+  <p>Click the <span class="glyph">🎤</span> button to start recording:</p>
+  <ul>
+    <li>Requires browser microphone permission</li>
+    <li>The icon changes to a stop-recording icon while recording</li>
+    <li>After clicking stop, playback starts automatically</li>
+    <li>Maximum recording length is 5 minutes</li>
+    <li>Only the most recent recording is kept; recording again overwrites it</li>
+  </ul>
+  <p>The recording is kept in memory and not written to disk. It is cleared automatically when switching to the next card.</p>
+
+  <h3>13.2 Playing the Recording</h3>
+  <p>Click the <span class="glyph">▶🎤</span> button to play back the last recording. Click again to stop playback.</p>
+
+  <h3>13.3 Noise</h3>
+  <p>Click the <span class="btn">N</span> button to cycle through:</p>
+  <table>
+    <thead><tr><th>Value</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>N</td><td>No noise</td></tr>
+      <tr><td>N1 / N2 / N3</td><td>Mixes in one of three different noise sources</td></tr>
+    </tbody>
+  </table>
+  <p>Noise plays and pauses in sync with the video. When noise is on, the video volume automatically drops to 50%, and the noise starts from a random position and loops.</p>
+  <p>Noise files come from <code>u_noise_1.mp3</code>, <code>u_noise_2.mp3</code>, <code>u_noise_3.mp3</code> in the card template directory.</p>
+</section>
+
+<!-- ========== 14 ========== -->
+<section id="s14">
+  <h2>14. Long-Press Actions</h2>
+  <p>Many buttons support a 1.5-second long press to trigger extra functions:</p>
+  <table>
+    <thead><tr><th>Button</th><th>Long-press effect</th></tr></thead>
+    <tbody>
+      <tr><td>Previous sentence</td><td>Jump to the previous unit</td></tr>
+      <tr><td>Next sentence</td><td>Jump to the next unit</td></tr>
+      <tr><td>Toggle translation</td><td>Toggles show/hide for all lines from the top visible line to the current line</td></tr>
+      <tr><td>Speed menu</td><td>Return to deck (top return)</td></tr>
+      <tr><td>Any other button</td><td>Enter button-panel drag mode</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 15 ========== -->
+<section id="s15">
+  <h2>15. Options Panel in Detail</h2>
+  <p>Click the <span class="glyph">⚙</span> button to open the options panel. All options take effect and are saved immediately.</p>
+
+  <h3>15.1 Interface Options</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Values</th></tr></thead>
+    <tbody>
+      <tr><td>Use Simplified Chinese</td><td>Toggle; switches the interface language</td></tr>
+      <tr><td>Use two-row buttons</td><td>Toggle; switches the number of button rows</td></tr>
+      <tr><td>Button color</td><td>Yellow / Green / Orange / Pink / White</td></tr>
+      <tr><td>Button height</td><td>Tallest / Taller / Shorter / Shortest</td></tr>
+      <tr><td>Subtitle font</td><td>Default / Verdana / Helvetica / Times New Roman</td></tr>
+      <tr><td>Font size</td><td>Default / Slightly larger / Larger / Largest</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.2 Playback Options</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Range</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Video height</td><td>32 ~ 320 px</td><td>240</td></tr>
+      <tr><td>Playback speed</td><td>0.30x ~ 3.00x</td><td>1.00x</td></tr>
+      <tr><td>Loop mode</td><td>Current unit / Current channel / All content</td><td>Current channel</td></tr>
+      <tr><td>Show subtitles</td><td>Original / Translation / Bilingual</td><td>Bilingual</td></tr>
+      <tr><td>Subtitle position</td><td>Default / Top / Middle</td><td>Default</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.3 Learning Options</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Range</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Extend timeline</td><td>0 ~ 500 ms</td><td>0</td></tr>
+      <tr><td>Skip silent gaps during role-play</td><td>3 ~ 30 s</td><td>5</td></tr>
+      <tr><td>Play original audio after role-play</td><td>Toggle</td><td>On</td></tr>
+      <tr><td>Role subtitle</td><td>Default / Translation / Hidden</td><td>Hidden</td></tr>
+      <tr><td>Repeat count</td><td>1 ~ 10</td><td>10 (infinite)</td></tr>
+      <tr><td>Single-sentence repeat interval</td><td>1 ~ 33</td><td>33 (stop)</td></tr>
+      <tr><td>Multi-line repeat interval</td><td>1 ~ 30 s</td><td>1</td></tr>
+      <tr><td>Minimum flash-play block length</td><td>10 ~ 99 s</td><td>20</td></tr>
+      <tr><td>Flash-play speeds</td><td>Up to 6</td><td>1.25 / 2.00 / 2.25 / 2.50</td></tr>
+    </tbody>
+  </table>
+
+  <h3>15.4 Channel/Unit Selection</h3>
+  <p>At the bottom of the panel are the channel and unit selectors. If there is only one channel, the channel list is hidden automatically and the unit list fills the full width.</p>
+</section>
+
+<!-- ========== 16 ========== -->
+<section id="s16">
+  <h2>16. Keyboard Shortcuts</h2>
+  <p>Desktop only:</p>
+  <table>
+    <thead><tr><th>Key</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">←</span></td><td>Previous sentence</td></tr>
+      <tr><td><span class="key">→</span></td><td>Next sentence</td></tr>
+      <tr><td><span class="key">↓</span></td><td>Play / Pause</td></tr>
+      <tr><td><span class="key">Esc</span></td><td>Close the options panel</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ========== 17 ========== -->
+<section id="s17">
+  <h2>17. Options Persistence</h2>
+  <p>Options need to be saved and restored the next time the card is opened. Different platforms use different storage methods:</p>
+
+  <h3>17.1 Desktop</h3>
+  <p>Writes the options string into the card fields <code>Options</code> or <code>Tags</code>. Requires Anki add-on 1020366288.</p>
+
+  <h3>17.2 iPhone / iPad</h3>
+  <p>Stored in the browser's localStorage, with a key name of the form <code>cardID_series_opts_6</code>.</p>
+
+  <h3>17.3 Android</h3>
+  <p>Same as iPhone; stored in localStorage.</p>
+
+  <h3>17.4 Encoding</h3>
+  <p>The options string is compressed with base62 encoding and stored with <code>a</code> as the field separator. For example:</p>
+  <pre>Field order: language / button color / button height / button rows /
+playback mode / loop mode / subtitle language / subtitle position /
+role subtitle / subtitle font / font size / replay after role-play /
+favorites only / video height / playback speed / extend timeline /
+skip gap duration / single-sentence count / single-sentence interval / multi-line interval /
+flash-play duration / flash-play speed list / channel / unit / playback position</pre>
+
+  <h3>17.5 Favorites Stored Separately</h3>
+  <p>Favorite data is not in the options string; it is stored separately. Key name format: <code>cardID_channel_unit</code>. The value is a concatenation of 7-digit numbers, each representing the millisecond time of a favorite point.</p>
+</section>
+
+<!-- ========== 18 ========== -->
+<section id="s18">
+  <h2>18. Srts Field Format</h2>
+  <p>Understanding the format helps when manually editing or generating cards. Srts_00 through Srts_10 are plain-text fields, one subtitle per line.</p>
+
+  <h3>18.1 Line Format</h3>
+  <pre>time info\toriginal text\ttranslation</pre>
+  <ul>
+    <li><b>Time info</b>: comma-separated, format <code>prefix,season,episode,media source,start-end</code></li>
+    <li><b>Original text</b>: may carry a marker prefix such as <code>[s]</code>, <code>[n]</code>, <code>[a]</code>, etc.</li>
+    <li><b>Translation</b>: may be empty</li>
+  </ul>
+
+  <h3>18.2 Time Info in Detail</h3>
+  <p>Taking <code>ddm,,053,sf_s05e08,-251093-251873</code> as an example:</p>
+  <table>
+    <thead><tr><th>Part</th><th>Value</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Prefix</td><td>ddm</td><td>Timeline field prefix</td></tr>
+      <tr><td>Season</td><td>(empty)</td><td>No season specified</td></tr>
+      <tr><td>Episode</td><td>053</td><td>Unit 53</td></tr>
+      <tr><td>Media source</td><td>sf_s05e08</td><td>Media file name (optional)</td></tr>
+      <tr><td>Time range</td><td>-251093-251873</td><td>From 251093 ms to 251873 ms</td></tr>
+    </tbody>
+  </table>
+
+  <h3>18.3 Unit Determination</h3>
+  <p>The "episode" field of each subtitle determines which unit it belongs to. When loading a unit, the program picks out only the subtitles whose episode field matches.</p>
+
+  <h3>18.4 Channel Determination</h3>
+  <p>Srts_00 is the common index for all channels. Srts_01 through Srts_10 are independent; they may be different language versions of the same episode, or different episodes.</p>
+</section>
+
+<!-- ========== 19 ========== -->
+<section id="s19">
+  <h2>19. FAQ</h2>
+
+  <div class="qa">
+    <div class="q">Q1: The card opens completely black with nothing there</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>Whether the card has Srts_01 field content</li>
+        <li>Whether the card ID can be found by <code>document.getElementById("fld-srts-01")</code></li>
+        <li>Whether there are JavaScript errors in the browser console</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: The video does not play</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>Whether the Media field includes a file extension</li>
+        <li>Whether the media file is in Anki's collection.media directory</li>
+        <li>Windows only supports .webm; other platforms only support .mp4</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: The options panel won't open</div>
+    <div class="a">Check whether the button panel has been dragged off-screen. Refresh the card and reopen it.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: Options are not saved</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>Whether Anki add-on 1020366288 is installed on desktop</li>
+        <li>Whether the iPhone allows localStorage (disabled in private mode)</li>
+        <li>Whether the card's Tags field is occupied by another template</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: Favorites are lost</div>
+    <div class="a">Favorites are saved separately per channel and unit. When switching to another unit, the current unit's favorites are not visible. Clearing the browser cache loses favorites stored in localStorage.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: The flash-play speed list has only two entries</div>
+    <div class="a">Flash play requires at least 2 speeds. If fewer than 2 are set, it falls back to the default 1.25 / 1.75.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Noise won't play</div>
+    <div class="a">Confirm that <code>u_noise_1.mp3</code> through <code>u_noise_3.mp3</code> are in the card template directory and have been added to the Anki media library.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: The record button does nothing</div>
+    <div class="a">
+      <ul>
+        <li>Windows desktop does not support recording</li>
+        <li>Other platforms require microphone permission</li>
+        <li>The recording API requires an HTTPS environment</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9: Long press does nothing</div>
+    <div class="a">A long press must last 1.5 seconds. If your finger moves slightly it will be recognized as a drag instead. Try a mouse (on desktop) or a steadier finger press.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10: Subtitles are incomplete or misaligned</div>
+    <div class="a">
+      <ul>
+        <li>Check whether each line of the Srts field is separated by Tab (not space)</li>
+        <li>Check whether the number of commas in the time info is correct</li>
+        <li>Check whether the subtitles contain abnormal characters</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11: During shadowing the video is muted but there is no "your turn" prompt</div>
+    <div class="a">Check whether the "Role subtitle" option is set to "Hidden". In this mode role-play lines are shown as bordered blocks—that is the prompt, not the content.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12: After switching to another unit, the playback position is not reset</div>
+    <div class="a">This is by design. When switching units, if "play from beginning" is specified, the position is reset. Otherwise the last position is remembered.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13: After a long press on toggle-translation the whole screen is a mess</div>
+    <div class="a">A long press on toggle-translation applies show/hide to all lines from the top visible line to the current line. If you don't want this, short-press instead; it toggles only the current line.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14: The button panel suddenly becomes a single row</div>
+    <div class="a">This means the card has been recognized as a media-less card (Media field is NaN, or the video file is missing). Check the Media field and the media file.</div>
+  </div>
+</section>
+
+<footer>
+  Anki Player (VlsPlayer Series) User Manual · Version 1.0
+</footer>
+
+</div>
+</body>
+</html>

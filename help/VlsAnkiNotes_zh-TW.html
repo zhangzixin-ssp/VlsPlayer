@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki 筆記卡 (VlsPlayerNotes) 操作說明書</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key { display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333; }
+  .btn { display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center; }
+  .glyph { display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki 筆記卡 (VlsPlayerNotes) 操作說明書</h1>
+  <div class="meta">版本 1.0 &nbsp;|&nbsp; 逐句精聽、跟讀、複習的單句卡片</div>
+</header>
+
+<nav class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s1">這是什麼</a></li>
+    <li><a href="#s2">卡片欄位</a></li>
+    <li><a href="#s3">介面佈局</a></li>
+    <li><a href="#s4">控制列按鈕</a></li>
+    <li><a href="#s5">時間軸與拖動條</a></li>
+    <li><a href="#s6">播放與重複機制</a></li>
+    <li><a href="#s7">正反面顯示邏輯</a></li>
+    <li><a href="#s8">TTS 語音朗讀</a></li>
+    <li><a href="#s9">詞典與 AI 查詢</a></li>
+    <li><a href="#s10">選項面板</a></li>
+    <li><a href="#s11">顏色主題</a></li>
+    <li><a href="#s12">控制列拖動與定位</a></li>
+    <li><a href="#s13">選項持久化</a></li>
+    <li><a href="#s14">Timeline 欄位格式</a></li>
+    <li><a href="#s15">平台差異</a></li>
+    <li><a href="#s16">常見問題</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. 這是什麼</h2>
+  <p>筆記卡是一張<b>單句卡片</b>。每張卡包含一段影片或音訊、一句原文、一句譯文、一條備註。</p>
+  <p>和 VlsPlayer Series 卡的區別：</p>
+  <table>
+    <thead><tr><th>對比項</th><th>Series 卡</th><th>Notes 卡（本卡）</th></tr></thead>
+    <tbody>
+      <tr><td>單元</td><td>一整季／整單元</td><td>一句話</td></tr>
+      <tr><td>字幕區</td><td>可滾動列表</td><td>固定顯示當前句</td></tr>
+      <tr><td>播放範圍</td><td>整集，可切換單元</td><td>單句時間區間</td></tr>
+      <tr><td>典型用途</td><td>刷劇、連續跟讀</td><td>精聽、生詞複習</td></tr>
+      <tr><td>正面／背面</td><td>整個播放器在正面</td><td>正面先播放，背面顯示筆記</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.1 主要特徵</h3>
+  <ul>
+    <li>卡片正面自動播放目標句子（可關閉）</li>
+    <li>隱藏譯文，讓學習者先聽後看</li>
+    <li>循環重複播放，設定次數與間隔</li>
+    <li>拖動時間軸微調播放區間</li>
+    <li>沒有影片檔案時自動降級為 TTS 朗讀</li>
+    <li>背面顯示備註（Remark）與來源（From）</li>
+    <li>控制列可拖動到任意位置</li>
+    <li>選項儲存在 localStorage 中</li>
+  </ul>
+</section>
+
+<section id="s2">
+  <h2>2. 卡片欄位</h2>
+
+  <h3>2.1 五個欄位</h3>
+  <table>
+    <thead><tr><th>欄位</th><th>作用</th></tr></thead>
+    <tbody>
+      <tr><td>Timeline</td><td>媒體來源 + 時間區間，格式見第 14 節</td></tr>
+      <tr><td>SrtText1</td><td>字幕一（通常為英文原文），可含 &lt;f1&gt;~&lt;f7&gt; 彩色標記</td></tr>
+      <tr><td>SrtText2</td><td>字幕二（通常為譯文）</td></tr>
+      <tr><td>SrtNote</td><td>備註內容，可多行</td></tr>
+      <tr><td>From</td><td>來源標籤，例如「某劇 S05E08 12:34」</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 製作來源</h3>
+  <p>由桌面版 VlsPlayer 的「匯出到筆記牌組」功能產生。每選一條字幕就產生一張卡片。也可以由 SRT 工具箱的 Anki 匯出功能批次產生。</p>
+
+  <h3>2.3 學習流程</h3>
+  <ol>
+    <li>顯示正面：自動播放該句音訊，字幕顯示</li>
+    <li>你判斷是否聽懂</li>
+    <li>點擊「顯示答案」，翻到背面</li>
+    <li>背面顯示備註和來源</li>
+    <li>選擇「重來／困難／良好／簡單」</li>
+  </ol>
+</section>
+
+<section id="s3">
+  <h2>3. 介面佈局</h2>
+
+  <h3>3.1 三個區域</h3>
+  <table>
+    <thead><tr><th>區域</th><th>內容</th></tr></thead>
+    <tbody>
+      <tr><td>頂部媒體區</td><td>影片或音訊（無影片時僅顯示封面，或完全隱藏）</td></tr>
+      <tr><td>中部文字區</td><td>
+        <ul>
+          <li>關鍵片語（Key）：從 &lt;fN&gt; 標記擷取</li>
+          <li>字幕一（Text1）：主字幕</li>
+          <li>字幕二（Text2）：譯文，可選隱藏</li>
+          <li>備註（Note）：僅背面顯示</li>
+          <li>來源（From）：僅背面顯示，右下角</li>
+        </ul>
+      </td></tr>
+      <tr><td>底部控制列</td><td>可拖動的按鈕 + 時間軸面板</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 字幕彩色標記</h3>
+  <p>字幕一中的 &lt;f1&gt; 到 &lt;f7&gt; 標記會顯示為不同顏色（與 Series 卡一致）：</p>
+  <table>
+    <thead><tr><th>標記</th><th>顏色</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>紅</td></tr>
+      <tr><td>f2</td><td>綠</td></tr>
+      <tr><td>f3</td><td>藍</td></tr>
+      <tr><td>f4</td><td>黃</td></tr>
+      <tr><td>f5</td><td>洋紅</td></tr>
+      <tr><td>f6</td><td>橙</td></tr>
+      <tr><td>f7</td><td>暗紅</td></tr>
+    </tbody>
+  </table>
+  <p>如果卡片有影片，這些標記會額外擷取成「關鍵片語」列表顯示在字幕上方。</p>
+
+  <h3>3.3 備註格式</h3>
+  <p>備註按行顯示，每行前有一個圓點符號 <code>•</code>。空行自動忽略。</p>
+</section>
+
+<section id="s4">
+  <h2>4. 控制列按鈕</h2>
+  <p>控制列是一個可拖動的浮動面板，包含 7 個按鈕和一條時間軸。</p>
+
+  <h3>4.1 七個按鈕</h3>
+  <table>
+    <thead><tr><th>按鈕</th><th>圖示</th><th>功能</th></tr></thead>
+    <tbody>
+      <tr><td>牌組</td><td><span class="glyph">▣</span></td><td>返回牌組（僅 iOS/Android，單擊無效，需配合手勢）</td></tr>
+      <tr><td>播放速度選單</td><td><span class="glyph">📊</span></td><td>彈出速度選擇選單</td></tr>
+      <tr><td>播放／暫停</td><td><span class="glyph">▶ / ⏸</span></td><td>主播放按鈕</td></tr>
+      <tr><td>重播</td><td><span class="glyph">↺</span></td><td>從起點重新播放</td></tr>
+      <tr><td>查詢</td><td><span class="glyph">🔍</span></td><td>詞典／AI 查詢</td></tr>
+      <tr><td>倍速切換</td><td><span class="btn">0.5 / 1.0</span></td><td>快捷切換播放速度</td></tr>
+      <tr><td>選項</td><td><span class="glyph">⚙</span></td><td>開啟選項面板</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 播放按鈕圖示變化</h3>
+  <table>
+    <thead><tr><th>圖示</th><th>狀態</th></tr></thead>
+    <tbody>
+      <tr><td>▶</td><td>已暫停，可播放</td></tr>
+      <tr><td>⏸</td><td>正在播放</td></tr>
+      <tr><td>⏸ 旋轉 90°</td><td>等待中（在重複間隔內）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 點擊非按鈕區域播放／暫停</h3>
+  <p>在控制列以外的地方點擊（按鈕和時間軸滑桿除外），會自動觸發播放／暫停。這是為了方便快速操作。</p>
+</section>
+
+<section id="s5">
+  <h2>5. 時間軸與拖動條</h2>
+
+  <h3>5.1 元素說明</h3>
+  <table>
+    <thead><tr><th>元素</th><th>顏色</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>◁ / ▷ 按鈕</td><td>黃</td><td>微調起止時間各 0.5 秒</td></tr>
+      <tr><td>水平細線</td><td>暗黃</td><td>時間軸基準線</td></tr>
+      <tr><td>兩個黃點</td><td>黃</td><td>原始起止時間（不可拖動）</td></tr>
+      <tr><td>兩個黃滑桿</td><td>黃</td><td>當前起止時間（可拖動）</td></tr>
+      <tr><td>白滑桿</td><td>灰白</td><td>播放位置指示器（不可拖動）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 拖動滑桿</h3>
+  <ul>
+    <li>拖動左側滑桿調整起始時間</li>
+    <li>拖動右側滑桿調整結束時間</li>
+    <li>拖動時立即生效，不需要確認</li>
+    <li>拖動結束後自動儲存到選項</li>
+  </ul>
+
+  <h3>5.3 微調按鈕</h3>
+  <ul>
+    <li>點擊 <span class="btn">◁</span>：起始時間後退 0.5 秒</li>
+    <li>點擊 <span class="btn">▷</span>：結束時間前進 0.5 秒</li>
+    <li>長按：沒有效果，只能單擊</li>
+  </ul>
+
+  <h3>5.4 時間軸自動縮放</h3>
+  <p>時間軸總是以「原始起止時間」為中心，向兩側各留出 1/6 的餘量。所以即使微調過起止時間，原始位置仍可以看到。這個縮放是自動的，不需要手動設定。</p>
+</section>
+
+<section id="s6">
+  <h2>6. 播放與重複機制</h2>
+
+  <h3>6.1 播放流程</h3>
+  <ol>
+    <li>載入媒體檔案</li>
+    <li>定位到起始時間</li>
+    <li>播放到結束時間</li>
+    <li>暫停，等待重複間隔</li>
+    <li>重複次數未到 → 回到起點繼續</li>
+    <li>重複次數到了 → 停止，等待手動操作</li>
+  </ol>
+
+  <h3>6.2 重複次數</h3>
+  <table>
+    <thead><tr><th>值</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>1 到 9</td><td>固定次數</td></tr>
+      <tr><td>10</td><td>無限循環，直到手動停止</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 重複間隔</h3>
+  <table>
+    <thead><tr><th>值</th><th>含義</th></tr></thead>
+    <tbody>
+      <tr><td>1 到 30</td><td>固定秒數</td></tr>
+      <tr><td>31</td><td>句子時長（本句播放時間）</td></tr>
+    </tbody>
+  </table>
+  <p>間隔會自動除以播放速度，所以加速播放時間隔也相應縮短。</p>
+
+  <h3>6.4 重播按鈕</h3>
+  <p>點擊 <span class="glyph">↺</span> 按鈕：</p>
+  <ul>
+    <li>立即停止當前播放</li>
+    <li>把重複計數重置為 0</li>
+    <li>從起點重新開始</li>
+    <li>臨時的重複次數被設為「無限」（不影響選項裡的設定）</li>
+  </ul>
+
+  <h3>6.5 播放速度</h3>
+  <ul>
+    <li>透過 <span class="btn">0.5 / 1.0</span> 按鈕在 0.5x 和 1.0x 之間切換</li>
+    <li>透過 <span class="glyph">📊</span> 按鈕彈出選單選擇 0.50x 到 2.00x</li>
+    <li>速度調整立即作用於當前播放</li>
+  </ul>
+</section>
+
+<section id="s7">
+  <h2>7. 正反面顯示邏輯</h2>
+
+  <h3>7.1 正面顯示</h3>
+  <ul>
+    <li>關鍵片語（若有彩色標記）</li>
+    <li>字幕一（原文）</li>
+    <li>字幕二（譯文）—— 取決於選項「開啟卡片時顯示譯文」</li>
+  </ul>
+  <p>字幕二預設隱藏，讓學習者先聽原文。</p>
+
+  <h3>7.2 背面顯示</h3>
+  <ul>
+    <li>關鍵片語</li>
+    <li>字幕一</li>
+    <li>字幕二（始終顯示）</li>
+    <li>備註（Note）</li>
+    <li>來源（From）</li>
+  </ul>
+
+  <h3>7.3 正面自動播放</h3>
+  <p>選項「開啟卡片時自動播放」開啟時（預設開啟）：</p>
+  <ul>
+    <li>正面開啟後，媒體載入完成即自動播放</li>
+    <li>背面開啟時不自動播放</li>
+  </ul>
+
+  <h3>7.4 關鍵片語的擷取</h3>
+  <p>字幕一裡所有 &lt;fN&gt; 包裹的內容會被擷取出來，逐行顯示在字幕上方。例如：</p>
+  <pre>SrtText1: "I &lt;f1&gt;couldn't agree more&lt;/f1&gt; with you."</pre>
+  <p>會顯示為：</p>
+  <pre>couldn't agree more
+I couldn't agree more with you.</pre>
+  <p>這是為了讓學習者在看整句之前，先關注重點片語。</p>
+</section>
+
+<section id="s8">
+  <h2>8. TTS 語音朗讀</h2>
+
+  <h3>8.1 觸發條件</h3>
+  <p>當 Timeline 欄位的副檔名為 <code>NaN</code>，或媒體檔案缺失時，程式自動切換到 TTS 模式，用系統語音合成朗讀字幕一。</p>
+
+  <h3>8.2 語音選擇</h3>
+  <table>
+    <thead><tr><th>平台</th><th>偏好語音</th></tr></thead>
+    <tbody>
+      <tr><td>iOS / iPadOS</td><td>Samantha（美式女聲）</td></tr>
+      <tr><td>Windows / macOS</td><td>David（美式男聲）</td></tr>
+      <tr><td>Android</td><td>任意美式英語語音</td></tr>
+    </tbody>
+  </table>
+  <p>如果偏好語音不存在，則選第一個 en-US 語音，再次選任意 en 語音。</p>
+
+  <h3>8.3 TTS 與媒體播放的差異</h3>
+  <ul>
+    <li>TTS 模式沒有時間軸拖動功能（時間軸隱藏）</li>
+    <li>TTS 的重複和間隔邏輯與媒體播放一致</li>
+    <li>速度按播放速度設定（0.1 到 10 之間）</li>
+    <li>音量固定為 0.8</li>
+  </ul>
+
+  <h3>8.4 TTS 播放控制</h3>
+  <ul>
+    <li>播放／暫停按鈕同樣適用於 TTS</li>
+    <li>重播按鈕會停止當前 TTS 並從頭朗讀</li>
+    <li>切換卡片時自動停止 TTS</li>
+  </ul>
+</section>
+
+<section id="s9">
+  <h2>9. 詞典與 AI 查詢</h2>
+
+  <h3>9.1 使用方式</h3>
+  <ol>
+    <li>選取字幕中要查詢的文字</li>
+    <li>點擊 <span class="glyph">🔍</span> 按鈕</li>
+  </ol>
+  <p>如果沒有選取任何文字，預設查詢字幕一的全部內容。</p>
+
+  <h3>9.2 查詢分流</h3>
+  <table>
+    <thead><tr><th>條件</th><th>行為</th></tr></thead>
+    <tbody>
+      <tr><td>選取文字不含空格（單字）</td><td>開啟歐路詞典</td></tr>
+      <tr><td>選取文字含空格（片語）</td><td>呼叫 AI 分析</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 詞典 URL</h3>
+  <pre>eudic://dict/選取文字</pre>
+
+  <h3>9.4 AI 分析</h3>
+  <ul>
+    <li><strong>Windows</strong>：把 prompt + 文字複製到剪貼簿，使用者自行貼到 AI</li>
+    <li><strong>iPhone / Android</strong>：呼叫豆包 App 直接傳送</li>
+  </ul>
+  <p>Prompt 固定為：「請嚴格直譯並分析其中片語及知識點：」</p>
+
+  <h3>9.5 選取文字的取得</h3>
+  <ul>
+    <li>桌面版：在字幕區用滑鼠選取，放開時記錄</li>
+    <li>iOS / Android：用手指選取，點擊查詢按鈕時讀取</li>
+  </ul>
+  <p>iOS 因為 touch 事件的特殊性，選取文字需要額外記錄。</p>
+</section>
+
+<section id="s10">
+  <h2>10. 選項面板</h2>
+  <p>點擊 <span class="glyph">⚙</span> 開啟。選項面板鋪滿整個畫面，關閉後恢復控制列。</p>
+
+  <h3>10.1 三個開關</h3>
+  <table>
+    <thead><tr><th>選項</th><th>預設</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>開啟卡片時自動播放</td><td>開</td><td>正面開啟後自動開始播放</td></tr>
+      <tr><td>先顯示譯文</td><td>關</td><td>正面就顯示譯文，否則翻到背面才顯示</td></tr>
+      <tr><td>顯示影片</td><td>關</td><td>影片是否顯示畫面。關閉時只播放音訊</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 三個滑桿</h3>
+  <table>
+    <thead><tr><th>選項</th><th>範圍</th><th>預設</th></tr></thead>
+    <tbody>
+      <tr><td>重複播放次數</td><td>1 ~ 10</td><td>1</td></tr>
+      <tr><td>重複間隔</td><td>1 ~ 31</td><td>1</td></tr>
+      <tr><td>影片高度</td><td>120 ~ 320 像素</td><td>240</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 顏色主題</h3>
+  <p>五種顏色可選：黃、綠、橙、粉、白。見下一節。</p>
+
+  <h3>10.4 關閉選項面板</h3>
+  <p>點擊左上角的 "Close" 或再次點擊 <span class="glyph">⚙</span>。</p>
+</section>
+
+<section id="s11">
+  <h2>11. 顏色主題</h2>
+  <p>五種主題改變按鈕顏色：</p>
+
+  <table>
+    <thead><tr><th>主題</th><th>按鈕前景色</th><th>按鈕邊框色</th><th>時間軸線色</th></tr></thead>
+    <tbody>
+      <tr><td>黃（預設）</td><td>rgb(230,187,0)</td><td>#333311</td><td>#68580A</td></tr>
+      <tr><td>綠</td><td>rgb(0,160,0)</td><td>#002200</td><td>#004400</td></tr>
+      <tr><td>橙</td><td>rgb(255,153,51)</td><td>#442811</td><td>#885622</td></tr>
+      <tr><td>粉</td><td>rgb(255,120,180)</td><td>#331122</td><td>#663344</td></tr>
+      <tr><td>白</td><td>rgb(222,222,222)</td><td>#333333</td><td>#555555</td></tr>
+    </tbody>
+  </table>
+  <p>切換主題後立即生效，不需要重新整理卡片。</p>
+</section>
+
+<section id="s12">
+  <h2>12. 控制列拖動與定位</h2>
+
+  <h3>12.1 拖動方式</h3>
+  <ul>
+    <li>長按<b>按鈕列任意空白處</b>（不是按鈕本身）即可拖動</li>
+    <li>拖動時頁面滾動被禁止</li>
+    <li>放開後自動儲存新位置</li>
+  </ul>
+
+  <h3>12.2 位置邊界</h3>
+  <p>控制列不會超出畫面邊界。如果被拖出畫面，下一次載入時會自動回到畫面內。</p>
+
+  <h3>12.3 位置持久化</h3>
+  <p>控制列的位置儲存在選項字串的最後兩個欄位，下次開啟卡片時恢復。</p>
+
+  <h3>12.4 初始位置</h3>
+  <p>首次開啟時控制列位於畫面<b>水平置中</b>、垂直方向大約 60% 位置（使用 <code>top: 60vh</code>）。</p>
+</section>
+
+<section id="s13">
+  <h2>13. 選項持久化</h2>
+
+  <h3>13.1 儲存位置</h3>
+  <p>儲存在瀏覽器的 localStorage，鍵名格式：</p>
+  <pre>卡片ID_vp_notes_opts_1</pre>
+  <p>卡片 ID 從 Timeline 欄位的第一段取得。</p>
+
+  <h3>13.2 儲存內容</h3>
+  <p>共 10 個欄位，用 <code>|</code> 分隔：</p>
+  <table>
+    <thead><tr><th>序</th><th>欄位</th><th>範圍</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>自動播放</td><td>0 / 1</td></tr>
+      <tr><td>1</td><td>先顯示譯文</td><td>0 / 1</td></tr>
+      <tr><td>2</td><td>顯示影片</td><td>0 / 1</td></tr>
+      <tr><td>3</td><td>重複次數</td><td>1 ~ 10</td></tr>
+      <tr><td>4</td><td>重複間隔</td><td>1 ~ 31</td></tr>
+      <tr><td>5</td><td>影片高度</td><td>32 ~ 320</td></tr>
+      <tr><td>6</td><td>播放速度</td><td>50 ~ 300（即 0.50x ~ 3.00x）</td></tr>
+      <tr><td>7</td><td>顏色主題</td><td>0 ~ 4</td></tr>
+      <tr><td>8</td><td>控制列 X 座標</td><td>像素</td></tr>
+      <tr><td>9</td><td>控制列 Y 座標</td><td>像素</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.3 儲存時機</h3>
+  <ul>
+    <li>關閉選項面板時</li>
+    <li>調整播放速度時</li>
+    <li>拖動控制列結束時</li>
+    <li>調整時間軸滑桿結束時</li>
+  </ul>
+
+  <h3>13.4 跨裝置同步</h3>
+  <p>localStorage 是本地的。如果卡片在多個裝置上使用，選項需要分別設定。Anki 同步不會同步 localStorage。</p>
+</section>
+
+<section id="s14">
+  <h2>14. Timeline 欄位格式</h2>
+
+  <h3>14.1 基本格式</h3>
+  <pre>媒體前綴,季號,集號,標題,副檔名,-開始時間-結束時間</pre>
+
+  <h3>14.2 範例</h3>
+  <table>
+    <thead><tr><th>範例</th><th>解讀</th></tr></thead>
+    <tbody>
+      <tr><td><code>atomic_habits,,01,,.mp3-0029120-0032325</code></td><td>atomic_habits_01.mp3，從 2.912s 到 3.2325s</td></tr>
+      <tr><td><code>cwe,,01,,-0005743-0006807-0006829-0007421</code></td><td>cwe_01，多段區間</td></tr>
+      <tr><td><code>sf,s05,e08,某劇,.mp4-0012345-0023456</code></td><td>sf_s05e08.mp4，從 1.2345s 到 2.3456s</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.3 欄位說明</h3>
+  <table>
+    <thead><tr><th>部分</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>媒體前綴</td><td>媒體檔案名前綴</td></tr>
+      <tr><td>季號</td><td>可為空。為空時檔名格式為 <code>前綴_集號</code></td></tr>
+      <tr><td>集號</td><td>單元編號，如 <code>01</code>、<code>053</code></td></tr>
+      <tr><td>標題</td><td>可選。有值時用於 From 欄位</td></tr>
+      <tr><td>副檔名</td><td>媒體檔案副檔名。<code>NaN</code> 表示純 TTS 模式</td></tr>
+      <tr><td>時間區間</td><td>多個 <code>-時間</code>，單位為毫秒。程式取第一個和最後一個</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.4 檔名產生規則</h3>
+  <p>如果季號為空：</p>
+  <pre>前綴_集號.副檔名</pre>
+  <p>如果季號非空：</p>
+  <pre>前綴_s季號e集號.副檔名</pre>
+
+  <h3>14.5 副檔名缺省</h3>
+  <p>副檔名為空、<code>.mp4</code> 或 <code>webm</code> 時：</p>
+  <ul>
+    <li>Windows 使用 <code>.webm</code></li>
+    <li>其他平台使用 <code>.mp4</code></li>
+  </ul>
+  <p>這解決了 Anki 同步時不同平台影片編碼相容問題。</p>
+
+  <h3>14.6 多區間播放</h3>
+  <p>一個 Timeline 可以包含多個時間點：</p>
+  <pre>前綴,,01,,-0005743-0006807-0006829-0007421-0007710-0008596</pre>
+  <p>程式會取第一個值和最後一個值，中間部分作為播放範圍。用於把多個連續片段合併為一張卡片。</p>
+</section>
+
+<section id="s15">
+  <h2>15. 平台差異</h2>
+
+  <h3>15.1 Windows</h3>
+  <ul>
+    <li>字型：Segoe UI + STXihei，18px，左右各 12px 邊距</li>
+    <li>按鈕列高度 32 像素（略小）</li>
+    <li>影片編碼使用 .webm</li>
+    <li>AI 分析是複製到剪貼簿，不自動跳轉</li>
+    <li>不支援錄音</li>
+  </ul>
+
+  <h3>15.2 macOS</h3>
+  <ul>
+    <li>使用預設系統字型</li>
+    <li>影片編碼使用 .mp4</li>
+    <li>AI 分析呼叫豆包 App</li>
+  </ul>
+
+  <h3>15.3 iOS / iPadOS</h3>
+  <ul>
+    <li>控制列和選單被移到 HTML 根節點，避免渲染問題</li>
+    <li>使用 Pointer Events 而不是 Mouse Events</li>
+    <li>字幕選取需要 touch 結束事件記錄</li>
+    <li>影片編碼使用 .mp4</li>
+    <li>支援錄音</li>
+  </ul>
+
+  <h3>15.4 Android</h3>
+  <ul>
+    <li>支援錄音</li>
+    <li>影片編碼使用 .mp4</li>
+    <li>字型大小略大</li>
+  </ul>
+
+  <h3>15.5 時間精度微調</h3>
+  <p>非桌面平台會有一個 0.12 秒的微調偏移，用於補償 iOS/Android 影片播放的延遲。桌面平台偏移為 0。</p>
+</section>
+
+<section id="s16">
+  <h2>16. 常見問題</h2>
+
+  <div class="qa">
+    <div class="q">Q1：卡片開啟後一片黑，只有一個控制列</div>
+    <div class="a">
+      檢查：
+      <ul>
+        <li>Timeline 欄位是否有效（逗號數量正確、有時間區間）</li>
+        <li>媒體檔案是否放在 collection.media 目錄下</li>
+        <li>副檔名是否匹配當前平台（Windows 用 .webm，其他用 .mp4）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：卡片沒有聲音</div>
+    <div class="a">
+      <ul>
+        <li>檢查 Timeline 裡的時間區間是否超出媒體實際長度</li>
+        <li>Windows 下 .mp4 無法播放，需要轉成 .webm 或純音訊格式</li>
+        <li>如果副檔名是 <code>NaN</code>，則使用系統 TTS，檢查系統是否有可用的英語語音</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：影片畫面顯示不出來</div>
+    <div class="a">在選項裡開啟「顯示影片」開關。預設是關閉的，只播放音訊。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：正面看不到譯文</div>
+    <div class="a">這是設計行為。譯文本應在背面顯示。如果想在正面就顯示，在選項裡開啟「先顯示譯文」。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：控制列拖到畫面外找不到了</div>
+    <div class="a">重新整理卡片。程式會在下一次載入時把控制列自動放回畫面內。也可以清除 localStorage 恢復預設位置。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：選項不能儲存</div>
+    <div class="a">
+      <ul>
+        <li>檢查瀏覽器是否允許 localStorage（隱私模式會停用）</li>
+        <li>檢查卡片 ID（Timeline 欄位第一段）是否穩定</li>
+        <li>清除瀏覽器快取會遺失選項</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：點了查詢按鈕沒反應</div>
+    <div class="a">
+      <ul>
+        <li>檢查裝置是否安裝了歐路詞典（iOS）或豆包 App（Android/iOS）</li>
+        <li>Windows 下是複製到剪貼簿，需要使用者手動貼上</li>
+        <li>檢查選取文字是否為空</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：TTS 朗讀語言不對</div>
+    <div class="a">TTS 固定使用英語朗讀。如果 SrtText1 是其他語言，效果會很差。TTS 模式只建議用於英語內容。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：時間軸滑桿拖不動</div>
+    <div class="a">
+      <ul>
+        <li>檢查時間軸是否可見（TTS 模式下時間軸隱藏）</li>
+        <li>檢查觸控點是否準確落在滑桿上（滑桿比較小）</li>
+        <li>嘗試重新開啟卡片</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：切換到下一張卡時聲音還在響</div>
+    <div class="a">正常情況不會。程式在載入新卡片時會自動停止上一張。如果出現這種情況，檢查是否有其他擴充功能或瀏覽器行為干擾。重新整理頁面即可。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：重複播放只播一次就停了</div>
+    <div class="a">
+      <ul>
+        <li>檢查「重複次數」選項是否為 1</li>
+        <li>檢查「重複間隔」是否設定得太長（31 = 句子時長）</li>
+        <li>檢查是否手動點過播放按鈕（會重置計數）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12：時間軸上的黃點和滑桿位置很奇怪</div>
+    <div class="a">黃點代表原始起止時間，滑桿代表你調整後的起止時間。如果黃點和滑桿重合，說明沒調整過。如果偏移很大，說明你大幅調整過時間範圍。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13：關鍵片語區顯示的內容不對</div>
+    <div class="a">關鍵片語從 SrtText1 裡的 &lt;f1&gt; 到 &lt;f7&gt; 標記擷取。如果沒有標記，只顯示整句。如果想顯示關鍵片語，需要在桌面版 VlsPlayer 裡先用彩色標記標出片語。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14：控制列會擋住字幕</div>
+    <div class="a">拖動控制列到畫面底部或頂部。或者調整影片高度，為控制列留出空間。</div>
+  </div>
+</section>
+
+<footer>
+  Anki 筆記卡 (VlsPlayerNotes) 操作說明書 · 版本 1.0
+</footer>
+
+</div>
+</body>
+</html>

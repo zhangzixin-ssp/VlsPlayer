@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki Notes Card (VlsPlayerNotes) User Guide</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key { display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333; }
+  .btn { display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center; }
+  .glyph { display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki Notes Card (VlsPlayerNotes) User Guide</h1>
+  <div class="meta">Version 1.0 &nbsp;|&nbsp; Single-sentence cards for intensive listening, shadowing, and review</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">What this is</a></li>
+    <li><a href="#s2">Card fields</a></li>
+    <li><a href="#s3">Layout</a></li>
+    <li><a href="#s4">Control bar buttons</a></li>
+    <li><a href="#s5">Timeline and sliders</a></li>
+    <li><a href="#s6">Playback and repeat logic</a></li>
+    <li><a href="#s7">Front / back display logic</a></li>
+    <li><a href="#s8">TTS playback</a></li>
+    <li><a href="#s9">Dictionary and AI lookup</a></li>
+    <li><a href="#s10">Options panel</a></li>
+    <li><a href="#s11">Color themes</a></li>
+    <li><a href="#s12">Dragging and positioning the control bar</a></li>
+    <li><a href="#s13">Options persistence</a></li>
+    <li><a href="#s14">Timeline field format</a></li>
+    <li><a href="#s15">Platform differences</a></li>
+    <li><a href="#s16">FAQ</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. What this is</h2>
+  <p>The Notes card is a <b>single-sentence card</b>. Each card contains one video or audio clip, one source line, one translation line, and one note.</p>
+  <p>How it differs from the VlsPlayer Series card:</p>
+  <table>
+    <thead><tr><th>Item</th><th>Series card</th><th>Notes card (this one)</th></tr></thead>
+    <tbody>
+      <tr><td>Unit</td><td>A whole season / unit</td><td>One sentence</td></tr>
+      <tr><td>Subtitle area</td><td>Scrollable list</td><td>Shows only the current sentence</td></tr>
+      <tr><td>Playback range</td><td>Whole episode, can switch units</td><td>Single-sentence time range</td></tr>
+      <tr><td>Typical use</td><td>Binge-watch, continuous shadowing</td><td>Intensive listening, vocabulary review</td></tr>
+      <tr><td>Front / back</td><td>Whole player on the front</td><td>Front plays first, back shows notes</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.1 Main features</h3>
+  <ul>
+    <li>Front of the card auto-plays the target sentence (can be disabled)</li>
+    <li>Translation hidden so the learner listens first, then reads</li>
+    <li>Loop repeat with configurable count and interval</li>
+    <li>Drag the timeline to fine-tune the playback range</li>
+    <li>Falls back to TTS reading when no video file exists</li>
+    <li>Back shows the note (Remark) and source (From)</li>
+    <li>Control bar can be dragged anywhere on screen</li>
+    <li>Options stored in localStorage</li>
+  </ul>
+</section>
+
+<section id="s2">
+  <h2>2. Card fields</h2>
+
+  <h3>2.1 Five fields</h3>
+  <table>
+    <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Timeline</td><td>Media source + time range, format in section 14</td></tr>
+      <tr><td>SrtText1</td><td>Subtitle 1 (usually the English source), may contain &lt;f1&gt;~&lt;f7&gt; color tags</td></tr>
+      <tr><td>SrtText2</td><td>Subtitle 2 (usually the translation)</td></tr>
+      <tr><td>SrtNote</td><td>Note content, can be multiple lines</td></tr>
+      <tr><td>From</td><td>Source label, e.g. "Some Show S05E08 12:34"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 Where cards come from</h3>
+  <p>Generated by the desktop VlsPlayer's "Export to notes deck" feature. Each selected subtitle line becomes one card. They can also be batch-generated by the SRT Toolbox's Anki export.</p>
+
+  <h3>2.3 Study flow</h3>
+  <ol>
+    <li>Front is shown: the audio plays automatically, subtitle displayed</li>
+    <li>You decide whether you understood it</li>
+    <li>Click "Show Answer" to flip to the back</li>
+    <li>Back shows the note and source</li>
+    <li>Choose Again / Hard / Good / Easy</li>
+  </ol>
+</section>
+
+<section id="s3">
+  <h2>3. Layout</h2>
+
+  <h3>3.1 Three areas</h3>
+  <table>
+    <thead><tr><th>Area</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Top media area</td><td>Video or audio (only a cover image when there's no video, or hidden entirely)</td></tr>
+      <tr><td>Middle text area</td><td>
+        <ul>
+          <li>Key phrases: extracted from &lt;fN&gt; tags</li>
+          <li>Subtitle 1 (Text1): main subtitle</li>
+          <li>Subtitle 2 (Text2): translation, can be hidden</li>
+          <li>Note: back side only</li>
+          <li>From: back side only, bottom right</li>
+        </ul>
+      </td></tr>
+      <tr><td>Bottom control bar</td><td>Draggable buttons + timeline panel</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 Subtitle color tags</h3>
+  <p>Tags &lt;f1&gt; through &lt;f7&gt; in Subtitle 1 render in different colors (same as Series card):</p>
+  <table>
+    <thead><tr><th>Tag</th><th>Color</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>Red</td></tr>
+      <tr><td>f2</td><td>Green</td></tr>
+      <tr><td>f3</td><td>Blue</td></tr>
+      <tr><td>f4</td><td>Yellow</td></tr>
+      <tr><td>f5</td><td>Magenta</td></tr>
+      <tr><td>f6</td><td>Orange</td></tr>
+      <tr><td>f7</td><td>Dark red</td></tr>
+    </tbody>
+  </table>
+  <p>If the card has video, these tags are additionally extracted into a "key phrases" list shown above the subtitle.</p>
+
+  <h3>3.3 Note format</h3>
+  <p>Notes display line by line, each prefixed with a bullet <code>•</code>. Empty lines are ignored.</p>
+</section>
+
+<section id="s4">
+  <h2>4. Control bar buttons</h2>
+  <p>The control bar is a draggable floating panel containing 7 buttons and one timeline.</p>
+
+  <h3>4.1 Seven buttons</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Icon</th><th>Function</th></tr></thead>
+    <tbody>
+      <tr><td>Deck</td><td><span class="glyph">▣</span></td><td>Return to deck (iOS/Android only; a single tap has no effect — a gesture is required)</td></tr>
+      <tr><td>Playback speed menu</td><td><span class="glyph">📊</span></td><td>Pops up speed selection menu</td></tr>
+      <tr><td>Play / Pause</td><td><span class="glyph">▶ / ⏸</span></td><td>Main playback button</td></tr>
+      <tr><td>Replay</td><td><span class="glyph">↺</span></td><td>Replay from the start</td></tr>
+      <tr><td>Lookup</td><td><span class="glyph">🔍</span></td><td>Dictionary / AI lookup</td></tr>
+      <tr><td>Speed toggle</td><td><span class="btn">0.5 / 1.0</span></td><td>Quick speed switch</td></tr>
+      <tr><td>Options</td><td><span class="glyph">⚙</span></td><td>Open the options panel</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Play button icon states</h3>
+  <table>
+    <thead><tr><th>Icon</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td>▶</td><td>Paused, ready to play</td></tr>
+      <tr><td>⏸</td><td>Playing</td></tr>
+      <tr><td>⏸ rotated 90°</td><td>Waiting (inside a repeat interval)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 Tapping outside the buttons toggles play/pause</h3>
+  <p>Tapping anywhere outside the control bar (except buttons and timeline sliders) automatically toggles play/pause. This is for quick operation.</p>
+</section>
+
+<section id="s5">
+  <h2>5. Timeline and sliders</h2>
+
+  <h3>5.1 Elements</h3>
+  <table>
+    <thead><tr><th>Element</th><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>◁ / ▷ buttons</td><td>Yellow</td><td>Fine-tune start/end time by 0.5 s each</td></tr>
+      <tr><td>Horizontal thin line</td><td>Dark yellow</td><td>Timeline baseline</td></tr>
+      <tr><td>Two yellow dots</td><td>Yellow</td><td>Original start/end times (not draggable)</td></tr>
+      <tr><td>Two yellow sliders</td><td>Yellow</td><td>Current start/end times (draggable)</td></tr>
+      <tr><td>White slider</td><td>Off-white</td><td>Playback position indicator (not draggable)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Dragging sliders</h3>
+  <ul>
+    <li>Drag the left slider to adjust the start time</li>
+    <li>Drag the right slider to adjust the end time</li>
+    <li>Takes effect immediately, no confirmation needed</li>
+    <li>Auto-saved to options when the drag ends</li>
+  </ul>
+
+  <h3>5.3 Fine-tune buttons</h3>
+  <ul>
+    <li>Tap <span class="btn">◁</span>: start time moves back 0.5 s</li>
+    <li>Tap <span class="btn">▷</span>: end time moves forward 0.5 s</li>
+    <li>Long press: no effect, tap only</li>
+  </ul>
+
+  <h3>5.4 Auto-scaling timeline</h3>
+  <p>The timeline is always centered on the "original start/end times", with 1/6 margin on each side. So even after adjusting the start/end, the original position remains visible. Scaling is automatic — no manual setup needed.</p>
+</section>
+
+<section id="s6">
+  <h2>6. Playback and repeat logic</h2>
+
+  <h3>6.1 Playback flow</h3>
+  <ol>
+    <li>Load the media file</li>
+    <li>Seek to the start time</li>
+    <li>Play to the end time</li>
+    <li>Pause, wait for the repeat interval</li>
+    <li>Repeat count not reached → back to start and continue</li>
+    <li>Repeat count reached → stop and wait for user action</li>
+  </ol>
+
+  <h3>6.2 Repeat count</h3>
+  <table>
+    <thead><tr><th>Value</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>1 to 9</td><td>Fixed count</td></tr>
+      <tr><td>10</td><td>Infinite loop until manually stopped</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 Repeat interval</h3>
+  <table>
+    <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>1 to 30</td><td>Fixed seconds</td></tr>
+      <tr><td>31</td><td>Sentence duration (this sentence's playback time)</td></tr>
+    </tbody>
+  </table>
+  <p>The interval is automatically divided by the playback speed, so faster playback shortens the wait accordingly.</p>
+
+  <h3>6.4 Replay button</h3>
+  <p>Tapping <span class="glyph">↺</span>:</p>
+  <ul>
+    <li>Stops current playback immediately</li>
+    <li>Resets the repeat counter to 0</li>
+    <li>Starts again from the beginning</li>
+    <li>Sets the temporary repeat count to "infinite" (does not affect the option)</li>
+  </ul>
+
+  <h3>6.5 Playback speed</h3>
+  <ul>
+    <li>Toggle between 0.5x and 1.0x with the <span class="btn">0.5 / 1.0</span> button</li>
+    <li>Popup menu via <span class="glyph">📊</span> offers 0.50x to 2.00x</li>
+    <li>Speed changes apply immediately to the current playback</li>
+  </ul>
+</section>
+
+<section id="s7">
+  <h2>7. Front / back display logic</h2>
+
+  <h3>7.1 Front</h3>
+  <ul>
+    <li>Key phrases (if color tags exist)</li>
+    <li>Subtitle 1 (source)</li>
+    <li>Subtitle 2 (translation) — depends on the "show translation at first" option</li>
+  </ul>
+  <p>Subtitle 2 is hidden by default so the learner listens to the source first.</p>
+
+  <h3>7.2 Back</h3>
+  <ul>
+    <li>Key phrases</li>
+    <li>Subtitle 1</li>
+    <li>Subtitle 2 (always shown)</li>
+    <li>Note</li>
+    <li>From</li>
+  </ul>
+
+  <h3>7.3 Auto-play on the front</h3>
+  <p>When the "auto play on open" option is on (default):</p>
+  <ul>
+    <li>After the front opens, playback begins as soon as the media is loaded</li>
+    <li>The back does not auto-play</li>
+  </ul>
+
+  <h3>7.4 Key phrase extraction</h3>
+  <p>Everything wrapped in &lt;fN&gt; in Subtitle 1 is extracted and displayed line by line above the subtitle. Example:</p>
+  <pre>SrtText1: "I &lt;f1&gt;couldn't agree more&lt;/f1&gt; with you."</pre>
+  <p>Displays as:</p>
+  <pre>couldn't agree more
+I couldn't agree more with you.</pre>
+  <p>This lets learners focus on the key phrases before seeing the full sentence.</p>
+</section>
+
+<section id="s8">
+  <h2>8. TTS playback</h2>
+
+  <h3>8.1 When TTS kicks in</h3>
+  <p>When the Timeline field's extension is <code>NaN</code>, or the media file is missing, the program automatically switches to TTS mode and reads Subtitle 1 using the system speech synthesizer.</p>
+
+  <h3>8.2 Voice selection</h3>
+  <table>
+    <thead><tr><th>Platform</th><th>Preferred voice</th></tr></thead>
+    <tbody>
+      <tr><td>iOS / iPadOS</td><td>Samantha (US female)</td></tr>
+      <tr><td>Windows / macOS</td><td>David (US male)</td></tr>
+      <tr><td>Android</td><td>Any US English voice</td></tr>
+    </tbody>
+  </table>
+  <p>If the preferred voice isn't available: first en-US voice, then any en voice.</p>
+
+  <h3>8.3 Differences from media playback</h3>
+  <ul>
+    <li>No timeline dragging in TTS mode (timeline hidden)</li>
+    <li>Repeat and interval logic identical to media playback</li>
+    <li>Speed follows the playback speed setting (0.1 to 10)</li>
+    <li>Volume fixed at 0.8</li>
+  </ul>
+
+  <h3>8.4 TTS playback controls</h3>
+  <ul>
+    <li>Play/pause button works for TTS too</li>
+    <li>Replay stops current TTS and starts from the beginning</li>
+    <li>Switching cards stops TTS automatically</li>
+  </ul>
+</section>
+
+<section id="s9">
+  <h2>9. Dictionary and AI lookup</h2>
+
+  <h3>9.1 How to use</h3>
+  <ol>
+    <li>Select the text you want to look up</li>
+    <li>Tap the <span class="glyph">🔍</span> button</li>
+  </ol>
+  <p>If nothing is selected, the entire Subtitle 1 is queried by default.</p>
+
+  <h3>9.2 Lookup routing</h3>
+  <table>
+    <thead><tr><th>Condition</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Selected text has no space (single word)</td><td>Open EuDic dictionary</td></tr>
+      <tr><td>Selected text contains a space (phrase)</td><td>Send to AI for analysis</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 Dictionary URL</h3>
+  <pre>eudic://dict/selected_text</pre>
+
+  <h3>9.4 AI analysis</h3>
+  <ul>
+    <li><strong>Windows</strong>: copies prompt + text to the clipboard; user pastes into AI manually</li>
+    <li><strong>iPhone / Android</strong>: launches the Doubao app and sends directly</li>
+  </ul>
+  <p>The prompt is fixed: "Please translate literally and analyze the phrases and knowledge points:"</p>
+
+  <h3>9.5 Getting the selected text</h3>
+  <ul>
+    <li>Desktop: select with the mouse in the subtitle area; recorded on release</li>
+    <li>iOS / Android: select with a finger; read when the lookup button is tapped</li>
+  </ul>
+  <p>On iOS, because of how touch events work, the selection is recorded separately.</p>
+</section>
+
+<section id="s10">
+  <h2>10. Options panel</h2>
+  <p>Tap <span class="glyph">⚙</span> to open. The panel covers the entire screen; closing it restores the control bar.</p>
+
+  <h3>10.1 Three switches</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Default</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Auto play on open</td><td>On</td><td>Starts playback automatically after the front opens</td></tr>
+      <tr><td>Show translation at first</td><td>Off</td><td>Show translation on the front; otherwise it appears on the back</td></tr>
+      <tr><td>Show video</td><td>Off</td><td>Whether to display the video. When off, only audio plays</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 Three sliders</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Range</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Repeat count</td><td>1 – 10</td><td>1</td></tr>
+      <tr><td>Repeat interval</td><td>1 – 31</td><td>1</td></tr>
+      <tr><td>Video height</td><td>120 – 320 px</td><td>240</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 Color themes</h3>
+  <p>Five colors available: Yellow, Green, Orange, Pink, White. See next section.</p>
+
+  <h3>10.4 Closing the options panel</h3>
+  <p>Tap "Close" at the top-left, or tap <span class="glyph">⚙</span> again.</p>
+</section>
+
+<section id="s11">
+  <h2>11. Color themes</h2>
+  <p>Five themes change the button color:</p>
+  <table>
+    <thead><tr><th>Theme</th><th>Button foreground</th><th>Button border</th><th>Timeline line</th></tr></thead>
+    <tbody>
+      <tr><td>Yellow (default)</td><td>rgb(230,187,0)</td><td>#333311</td><td>#68580A</td></tr>
+      <tr><td>Green</td><td>rgb(0,160,0)</td><td>#002200</td><td>#004400</td></tr>
+      <tr><td>Orange</td><td>rgb(255,153,51)</td><td>#442811</td><td>#885622</td></tr>
+      <tr><td>Pink</td><td>rgb(255,120,180)</td><td>#331122</td><td>#663344</td></tr>
+      <tr><td>White</td><td>rgb(222,222,222)</td><td>#333333</td><td>#555555</td></tr>
+    </tbody>
+  </table>
+  <p>Theme changes take effect immediately, no card refresh needed.</p>
+</section>
+
+<section id="s12">
+  <h2>12. Dragging and positioning the control bar</h2>
+
+  <h3>12.1 How to drag</h3>
+  <ul>
+    <li>Long-press any <b>blank area of the button bar</b> (not a button itself) to drag</li>
+    <li>Page scrolling is disabled while dragging</li>
+    <li>New position is saved on release</li>
+  </ul>
+
+  <h3>12.2 Boundaries</h3>
+  <p>The control bar never leaves the screen. If dragged off-screen, it returns into view on next load.</p>
+
+  <h3>12.3 Position persistence</h3>
+  <p>The control bar's position is stored in the last two fields of the options string and restored the next time the card opens.</p>
+
+  <h3>12.4 Initial position</h3>
+  <p>On first open, the control bar is <b>horizontally centered</b> and about 60% down the screen (<code>top: 60vh</code>).</p>
+</section>
+
+<section id="s13">
+  <h2>13. Options persistence</h2>
+
+  <h3>13.1 Where it's stored</h3>
+  <p>Stored in the browser's localStorage, key format:</p>
+  <pre>cardID_vp_notes_opts_1</pre>
+  <p>The card ID comes from the first segment of the Timeline field.</p>
+
+  <h3>13.2 What is stored</h3>
+  <p>Ten fields, separated by <code>|</code>:</p>
+  <table>
+    <thead><tr><th>#</th><th>Field</th><th>Range</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>Auto play</td><td>0 / 1</td></tr>
+      <tr><td>1</td><td>Show translation at first</td><td>0 / 1</td></tr>
+      <tr><td>2</td><td>Show video</td><td>0 / 1</td></tr>
+      <tr><td>3</td><td>Repeat count</td><td>1 – 10</td></tr>
+      <tr><td>4</td><td>Repeat interval</td><td>1 – 31</td></tr>
+      <tr><td>5</td><td>Video height</td><td>32 – 320</td></tr>
+      <tr><td>6</td><td>Playback speed</td><td>50 – 300 (i.e. 0.50x – 3.00x)</td></tr>
+      <tr><td>7</td><td>Color theme</td><td>0 – 4</td></tr>
+      <tr><td>8</td><td>Control bar X</td><td>pixels</td></tr>
+      <tr><td>9</td><td>Control bar Y</td><td>pixels</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.3 When it saves</h3>
+  <ul>
+    <li>When the options panel closes</li>
+    <li>When playback speed changes</li>
+    <li>When the control bar drag ends</li>
+    <li>When a timeline slider drag ends</li>
+  </ul>
+
+  <h3>13.4 Cross-device sync</h3>
+  <p>localStorage is local. If the card is used on multiple devices, each device needs its own settings. Anki sync does not sync localStorage.</p>
+</section>
+
+<section id="s14">
+  <h2>14. Timeline field format</h2>
+
+  <h3>14.1 Basic format</h3>
+  <pre>media_prefix,season,episode,title,ext,-start-end</pre>
+
+  <h3>14.2 Examples</h3>
+  <table>
+    <thead><tr><th>Example</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>atomic_habits,,01,,.mp3-0029120-0032325</code></td><td>atomic_habits_01.mp3, from 2.912 s to 3.2325 s</td></tr>
+      <tr><td><code>cwe,,01,,-0005743-0006807-0006829-0007421</code></td><td>cwe_01, multiple ranges</td></tr>
+      <tr><td><code>sf,s05,e08,Some Show,.mp4-0012345-0023456</code></td><td>sf_s05e08.mp4, from 1.2345 s to 2.3456 s</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.3 Field details</h3>
+  <table>
+    <thead><tr><th>Part</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Media prefix</td><td>Media filename prefix</td></tr>
+      <tr><td>Season</td><td>Can be empty. When empty, filename format is <code>prefix_episode</code></td></tr>
+      <tr><td>Episode</td><td>Unit number, e.g. <code>01</code>, <code>053</code></td></tr>
+      <tr><td>Title</td><td>Optional. When set, used for the From field</td></tr>
+      <tr><td>Extension</td><td>Media extension. <code>NaN</code> means pure TTS mode</td></tr>
+      <tr><td>Time range</td><td>One or more <code>-time</code> values in milliseconds. The program uses the first and last</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.4 Filename generation</h3>
+  <p>If season is empty:</p>
+  <pre>prefix_episode.ext</pre>
+  <p>If season is non-empty:</p>
+  <pre>prefix_s##e##.ext</pre>
+
+  <h3>14.5 Extension fallback</h3>
+  <p>When the extension is empty, <code>.mp4</code>, or <code>webm</code>:</p>
+  <ul>
+    <li>Windows uses <code>.webm</code></li>
+    <li>Other platforms use <code>.mp4</code></li>
+  </ul>
+  <p>This solves the video codec compatibility issue across platforms during Anki sync.</p>
+
+  <h3>14.6 Multi-range playback</h3>
+  <p>A single Timeline can contain multiple time points:</p>
+  <pre>prefix,,01,,-0005743-0006807-0006829-0007421-0007710-0008596</pre>
+  <p>The program uses the first and last, and the range in between is the playback span. Useful for merging several consecutive clips into one card.</p>
+</section>
+
+<section id="s15">
+  <h2>15. Platform differences</h2>
+
+  <h3>15.1 Windows</h3>
+  <ul>
+    <li>Font: Segoe UI + STXihei, 18 px, 12 px margins on both sides</li>
+    <li>Button bar height 32 px (slightly smaller)</li>
+    <li>Video codec uses .webm</li>
+    <li>AI analysis copies to clipboard, no auto-launch</li>
+    <li>Recording not supported</li>
+  </ul>
+
+  <h3>15.2 macOS</h3>
+  <ul>
+    <li>Uses default system font</li>
+    <li>Video codec uses .mp4</li>
+    <li>AI analysis launches the Doubao app</li>
+  </ul>
+
+  <h3>15.3 iOS / iPadOS</h3>
+  <ul>
+    <li>Control bar and menus are moved to the HTML root to avoid rendering issues</li>
+    <li>Uses Pointer Events instead of Mouse Events</li>
+    <li>Subtitle selection requires a touch-end event to record</li>
+    <li>Video codec uses .mp4</li>
+    <li>Recording supported</li>
+  </ul>
+
+  <h3>15.4 Android</h3>
+  <ul>
+    <li>Recording supported</li>
+    <li>Video codec uses .mp4</li>
+    <li>Font size slightly larger</li>
+  </ul>
+
+  <h3>15.5 Time precision tuning</h3>
+  <p>Non-desktop platforms have a 0.12 s offset to compensate for iOS/Android video playback latency. Desktop offset is 0.</p>
+</section>
+
+<section id="s16">
+  <h2>16. FAQ</h2>
+
+  <div class="qa">
+    <div class="q">Q1: Card opens to a black screen with only the control bar</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>Is the Timeline field valid (correct comma count, has a time range)?</li>
+        <li>Is the media file in collection.media?</li>
+        <li>Does the extension match the current platform (Windows uses .webm, others .mp4)?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: Card has no sound</div>
+    <div class="a">
+      <ul>
+        <li>Check whether the Timeline's time range exceeds the actual media length</li>
+        <li>On Windows, .mp4 won't play — convert to .webm or a pure-audio format</li>
+        <li>If the extension is <code>NaN</code>, TTS is used — verify the system has an English voice installed</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: Video doesn't display</div>
+    <div class="a">Enable the "Show video" option. It's off by default, so only audio plays.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: No translation on the front</div>
+    <div class="a">By design — the translation appears on the back. To show it on the front, enable "Show translation at first".</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: Control bar dragged off-screen and lost</div>
+    <div class="a">Refresh the card. On next load, the control bar is automatically brought back into view. You can also clear localStorage to reset to default position.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: Options won't save</div>
+    <div class="a">
+      <ul>
+        <li>Check whether the browser allows localStorage (disabled in private mode)</li>
+        <li>Check whether the card ID (first segment of Timeline) is stable</li>
+        <li>Clearing browser cache loses the options</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Tapping lookup does nothing</div>
+    <div class="a">
+      <ul>
+        <li>Check whether EuDic (iOS) or Doubao (Android/iOS) is installed</li>
+        <li>On Windows it copies to clipboard — user must paste manually</li>
+        <li>Check whether the selected text is empty</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: TTS reads in the wrong language</div>
+    <div class="a">TTS is fixed to English. If SrtText1 is in another language, quality will be poor. TTS mode is only recommended for English content.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9: Timeline sliders won't drag</div>
+    <div class="a">
+      <ul>
+        <li>Check whether the timeline is visible (hidden in TTS mode)</li>
+        <li>Check whether the touch point is exactly on the slider (sliders are small)</li>
+        <li>Try reopening the card</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10: Sound keeps playing when switching to the next card</div>
+    <div class="a">Normally it doesn't. The program stops the previous card when loading a new one. If it happens, check for interfering extensions or browser behavior. Refresh the page.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11: Repeat plays only once and stops</div>
+    <div class="a">
+      <ul>
+        <li>Check whether "Repeat count" is 1</li>
+        <li>Check whether "Repeat interval" is too long (31 = sentence duration)</li>
+        <li>Check whether you manually tapped play (which resets the counter)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12: Yellow dots and sliders are in strange positions</div>
+    <div class="a">Yellow dots are the original start/end times; sliders are the adjusted ones. If they overlap, no adjustment has been made. A large offset means the range was adjusted significantly.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13: Key phrase area shows the wrong content</div>
+    <div class="a">Key phrases are extracted from &lt;f1&gt; through &lt;f7&gt; tags in SrtText1. Without tags, only the full sentence is shown. To display key phrases, mark them with color tags in desktop VlsPlayer first.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14: Control bar blocks the subtitle</div>
+    <div class="a">Drag the control bar to the bottom or top of the screen, or adjust the video height to make room for it.</div>
+  </div>
+</section>
+
+<footer>
+  Anki Notes Card (VlsPlayerNotes) User Guide · Version 1.0
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>語音辨識工具箱 操作說明書</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #222;
+    --muted: #666;
+    --accent: #2b6cb0;
+    --accent-soft: #ebf3fb;
+    --border: #dde2e8;
+    --code-bg: #f0f2f5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    color: var(--accent);
+  }
+  header .meta {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft);
+    color: var(--accent);
+  }
+  h3 {
+    font-size: 16px;
+    margin: 22px 0 10px;
+  }
+  h4 {
+    font-size: 15px;
+    margin: 18px 0 8px;
+    color: #333;
+  }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 600;
+  }
+  code {
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px;
+  }
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 32px;
+    margin-bottom: 20px;
+  }
+  .toc h2 {
+    border: none;
+    font-size: 16px;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .toc ol { margin: 0; }
+  .toc a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: #fff8e6;
+    border-left: 4px solid #e8a200;
+    padding: 10px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .qa {
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    margin: 16px 0;
+  }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>語音辨識工具箱 操作說明書</h1>
+  <div class="meta">版本 1.0 &nbsp;|&nbsp; ASR Toolbox</div>
+</header>
+
+<nav class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s1">程式簡介</a></li>
+    <li><a href="#s2">執行環境</a></li>
+    <li><a href="#s3">介面說明</a></li>
+    <li><a href="#s4">快速開始</a></li>
+    <li><a href="#s5">參數詳解</a></li>
+    <li><a href="#s6">處理流程</a></li>
+    <li><a href="#s7">常見問題</a></li>
+    <li><a href="#s8">注意事項</a></li>
+    <li><a href="#s9">附錄：介面文字中英對照</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. 程式簡介</h2>
+  <p>語音辨識工具箱用於處理影片/音訊字幕，提供兩種工作模式：</p>
+  <table>
+    <thead>
+      <tr><th>模式</th><th>作用</th><th>輸出位置</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ASR 產生 SRT 字幕檔</td><td>用 ASR 模型辨識語音，產生字幕</td><td>ASR 資料夾</td></tr>
+      <tr><td>對齊 SRT 字幕時間軸</td><td>把已有 ASR 字幕與來源字幕對齊</td><td>來源資料夾（覆寫原檔案）</td></tr>
+    </tbody>
+  </table>
+  <p>程式支援多檔案批次處理，可中途取消。</p>
+</section>
+
+<section id="s2">
+  <h2>2. 執行環境</h2>
+  <ul>
+    <li>Windows 系統</li>
+    <li>程式目錄下需存在 <code>lib\ffmpeg.exe</code></li>
+    <li>使用產生模式時，需已下載對應 ASR 模型</li>
+    <li>ASR 模型分小、中、大三種，越大越準，也越慢</li>
+  </ul>
+</section>
+
+<section id="s3">
+  <h2>3. 介面說明</h2>
+
+  <h3>3.1 左側區域</h3>
+  <h4>模式選擇</h4>
+  <ul>
+    <li><code>對齊 SRT 字幕時間軸</code>：對齊已有字幕</li>
+    <li><code>ASR 產生 SRT 字幕檔</code>：產生新字幕</li>
+  </ul>
+  <h4>檔案清單</h4>
+  <ul>
+    <li>對齊模式：只顯示來源資料夾中的 <code>.srt</code> 檔</li>
+    <li>產生模式：只顯示來源資料夾中的影片/音訊檔</li>
+    <li>支援多選</li>
+  </ul>
+  <h4>檔案進度條</h4>
+  <p>位於檔案清單下方，處理多檔案時顯示整體進度。</p>
+
+  <h3>3.2 右側參數區</h3>
+  <h4>目錄設定</h4>
+  <table>
+    <thead><tr><th>項目</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>來源資料夾</td><td>來源檔案所在目錄</td></tr>
+      <tr><td>ASR 資料夾</td><td>ASR 檔案所在目錄</td></tr>
+    </tbody>
+  </table>
+  <p>兩個目錄右側都有 <code>...</code> 按鈕，點擊可選擇資料夾。</p>
+
+  <h4>選項</h4>
+  <table>
+    <thead><tr><th>選項</th><th>顯示條件</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>在對齊時間軸之前合併句子碎片?</td><td>僅對齊模式</td><td>勾選後先合併碎片再對齊</td></tr>
+      <tr><td>如果 ASR 產生的 SRT 檔存在，要覆寫嗎?</td><td>僅產生模式</td><td>勾選後覆寫已存在的 SRT</td></tr>
+    </tbody>
+  </table>
+
+  <h4>對齊參數</h4>
+  <table>
+    <thead><tr><th>參數</th><th>範圍</th><th>預設值</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>時間漂移視窗 (秒)</td><td>10 ~ 180</td><td>30</td><td>允許的時間偏移範圍</td></tr>
+      <tr><td>搜尋文字長度</td><td>10 ~ 60</td><td>16</td><td>對齊時搜尋文字視窗長度</td></tr>
+      <tr><td>最小時間間隙 (毫秒)</td><td>1 ~ 100</td><td>1</td><td>字幕之間的最小間隔</td></tr>
+      <tr><td>最大錯誤閾值</td><td>0.01 ~ 0.39</td><td>0.15</td><td>允許的最大匹配錯誤率</td></tr>
+    </tbody>
+  </table>
+
+  <h4>預設值按鈕</h4>
+  <p>點擊後，四個對齊參數恢復為預設值。</p>
+
+  <h3>3.3 右側日誌區</h3>
+  <ul>
+    <li>顯示每一步的處理狀態</li>
+    <li>顯示失敗原因</li>
+    <li>顯示成功統計</li>
+    <li>產生模式下，底部顯示 ASR 分段進度條</li>
+  </ul>
+
+  <h3>3.4 底部按鈕</h3>
+  <table>
+    <thead><tr><th>按鈕</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td>OK</td><td>開始處理</td></tr>
+      <tr><td>取消</td><td>處理中可點，當前段結束後停止</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s4">
+  <h2>4. 快速開始</h2>
+
+  <h3>4.1 產生 SRT 字幕</h3>
+  <ol>
+    <li>選擇 <code>ASR 產生 SRT 字幕檔</code></li>
+    <li>設定 <strong>來源資料夾</strong>（媒體檔案所在目錄）</li>
+    <li>設定 <strong>ASR 資料夾</strong>（SRT 輸出目錄）</li>
+    <li>在左側清單中選取要處理的媒體檔案（可多選）</li>
+    <li>視需要勾選 <code>如果 ASR 產生的 SRT 檔存在，要覆寫嗎?</code></li>
+    <li>點擊 <strong>OK</strong></li>
+    <li>觀察日誌區，等待處理完成</li>
+    <li>到 <strong>ASR 資料夾</strong> 取同名 <code>.srt</code> 檔</li>
+  </ol>
+
+  <h3>4.2 對齊 SRT 時間軸</h3>
+  <ol>
+    <li>選擇 <code>對齊 SRT 字幕時間軸</code></li>
+    <li>設定 <strong>來源資料夾</strong>（內含待修正的 <code>.srt</code>）</li>
+    <li>設定 <strong>ASR 資料夾</strong>（內含同名 ASR <code>.srt</code>）</li>
+    <li>視需要勾選 <code>在對齊時間軸之前合併句子碎片?</code></li>
+    <li>視需要調整四個對齊參數，或點 <strong>預設值</strong></li>
+    <li>在左側清單中選擇檔案</li>
+    <li>點擊 <strong>OK</strong></li>
+    <li>完成後，<strong>來源資料夾中的 <code>.srt</code> 被更新</strong></li>
+  </ol>
+</section>
+
+<section id="s5">
+  <h2>5. 參數詳解</h2>
+
+  <h4>時間漂移視窗 (秒)</h4>
+  <p>允許字幕時間戳與音訊之間的最大偏移。預設 30 秒。如果字幕整體偏移較大，可適當調大。</p>
+
+  <h4>搜尋文字長度</h4>
+  <p>對齊時用於匹配的文字視窗長度。預設 16。越大越穩，但越慢；越小越快，但可能匹配不準。</p>
+
+  <h4>最小時間間隙 (毫秒)</h4>
+  <p>兩句字幕之間允許的最小間隔。預設 1 毫秒。用於防止字幕在時間軸上重疊。</p>
+
+  <h4>最大錯誤閾值</h4>
+  <p>匹配時允許的最大錯誤率。預設 0.15。越大越寬鬆，越小越嚴格。</p>
+</section>
+
+<section id="s6">
+  <h2>6. 處理流程</h2>
+
+  <h3>6.1 產生模式</h3>
+  <ol>
+    <li>開啟媒體檔案，讀取總時長</li>
+    <li>按 <strong>120 秒</strong> 一段切分</li>
+    <li>用 <code>lib\ffmpeg.exe</code> 抽取 16kHz 單聲道 wav</li>
+    <li>呼叫 ASR 模型辨識</li>
+    <li>非最後一段丟棄最後一句，避免與下一段重疊</li>
+    <li>全部完成後，寫入 ASR 資料夾</li>
+  </ol>
+
+  <h3>6.2 對齊模式</h3>
+  <ol>
+    <li>讀取來源 SRT 和 ASR SRT</li>
+    <li>如勾選，先合併句子碎片</li>
+    <li>按四個參數對齊</li>
+    <li>結果寫回來源 SRT</li>
+  </ol>
+</section>
+
+<section id="s7">
+  <h2>7. 常見問題</h2>
+
+  <div class="qa">
+    <div class="q">Q1：讀取媒體檔案資訊失敗</div>
+    <div class="a">媒體檔案無法開啟或格式不支援。檢查檔案是否完整、路徑是否含特殊字元。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：沒有 ASR 字幕檔</div>
+    <div class="a">對齊模式下，ASR 資料夾裡沒有與來源 SRT 同名的檔案。先跑一次產生模式，或確認檔名一致。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：自動辨識語音失敗</div>
+    <div class="a">模型載入失敗或音訊抽取失敗。檢查模型是否已下載、<code>lib\ffmpeg.exe</code> 是否存在。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：最後幾分鐘沒有結果</div>
+    <div class="a">可能原因：媒體總時長讀取失敗或被低估；某段辨識失敗導致中斷；最後一段沒有辨識出內容。建議查看日誌最後幾行，確認停在哪一步。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：來源資料夾裡的 SRT 會被覆寫嗎？</div>
+    <div class="a">對齊模式會覆寫來源 SRT，建議先備份。產生模式下，ASR 資料夾已存在同名 SRT 時，未勾選「覆寫」則跳過。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：可以中途取消嗎？</div>
+    <div class="a">可以。點取消後當前段結束會停止，已辨識部分不會儲存。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：為什麼檔案清單裡看不到某個檔案？</div>
+    <div class="a">清單只顯示支援的副檔名。對齊模式只顯示 <code>.srt</code>；產生模式只顯示影片/音訊副檔名。若副檔名不在支援清單內，不會出現。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：修改參數後沒生效？</div>
+    <div class="a">參數在點擊 OK 時讀取。修改後直接點 OK 即可。若輸入值超出範圍，會彈窗提示並自動糾正。</div>
+  </div>
+</section>
+
+<section id="s8">
+  <h2>8. 注意事項</h2>
+  <ol>
+    <li>處理長檔案耗時較長，建議先用短影片測試。</li>
+    <li>模型越大越準，也越慢、越吃記憶體。</li>
+    <li>暫存 wav 檔案會自動刪除，異常退出可能殘留。</li>
+    <li>對齊模式會直接改寫來源目錄中的 <code>.srt</code>，請先備份。</li>
+    <li>程式退出時會儲存目前設定，下次啟動自動恢復。</li>
+    <li>建議保持 <code>lib\ffmpeg.exe</code> 與程式版本匹配。</li>
+  </ol>
+</section>
+
+<section id="s9">
+  <h2>9. 附錄：介面文字中英對照</h2>
+  <table>
+    <thead><tr><th>中文</th><th>英文</th></tr></thead>
+    <tbody>
+      <tr><td>語音辨識工具箱</td><td>ASR Toolbox</td></tr>
+      <tr><td>對齊 SRT 字幕時間軸</td><td>Align SRT timeline</td></tr>
+      <tr><td>ASR 產生 SRT 字幕檔</td><td>ASR Generate SRT file</td></tr>
+      <tr><td>來源資料夾</td><td>Source dir</td></tr>
+      <tr><td>ASR 資料夾</td><td>ASR SRT dir</td></tr>
+      <tr><td>在對齊時間軸之前合併句子碎片?</td><td>Merger sentence fragments before alignment ?</td></tr>
+      <tr><td>如果 ASR 產生的 SRT 檔存在，要覆寫嗎?</td><td>If ASR SRT file exists, ovverwrite it ?</td></tr>
+      <tr><td>時間漂移視窗 (秒)</td><td>Time Drift Window (s)</td></tr>
+      <tr><td>搜尋文字長度</td><td>Search Text Length</td></tr>
+      <tr><td>最小時間間隙 (毫秒)</td><td>Min Time Gap (ms)</td></tr>
+      <tr><td>最大錯誤閾值</td><td>Max Error Threshold</td></tr>
+      <tr><td>預設值</td><td>Default</td></tr>
+      <tr><td>取消</td><td>Cancel</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  語音辨識工具箱 操作說明書 · 版本 1.0
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anki ノートカード (VlsPlayerNotes) 操作マニュアル</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #b8860b; --accent-soft: #fff8e6; --border: #e0d8c0;
+    --code-bg: #f4f1ea; --warn-bg: #fff4e0; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: #1a1a1a; color: #eee;
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: #e6bb00; }
+  header .meta { color: #999; font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55; }
+  .toc { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px; }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note { background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .tip { background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key { display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333; }
+  .btn { display: inline-block; padding: 1px 8px; border-radius: 4px;
+    background: #2a2a2a; border: 1px solid #e6bb00; color: #e6bb00;
+    font-size: 13px; min-width: 22px; text-align: center; }
+  .glyph { display: inline-block; font-size: 17px; color: #e6bb00;
+    background: #2a2a2a; padding: 0 4px; border-radius: 3px; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px; }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    header { background: #fff; color: #000; }
+    header h1 { color: #b8860b; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Anki ノートカード (VlsPlayerNotes) 操作マニュアル</h1>
+  <div class="meta">バージョン 1.0 &nbsp;|&nbsp; 一文単位の精聴・シャドーイング・復習用カード</div>
+</header>
+
+<nav class="toc">
+  <h2>目次</h2>
+  <ol>
+    <li><a href="#s1">これは何か</a></li>
+    <li><a href="#s2">カードフィールド</a></li>
+    <li><a href="#s3">画面構成</a></li>
+    <li><a href="#s4">コントロールバーのボタン</a></li>
+    <li><a href="#s5">タイムラインとスライダー</a></li>
+    <li><a href="#s6">再生とリピートの仕組み</a></li>
+    <li><a href="#s7">表裏の表示ロジック</a></li>
+    <li><a href="#s8">TTS 読み上げ</a></li>
+    <li><a href="#s9">辞書と AI 検索</a></li>
+    <li><a href="#s10">オプションパネル</a></li>
+    <li><a href="#s11">カラーテーマ</a></li>
+    <li><a href="#s12">コントロールバーのドラッグと位置</a></li>
+    <li><a href="#s13">オプションの保存</a></li>
+    <li><a href="#s14">Timeline フィールドの形式</a></li>
+    <li><a href="#s15">プラットフォーム別の違い</a></li>
+    <li><a href="#s16">よくある質問</a></li>
+  </ol>
+</nav>
+
+<section id="s1">
+  <h2>1. これは何か</h2>
+  <p>ノートカードは<b>一文単位のカード</b>です。1 枚のカードに、1 つの動画または音声、1 行の原文、1 行の訳文、1 つのメモが含まれます。</p>
+  <p>VlsPlayer Series カードとの違い：</p>
+  <table>
+    <thead><tr><th>項目</th><th>Series カード</th><th>Notes カード（本カード）</th></tr></thead>
+    <tbody>
+      <tr><td>単位</td><td>1 シーズン／1 ユニット全体</td><td>一文</td></tr>
+      <tr><td>字幕エリア</td><td>スクロール可能なリスト</td><td>現在の一文のみ表示</td></tr>
+      <tr><td>再生範囲</td><td>エピソード全体、ユニット切替可</td><td>一文の時間範囲</td></tr>
+      <tr><td>主な用途</td><td>連続視聴、連続シャドーイング</td><td>精聴、単語の復習</td></tr>
+      <tr><td>表／裏</td><td>プレイヤー全体が表側</td><td>表で再生、裏でメモ表示</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.1 主な特徴</h3>
+  <ul>
+    <li>カードの表で対象文を自動再生（無効化可）</li>
+    <li>訳文を隠し、まず音声を聞いてから読む</li>
+    <li>回数と間隔を設定してリピート再生</li>
+    <li>タイムラインをドラッグして再生範囲を微調整</li>
+    <li>動画ファイルがない場合は TTS 読み上げに自動降格</li>
+    <li>裏面にメモ（Remark）と出典（From）を表示</li>
+    <li>コントロールバーを任意の位置にドラッグ可能</li>
+    <li>オプションは localStorage に保存</li>
+  </ul>
+</section>
+
+<section id="s2">
+  <h2>2. カードフィールド</h2>
+
+  <h3>2.1 5 つのフィールド</h3>
+  <table>
+    <thead><tr><th>フィールド</th><th>役割</th></tr></thead>
+    <tbody>
+      <tr><td>Timeline</td><td>メディアソース + 時間範囲。形式はセクション 14 参照</td></tr>
+      <tr><td>SrtText1</td><td>字幕 1（通常は英文原文）。&lt;f1&gt;~&lt;f7&gt; の色タグを含められる</td></tr>
+      <tr><td>SrtText2</td><td>字幕 2（通常は訳文）</td></tr>
+      <tr><td>SrtNote</td><td>メモ。複数行可</td></tr>
+      <tr><td>From</td><td>出典ラベル。例「某ドラマ S05E08 12:34」</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 カードの生成元</h3>
+  <p>デスクトップ版 VlsPlayer の「ノートデッキにエクスポート」機能で生成されます。字幕 1 行につき 1 枚のカード。SRT ツールボックスの Anki エクスポートでも一括生成できます。</p>
+
+  <h3>2.3 学習の流れ</h3>
+  <ol>
+    <li>表を表示：音声が自動再生され、字幕が表示される</li>
+    <li>聞き取れたかどうか判断</li>
+    <li>「答えを表示」をクリックして裏へ</li>
+    <li>裏にメモと出典が表示される</li>
+    <li>「もう一度／難しい／普通／簡単」を選択</li>
+  </ol>
+</section>
+
+<section id="s3">
+  <h2>3. 画面構成</h2>
+
+  <h3>3.1 3 つのエリア</h3>
+  <table>
+    <thead><tr><th>エリア</th><th>内容</th></tr></thead>
+    <tbody>
+      <tr><td>上部メディアエリア</td><td>動画または音声（動画なしの場合はカバーのみ、または完全に非表示）</td></tr>
+      <tr><td>中央テキストエリア</td><td>
+        <ul>
+          <li>重要フレーズ（Key）：&lt;fN&gt; タグから抽出</li>
+          <li>字幕 1（Text1）：メイン字幕</li>
+          <li>字幕 2（Text2）：訳文。非表示可</li>
+          <li>メモ（Note）：裏面のみ</li>
+          <li>出典（From）：裏面のみ、右下</li>
+        </ul>
+      </td></tr>
+      <tr><td>下部コントロールバー</td><td>ドラッグ可能なボタン + タイムラインパネル</td></tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 字幕の色タグ</h3>
+  <p>字幕 1 内の &lt;f1&gt; ～ &lt;f7&gt; タグは色付きで表示されます（Series カードと同じ）：</p>
+  <table>
+    <thead><tr><th>タグ</th><th>色</th></tr></thead>
+    <tbody>
+      <tr><td>f1</td><td>赤</td></tr>
+      <tr><td>f2</td><td>緑</td></tr>
+      <tr><td>f3</td><td>青</td></tr>
+      <tr><td>f4</td><td>黄</td></tr>
+      <tr><td>f5</td><td>マゼンタ</td></tr>
+      <tr><td>f6</td><td>オレンジ</td></tr>
+      <tr><td>f7</td><td>暗赤</td></tr>
+    </tbody>
+  </table>
+  <p>カードに動画がある場合、これらのタグが追加で「重要フレーズ」リストとして抽出され、字幕の上に表示されます。</p>
+
+  <h3>3.3 メモの形式</h3>
+  <p>メモは 1 行ずつ表示され、各行の先頭にビュレット <code>•</code> が付きます。空行は自動的に無視されます。</p>
+</section>
+
+<section id="s4">
+  <h2>4. コントロールバーのボタン</h2>
+  <p>コントロールバーはドラッグ可能なフローティングパネルで、7 つのボタンと 1 本のタイムラインを含みます。</p>
+
+  <h3>4.1 7 つのボタン</h3>
+  <table>
+    <thead><tr><th>ボタン</th><th>アイコン</th><th>機能</th></tr></thead>
+    <tbody>
+      <tr><td>デッキ</td><td><span class="glyph">▣</span></td><td>デッキに戻る（iOS/Android のみ。単発タップは無効で、ジェスチャが必要）</td></tr>
+      <tr><td>再生速度メニュー</td><td><span class="glyph">📊</span></td><td>速度選択メニューをポップアップ</td></tr>
+      <tr><td>再生／一時停止</td><td><span class="glyph">▶ / ⏸</span></td><td>メイン再生ボタン</td></tr>
+      <tr><td>リプレイ</td><td><span class="glyph">↺</span></td><td>先頭から再再生</td></tr>
+      <tr><td>検索</td><td><span class="glyph">🔍</span></td><td>辞書／AI 検索</td></tr>
+      <tr><td>速度切替</td><td><span class="btn">0.5 / 1.0</span></td><td>再生速度のクイック切替</td></tr>
+      <tr><td>オプション</td><td><span class="glyph">⚙</span></td><td>オプションパネルを開く</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 再生ボタンのアイコン変化</h3>
+  <table>
+    <thead><tr><th>アイコン</th><th>状態</th></tr></thead>
+    <tbody>
+      <tr><td>▶</td><td>一時停止中、再生可能</td></tr>
+      <tr><td>⏸</td><td>再生中</td></tr>
+      <tr><td>⏸ 90° 回転</td><td>待機中（リピート間隔内）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 ボタン以外の場所をタップで再生／一時停止</h3>
+  <p>コントロールバーの外側（ボタンとタイムラインスライダーを除く）をタップすると、自動で再生／一時停止が切り替わります。素早い操作のためです。</p>
+</section>
+
+<section id="s5">
+  <h2>5. タイムラインとスライダー</h2>
+
+  <h3>5.1 要素の説明</h3>
+  <table>
+    <thead><tr><th>要素</th><th>色</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>◁ / ▷ ボタン</td><td>黄</td><td>開始・終了時刻をそれぞれ 0.5 秒微調整</td></tr>
+      <tr><td>水平の細線</td><td>暗黄</td><td>タイムラインの基準線</td></tr>
+      <tr><td>2 つの黄点</td><td>黄</td><td>元の開始・終了時刻（ドラッグ不可）</td></tr>
+      <tr><td>2 つの黄スライダー</td><td>黄</td><td>現在の開始・終了時刻（ドラッグ可）</td></tr>
+      <tr><td>白スライダー</td><td>オフホワイト</td><td>再生位置インジケータ（ドラッグ不可）</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 スライダーのドラッグ</h3>
+  <ul>
+    <li>左スライダーをドラッグして開始時刻を調整</li>
+    <li>右スライダーをドラッグして終了時刻を調整</li>
+    <li>即時反映、確認不要</li>
+    <li>ドラッグ終了時にオプションへ自動保存</li>
+  </ul>
+
+  <h3>5.3 微調整ボタン</h3>
+  <ul>
+    <li><span class="btn">◁</span> をタップ：開始時刻が 0.5 秒戻る</li>
+    <li><span class="btn">▷</span> をタップ：終了時刻が 0.5 秒進む</li>
+    <li>長押し：無効。タップのみ</li>
+  </ul>
+
+  <h3>5.4 タイムラインの自動スケール</h3>
+  <p>タイムラインは常に「元の開始・終了時刻」を中心とし、両側にそれぞれ 1/6 の余白を取ります。開始・終了を調整しても元の位置が見えるようになっています。スケールは自動で、手動設定は不要です。</p>
+</section>
+
+<section id="s6">
+  <h2>6. 再生とリピートの仕組み</h2>
+
+  <h3>6.1 再生の流れ</h3>
+  <ol>
+    <li>メディアファイルを読み込む</li>
+    <li>開始時刻にシーク</li>
+    <li>終了時刻まで再生</li>
+    <li>一時停止、リピート間隔を待つ</li>
+    <li>リピート回数未満 → 先頭に戻って継続</li>
+    <li>リピート回数に到達 → 停止、手動操作待ち</li>
+  </ol>
+
+  <h3>6.2 リピート回数</h3>
+  <table>
+    <thead><tr><th>値</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>1 ～ 9</td><td>固定回数</td></tr>
+      <tr><td>10</td><td>手動停止まで無限ループ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 リピート間隔</h3>
+  <table>
+    <thead><tr><th>値</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td>1 ～ 30</td><td>固定秒数</td></tr>
+      <tr><td>31</td><td>文の長さ（この一文の再生時間）</td></tr>
+    </tbody>
+  </table>
+  <p>間隔は再生速度で自動的に除算されるため、速度を上げると待ち時間も短くなります。</p>
+
+  <h3>6.4 リプレイボタン</h3>
+  <p><span class="glyph">↺</span> をタップ：</p>
+  <ul>
+    <li>現在の再生を即座に停止</li>
+    <li>リピートカウントを 0 にリセット</li>
+    <li>先頭から再開</li>
+    <li>一時的にリピート回数が「無限」に設定される（オプション設定には影響しない）</li>
+  </ul>
+
+  <h3>6.5 再生速度</h3>
+  <ul>
+    <li><span class="btn">0.5 / 1.0</span> ボタンで 0.5x と 1.0x を切替</li>
+    <li><span class="glyph">📊</span> ボタンで 0.50x ～ 2.00x のメニューを表示</li>
+    <li>速度変更は即座に現在の再生に反映</li>
+  </ul>
+</section>
+
+<section id="s7">
+  <h2>7. 表裏の表示ロジック</h2>
+
+  <h3>7.1 表の表示</h3>
+  <ul>
+    <li>重要フレーズ（色タグがある場合）</li>
+    <li>字幕 1（原文）</li>
+    <li>字幕 2（訳文）── オプション「カードを開いたときに訳文を表示」に依存</li>
+  </ul>
+  <p>字幕 2 はデフォルトで非表示。学習者がまず原文を聞くようにしています。</p>
+
+  <h3>7.2 裏の表示</h3>
+  <ul>
+    <li>重要フレーズ</li>
+    <li>字幕 1</li>
+    <li>字幕 2（常に表示）</li>
+    <li>メモ（Note）</li>
+    <li>出典（From）</li>
+  </ul>
+
+  <h3>7.3 表での自動再生</h3>
+  <p>オプション「カードを開いたときに自動再生」が ON のとき（デフォルト ON）：</p>
+  <ul>
+    <li>表を開くと、メディア読み込み完了と同時に自動再生</li>
+    <li>裏を開いたときは自動再生しない</li>
+  </ul>
+
+  <h3>7.4 重要フレーズの抽出</h3>
+  <p>字幕 1 内の &lt;fN&gt; で囲まれた内容が抽出され、字幕の上に 1 行ずつ表示されます。例：</p>
+  <pre>SrtText1: "I &lt;f1&gt;couldn't agree more&lt;/f1&gt; with you."</pre>
+  <p>表示結果：</p>
+  <pre>couldn't agree more
+I couldn't agree more with you.</pre>
+  <p>学習者が全文を見る前に、重要フレーズに注目できるようにしています。</p>
+</section>
+
+<section id="s8">
+  <h2>8. TTS 読み上げ</h2>
+
+  <h3>8.1 発動条件</h3>
+  <p>Timeline フィールドの拡張子が <code>NaN</code> の場合、またはメディアファイルが見つからない場合、プログラムは自動的に TTS モードに切り替え、システムの音声合成で字幕 1 を読み上げます。</p>
+
+  <h3>8.2 音声の選択</h3>
+  <table>
+    <thead><tr><th>プラットフォーム</th><th>優先音声</th></tr></thead>
+    <tbody>
+      <tr><td>iOS / iPadOS</td><td>Samantha（US 女性）</td></tr>
+      <tr><td>Windows / macOS</td><td>David（US 男性）</td></tr>
+      <tr><td>Android</td><td>任意の US 英語音声</td></tr>
+    </tbody>
+  </table>
+  <p>優先音声がない場合：最初の en-US、次に任意の en 音声。</p>
+
+  <h3>8.3 メディア再生との違い</h3>
+  <ul>
+    <li>TTS モードではタイムラインのドラッグは不可（タイムライン非表示）</li>
+    <li>リピートと間隔のロジックはメディア再生と同一</li>
+    <li>速度は再生速度設定に従う（0.1 ～ 10）</li>
+    <li>音量は 0.8 固定</li>
+  </ul>
+
+  <h3>8.4 TTS の再生操作</h3>
+  <ul>
+    <li>再生／一時停止ボタンは TTS にも有効</li>
+    <li>リプレイボタンは現在の TTS を停止して先頭から読み上げ</li>
+    <li>カードを切り替えると TTS は自動停止</li>
+  </ul>
+</section>
+
+<section id="s9">
+  <h2>9. 辞書と AI 検索</h2>
+
+  <h3>9.1 使い方</h3>
+  <ol>
+    <li>字幕の中から調べたいテキストを選択</li>
+    <li><span class="glyph">🔍</span> ボタンをタップ</li>
+  </ol>
+  <p>何も選択していない場合は、字幕 1 の全体が検索対象になります。</p>
+
+  <h3>9.2 検索の振り分け</h3>
+  <table>
+    <thead><tr><th>条件</th><th>動作</th></tr></thead>
+    <tbody>
+      <tr><td>選択テキストにスペースなし（単語）</td><td>欧路辞書を開く</td></tr>
+      <tr><td>選択テキストにスペースあり（フレーズ）</td><td>AI 分析を呼び出す</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 辞書 URL</h3>
+  <pre>eudic://dict/選択テキスト</pre>
+
+  <h3>9.4 AI 分析</h3>
+  <ul>
+    <li><strong>Windows</strong>：プロンプト + テキストをクリップボードにコピー。ユーザーが手動で AI に貼り付け</li>
+    <li><strong>iPhone / Android</strong>：豆包アプリを呼び出して直接送信</li>
+  </ul>
+  <p>プロンプトは固定：「請嚴格直譯並分析其中片語及知識點：」</p>
+
+  <h3>9.5 選択テキストの取得</h3>
+  <ul>
+    <li>デスクトップ：字幕エリアでマウス選択、離したときに記録</li>
+    <li>iOS / Android：指で選択、検索ボタンをタップしたときに読み取り</li>
+  </ul>
+  <p>iOS は touch イベントの特殊性から、選択テキストは別途記録する必要があります。</p>
+</section>
+
+<section id="s10">
+  <h2>10. オプションパネル</h2>
+  <p><span class="glyph">⚙</span> をタップで開きます。オプションパネルは画面全体を覆い、閉じるとコントロールバーに戻ります。</p>
+
+  <h3>10.1 3 つのスイッチ</h3>
+  <table>
+    <thead><tr><th>オプション</th><th>デフォルト</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>カードを開いたときに自動再生</td><td>ON</td><td>表を開くと自動再生を開始</td></tr>
+      <tr><td>先に訳文を表示</td><td>OFF</td><td>表で訳文を表示。OFF なら裏で表示</td></tr>
+      <tr><td>動画を表示</td><td>OFF</td><td>動画を表示するか。OFF なら音声のみ</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 3 つのスライダー</h3>
+  <table>
+    <thead><tr><th>オプション</th><th>範囲</th><th>デフォルト</th></tr></thead>
+    <tbody>
+      <tr><td>リピート回数</td><td>1 ～ 10</td><td>1</td></tr>
+      <tr><td>リピート間隔</td><td>1 ～ 31</td><td>1</td></tr>
+      <tr><td>動画の高さ</td><td>120 ～ 320 px</td><td>240</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 カラーテーマ</h3>
+  <p>5 色：黄、緑、橙、ピンク、白。次のセクション参照。</p>
+
+  <h3>10.4 オプションパネルを閉じる</h3>
+  <p>左上の「Close」をタップ、または <span class="glyph">⚙</span> をもう一度タップ。</p>
+</section>
+
+<section id="s11">
+  <h2>11. カラーテーマ</h2>
+  <p>5 種類のテーマでボタンの色を変更できます：</p>
+  <table>
+    <thead><tr><th>テーマ</th><th>ボタン前景色</th><th>ボタン枠色</th><th>タイムライン線色</th></tr></thead>
+    <tbody>
+      <tr><td>黄（デフォルト）</td><td>rgb(230,187,0)</td><td>#333311</td><td>#68580A</td></tr>
+      <tr><td>緑</td><td>rgb(0,160,0)</td><td>#002200</td><td>#004400</td></tr>
+      <tr><td>橙</td><td>rgb(255,153,51)</td><td>#442811</td><td>#885622</td></tr>
+      <tr><td>ピンク</td><td>rgb(255,120,180)</td><td>#331122</td><td>#663344</td></tr>
+      <tr><td>白</td><td>rgb(222,222,222)</td><td>#333333</td><td>#555555</td></tr>
+    </tbody>
+  </table>
+  <p>テーマ切替は即座に反映され、カードの再読込は不要です。</p>
+</section>
+
+<section id="s12">
+  <h2>12. コントロールバーのドラッグと位置</h2>
+
+  <h3>12.1 ドラッグ方法</h3>
+  <ul>
+    <li>ボタンバーの<b>空白部分</b>（ボタン自体ではない）を長押ししてドラッグ</li>
+    <li>ドラッグ中はページスクロールが無効化される</li>
+    <li>離したときに新しい位置が自動保存される</li>
+  </ul>
+
+  <h3>12.2 位置の境界</h3>
+  <p>コントロールバーは画面外に出ません。画面外にドラッグされた場合は、次回読み込み時に自動で画面内に戻ります。</p>
+
+  <h3>12.3 位置の保存</h3>
+  <p>コントロールバーの位置はオプション文字列の最後の 2 つのフィールドに保存され、次にカードを開いたときに復元されます。</p>
+
+  <h3>12.4 初期位置</h3>
+  <p>初回表示時は<b>水平中央</b>、垂直方向に約 60% の位置（<code>top: 60vh</code>）。</p>
+</section>
+
+<section id="s13">
+  <h2>13. オプションの保存</h2>
+
+  <h3>13.1 保存先</h3>
+  <p>ブラウザの localStorage に保存。キー形式：</p>
+  <pre>cardID_vp_notes_opts_1</pre>
+  <p>カード ID は Timeline フィールドの最初のセグメントから取得します。</p>
+
+  <h3>13.2 保存内容</h3>
+  <p>10 個のフィールドを <code>|</code> で区切って保存：</p>
+  <table>
+    <thead><tr><th>#</th><th>フィールド</th><th>範囲</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>自動再生</td><td>0 / 1</td></tr>
+      <tr><td>1</td><td>先に訳文を表示</td><td>0 / 1</td></tr>
+      <tr><td>2</td><td>動画を表示</td><td>0 / 1</td></tr>
+      <tr><td>3</td><td>リピート回数</td><td>1 ～ 10</td></tr>
+      <tr><td>4</td><td>リピート間隔</td><td>1 ～ 31</td></tr>
+      <tr><td>5</td><td>動画の高さ</td><td>32 ～ 320</td></tr>
+      <tr><td>6</td><td>再生速度</td><td>50 ～ 300（0.50x ～ 3.00x）</td></tr>
+      <tr><td>7</td><td>カラーテーマ</td><td>0 ～ 4</td></tr>
+      <tr><td>8</td><td>コントロールバー X</td><td>ピクセル</td></tr>
+      <tr><td>9</td><td>コントロールバー Y</td><td>ピクセル</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.3 保存タイミング</h3>
+  <ul>
+    <li>オプションパネルを閉じたとき</li>
+    <li>再生速度を変更したとき</li>
+    <li>コントロールバーのドラッグが終わったとき</li>
+    <li>タイムラインスライダーのドラッグが終わったとき</li>
+  </ul>
+
+  <h3>13.4 デバイス間同期</h3>
+  <p>localStorage はローカルです。カードを複数デバイスで使う場合、オプションはそれぞれのデバイスで設定が必要です。Anki の同期では localStorage は同期されません。</p>
+</section>
+
+<section id="s14">
+  <h2>14. Timeline フィールドの形式</h2>
+
+  <h3>14.1 基本形式</h3>
+  <pre>メディア接頭辞,シーズン,エピソード,タイトル,拡張子,-開始-終了</pre>
+
+  <h3>14.2 例</h3>
+  <table>
+    <thead><tr><th>例</th><th>意味</th></tr></thead>
+    <tbody>
+      <tr><td><code>atomic_habits,,01,,.mp3-0029120-0032325</code></td><td>atomic_habits_01.mp3、2.912 秒 ～ 3.2325 秒</td></tr>
+      <tr><td><code>cwe,,01,,-0005743-0006807-0006829-0007421</code></td><td>cwe_01、複数区間</td></tr>
+      <tr><td><code>sf,s05,e08,某ドラマ,.mp4-0012345-0023456</code></td><td>sf_s05e08.mp4、1.2345 秒 ～ 2.3456 秒</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.3 フィールドの説明</h3>
+  <table>
+    <thead><tr><th>部分</th><th>説明</th></tr></thead>
+    <tbody>
+      <tr><td>メディア接頭辞</td><td>メディアファイル名の接頭辞</td></tr>
+      <tr><td>シーズン</td><td>空でも可。空の場合のファイル名は <code>接頭辞_エピソード</code></td></tr>
+      <tr><td>エピソード</td><td>ユニット番号。例 <code>01</code>、<code>053</code></td></tr>
+      <tr><td>タイトル</td><td>任意。設定時は From フィールドに使用</td></tr>
+      <tr><td>拡張子</td><td>メディアの拡張子。<code>NaN</code> は純粋な TTS モードを意味</td></tr>
+      <tr><td>時間範囲</td><td><code>-時間</code>（ミリ秒）を複数。プログラムは最初と最後を使用</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.4 ファイル名の生成規則</h3>
+  <p>シーズンが空の場合：</p>
+  <pre>接頭辞_エピソード.拡張子</pre>
+  <p>シーズンが非空の場合：</p>
+  <pre>接頭辞_s##e##.拡張子</pre>
+
+  <h3>14.5 拡張子のデフォルト</h3>
+  <p>拡張子が空、<code>.mp4</code>、または <code>webm</code> の場合：</p>
+  <ul>
+    <li>Windows は <code>.webm</code></li>
+    <li>その他のプラットフォームは <code>.mp4</code></li>
+  </ul>
+  <p>これは Anki 同期時の動画コーデック互換問題を解決します。</p>
+
+  <h3>14.6 複数区間の再生</h3>
+  <p>1 つの Timeline に複数の時間点を含められます：</p>
+  <pre>接頭辞,,01,,-0005743-0006807-0006829-0007421-0007710-0008596</pre>
+  <p>プログラムは最初と最後の値を使用し、その間の範囲を再生範囲とします。連続した複数のクリップを 1 枚のカードにまとめたいときに使います。</p>
+</section>
+
+<section id="s15">
+  <h2>15. プラットフォーム別の違い</h2>
+
+  <h3>15.1 Windows</h3>
+  <ul>
+    <li>フォント：Segoe UI + STXihei、18px、左右 12px の余白</li>
+    <li>ボタンバーの高さ 32 px（やや小さめ）</li>
+    <li>動画コーデックは .webm</li>
+    <li>AI 分析はクリップボードにコピー、自動遷移なし</li>
+    <li>録音は非対応</li>
+  </ul>
+
+  <h3>15.2 macOS</h3>
+  <ul>
+    <li>デフォルトのシステムフォントを使用</li>
+    <li>動画コーデックは .mp4</li>
+    <li>AI 分析は豆包アプリを呼び出す</li>
+  </ul>
+
+  <h3>15.3 iOS / iPadOS</h3>
+  <ul>
+    <li>コントロールバーとメニューが HTML ルートに移動され、レンダリング問題を回避</li>
+    <li>Mouse Events ではなく Pointer Events を使用</li>
+    <li>字幕選択には touch 終了イベントの記録が必要</li>
+    <li>動画コーデックは .mp4</li>
+    <li>録音対応</li>
+  </ul>
+
+  <h3>15.4 Android</h3>
+  <ul>
+    <li>録音対応</li>
+    <li>動画コーデックは .mp4</li>
+    <li>フォントサイズはやや大きめ</li>
+  </ul>
+
+  <h3>15.5 時間精度の調整</h3>
+  <p>非デスクトッププラットフォームでは iOS/Android の動画再生遅延を補償するため 0.12 秒のオフセットがあります。デスクトップは 0 です。</p>
+</section>
+
+<section id="s16">
+  <h2>16. よくある質問</h2>
+
+  <div class="qa">
+    <div class="q">Q1：カードが真っ黒で、コントロールバーだけが表示される</div>
+    <div class="a">
+      確認：
+      <ul>
+        <li>Timeline フィールドが有効か（カンマ数が正しい、時間範囲がある）</li>
+        <li>メディアファイルが collection.media にあるか</li>
+        <li>拡張子が現在のプラットフォームに合っているか（Windows は .webm、他は .mp4）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2：音が出ない</div>
+    <div class="a">
+      <ul>
+        <li>Timeline の時間範囲がメディアの実際の長さを超えていないか確認</li>
+        <li>Windows では .mp4 が再生できないため、.webm または音声のみの形式に変換</li>
+        <li>拡張子が <code>NaN</code> の場合は TTS。システムに英語音声があるか確認</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3：動画が表示されない</div>
+    <div class="a">オプションで「動画を表示」を ON にしてください。デフォルトは OFF で、音声のみ再生されます。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4：表で訳文が見えない</div>
+    <div class="a">設計上の挙動です。訳文は本来裏で表示されるものです。表でも見たい場合は、オプションで「先に訳文を表示」を ON にしてください。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5：コントロールバーを画面外にドラッグしてしまった</div>
+    <div class="a">カードを再読み込みしてください。次回読み込み時にコントロールバーが自動で画面内に戻ります。localStorage を消去してデフォルト位置に戻すこともできます。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6：オプションが保存されない</div>
+    <div class="a">
+      <ul>
+        <li>ブラウザが localStorage を許可しているか（プライベートモードでは無効）</li>
+        <li>カード ID（Timeline フィールドの最初のセグメント）が安定しているか</li>
+        <li>ブラウザキャッシュを消去するとオプションが失われます</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7：検索ボタンをタップしても反応しない</div>
+    <div class="a">
+      <ul>
+        <li>端末に欧路辞書（iOS）または豆包アプリ（Android/iOS）がインストールされているか</li>
+        <li>Windows ではクリップボードにコピーされるので、ユーザーが手動で貼り付ける必要あり</li>
+        <li>選択テキストが空でないか</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8：TTS の読み上げ言語が違う</div>
+    <div class="a">TTS は英語固定です。SrtText1 が他言語の場合、品質は大きく下がります。TTS モードは英語コンテンツにのみ推奨します。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9：タイムラインのスライダーが動かない</div>
+    <div class="a">
+      <ul>
+        <li>タイムラインが表示されているか確認（TTS モードでは非表示）</li>
+        <li>タッチ点が正確にスライダー上にあるか（スライダーは小さい）</li>
+        <li>カードを開き直してみる</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10：次のカードに切り替えても音が鳴り続ける</div>
+    <div class="a">通常は起こりません。新しいカードの読み込み時に前のカードを自動停止します。発生する場合は、干渉する拡張機能やブラウザ動作がないか確認してください。ページを再読み込みすれば解決します。</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11：リピートが 1 回で止まる</div>
+    <div class="a">
+      <ul>
+        <li>「リピート回数」が 1 になっていないか</li>
+        <li>「リピート間隔」が長すぎないか（31 = 文の長さ）</li>
+        <li>手動で再生ボタンをタップしていないか（カウントがリセットされます）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class

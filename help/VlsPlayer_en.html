@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VlsPlayer User Manual (Detailed Edition)</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --text: #222; --muted: #666;
+    --accent: #2b6cb0; --accent-soft: #ebf3fb; --border: #dde2e8;
+    --code-bg: #f0f2f5; --warn-bg: #fff8e6; --warn-border: #e8a200;
+    --tip-bg: #eef6ff; --tip-border: #2b6cb0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.75;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  header {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-bottom: 24px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 28px; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 13px; }
+  section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px 32px; margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 21px; margin: 0 0 16px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent-soft); color: var(--accent);
+  }
+  h3 { font-size: 17px; margin: 24px 0 10px; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #333; }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--border); padding: 8px 12px;
+    text-align: left; vertical-align: top;
+  }
+  th { background: var(--accent-soft); font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 13px;
+  }
+  pre {
+    background: var(--code-bg); padding: 12px 16px; border-radius: 6px;
+    overflow-x: auto; font-size: 13px; line-height: 1.55;
+  }
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 32px; margin-bottom: 20px;
+  }
+  .toc h2 { border: none; font-size: 16px; padding: 0; margin-bottom: 10px; }
+  .toc ol { margin: 0; column-count: 2; column-gap: 32px; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .tip {
+    background: var(--tip-bg); border-left: 4px solid var(--tip-border);
+    padding: 10px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px;
+  }
+  .qa { border-left: 3px solid var(--accent); padding-left: 14px; margin: 16px 0; }
+  .qa .q { font-weight: 600; }
+  .qa .a { color: #333; margin-top: 4px; }
+  .key {
+    display: inline-block; padding: 1px 8px; border: 1px solid #bbb;
+    border-bottom-width: 2px; border-radius: 4px; background: #fafafa;
+    font-family: Consolas, monospace; font-size: 12px; color: #333;
+  }
+  .btn {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    background: #e8eef5; border: 1px solid #b8c6d6; font-size: 13px;
+    color: #223;
+  }
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px; margin-top: 32px;
+  }
+  @media print {
+    body { background: #fff; }
+    section, header, .toc { border: none; padding: 0 0 12px; margin-bottom: 16px; }
+    h2 { page-break-after: avoid; }
+    table, .qa, pre { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>VlsPlayer User Manual</h1>
+  <div class="meta">Version 1.0 &nbsp;|&nbsp; Subtitle player, editor, and language learning tool</div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">Program Overview and Interface Panorama</a></li>
+    <li><a href="#s2">Subtitle Directory and File Management</a></li>
+    <li><a href="#s3">Opening Media and Subtitles</a></li>
+    <li><a href="#s4">Toolbar Buttons in Detail</a></li>
+    <li><a href="#s5">Subtitle Table</a></li>
+    <li><a href="#s6">Subtitle Editing Area</a></li>
+    <li><a href="#s7">Remark, Dictation and Proofreading Area</a></li>
+    <li><a href="#s8">Flags</a></li>
+    <li><a href="#s9">Waveform Editor</a></li>
+    <li><a href="#s10">Player and Playback Modes</a></li>
+    <li><a href="#s11">Shadowing and Recording</a></li>
+    <li><a href="#s12">Dictation Mode</a></li>
+    <li><a href="#s13">ASR Speech Recognition</a></li>
+    <li><a href="#s14">Proofreading Subtitles</a></li>
+    <li><a href="#s15">Filtered Display</a></li>
+    <li><a href="#s16">Dictionary / AI / TTS</a></li>
+    <li><a href="#s17">Toolboxes (SRT / TXT / ASR)</a></li>
+    <li><a href="#s18">Options</a></li>
+    <li><a href="#s19">Theme System</a></li>
+    <li><a href="#s20">File Formats and Directory Structure</a></li>
+    <li><a href="#s21">Shortcut Key Reference</a></li>
+    <li><a href="#s22">FAQ and Troubleshooting</a></li>
+  </ol>
+</nav>
+
+<!-- ============== 1 ============== -->
+<section id="s1">
+  <h2>1. Program Overview and Interface Panorama</h2>
+
+  <h3>1.1 Positioning</h3>
+  <p>VlsPlayer is a subtitle player and editor for language learners. It integrates playback, subtitle editing, waveform adjustment, speech recognition, shadowing and recording, dictionary lookup, AI translation, and Anki export into a single interface, so the whole chain of "watch video — edit subtitles — take notes — export cards" can be completed in one window.</p>
+
+  <h3>1.2 Main Capabilities</h3>
+  <ul>
+    <li>Waveform visualization: drag handles directly to modify subtitle timing</li>
+    <li>Five playback modes: normal, single sentence, role-play 1/2, selection loop</li>
+    <li>Sentence-by-sentence shadowing with automatic ASR scoring</li>
+    <li>Dictation mode: hide the original text and type what you hear</li>
+    <li>Color flags (7 colors) + remarks + paragraph tags</li>
+    <li>Proofreading subtitles: load up to 4 reference subtitles at once</li>
+    <li>Filtered display: filter by remark / flag</li>
+    <li>Local ASR: sherpa-onnx models, can recognize individual subtitle segments</li>
+    <li>Dictionary, AI analysis, TTS: opened in an internal or external browser</li>
+    <li>Dual-engine playback: MPV (default) and VLC, switchable in options</li>
+    <li>Bilingual subtitle management: Subtitle 1 (original) and Subtitle 2 (translation) edited separately</li>
+    <li>Three companion toolboxes: SRT / TXT / ASR</li>
+    <li>Four UI languages, 16+ built-in themes, customizable themes</li>
+  </ul>
+
+  <h3>1.3 Overall Interface Layout</h3>
+  <p>The main window is divided into four layers from top to bottom:</p>
+  <table>
+    <thead><tr><th>Layer</th><th>Content</th><th>Can Be Hidden</th></tr></thead>
+    <tbody>
+      <tr><td>Title bar</td><td>Custom title bar showing the file name</td><td>Hidden in fullscreen</td></tr>
+      <tr><td>Toolbar</td><td>All shortcut buttons</td><td>Hidden in fullscreen</td></tr>
+      <tr><td>Main area (vertically adjustable)</td>
+        <td>
+          Top: subtitle table<br>
+          Bottom: media screen + subtitle editing + remark/proofreading
+        </td>
+        <td>Table can be hidden</td>
+      </tr>
+      <tr><td>Waveform editor</td><td>Waveform area + handle area</td><td>Hidden when there is no media</td>
+      </tr>
+      <tr><td>Recording panel</td><td>Shown during shadowing</td><td>Hidden when shadowing is off</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>1.4 Splitters</h3>
+  <ul>
+    <li><strong>SplitterClient</strong>: between the table and the detail area below; drag to adjust the ratio</li>
+    <li><strong>SplitterMedia</strong>: between the video screen and the text area on the right; drag horizontally</li>
+    <li><strong>SplitterRe</strong>: between the subtitle editing area and the remark area; drag vertically</li>
+    <li><strong>SplitterBottom</strong>: between the main area and the waveform editor; drag vertically</li>
+  </ul>
+  <p>Window size, splitter positions, and panel visibility are all saved to the INI on exit and restored automatically next launch.</p>
+</section>
+
+<!-- ============== 2 ============== -->
+<section id="s2">
+  <h2>2. Subtitle Directory and File Management</h2>
+  <p>The subtitle directory panel is docked on the left side of the main window by default and can be toggled via the leftmost button on the toolbar.</p>
+
+  <h3>2.1 Display Modes</h3>
+  <table>
+    <thead><tr><th>Mode</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Auto-dock (default)</td><td>Appears automatically when the mouse moves to the left edge of the window; hides when the mouse leaves</td></tr>
+      <tr><td>Hidden</td><td>Not displayed at all</td></tr>
+    </tbody>
+  </table>
+  <p>Toggle via the leftmost button on the toolbar. In auto mode, it hides 3 seconds after the mouse leaves.</p>
+
+  <h3>2.2 Directory Management</h3>
+  <ul>
+    <li><strong>Drop-down box</strong>: select a saved SRT directory</li>
+    <li><span class="btn">+</span>: add an SRT directory (deduplicated automatically)</li>
+    <li><span class="btn">−</span>: remove the currently selected directory</li>
+  </ul>
+  <p>All directories are saved in the INI's <code>[SrtDir]</code> section, written on exit and read on launch.</p>
+
+  <h3>2.3 File List</h3>
+  <ul>
+    <li>Lists all <code>.srt</code> files in the current directory</li>
+    <li>Click to select and load</li>
+    <li>On launch, the file opened last time is selected automatically</li>
+    <li>If there is no history, the first item in the list is selected</li>
+  </ul>
+
+  <h3>2.4 Toolbox Entry</h3>
+  <p>The three buttons at the top of the directory panel open companion tools:</p>
+  <table>
+    <thead><tr><th>Button</th><th>Opens</th></tr></thead>
+    <tbody>
+      <tr><td>SRT Toolbox</td><td>VlsSrtTools.exe (external program)</td></tr>
+      <tr><td>TXT Toolbox</td><td>In-program TxtTools window</td></tr>
+      <tr><td>ASR Toolbox</td><td>VlsAsrTools.exe (external program)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 3 ============== -->
+<section id="s3">
+  <h2>3. Opening Media and Subtitles</h2>
+
+  <h3>3.1 Opening Flow</h3>
+  <ol>
+    <li>Click an .srt file in the file list</li>
+    <li>The program loads in the following order:
+      <ol>
+        <li>Read the .srt subtitle</li>
+        <li>Read the same-named .snt file (remarks, paragraph tags, formatted text)</li>
+        <li>Read the same-named .dic file (dictation content)</li>
+        <li>Read ProofSrt.lst in the same directory (proofreading file list, if present)</li>
+        <li>Apply filtering according to the current filter conditions</li>
+      </ol>
+    </li>
+    <li>Find the same-named media file (VIDEO_EXTS first, then AUDIO_EXTS) and load it automatically</li>
+    <li>Find the same-named .wfm waveform cache file; if it does not exist, generate it with ffmpeg</li>
+    <li>Restore the playback position of that file from the last exit</li>
+  </ol>
+
+  <h3>3.2 Supported Subtitle Encodings</h3>
+  <p>When reading SRT, the following encodings are detected automatically:</p>
+  <ul>
+    <li>UTF-8 (with BOM / without BOM)</li>
+    <li>UTF-16 LE (BOM)</li>
+    <li>UTF-16 BE (BOM)</li>
+    <li>System default encoding (ANSI)</li>
+  </ul>
+  <p>When there is no BOM, UTF-8 validity is checked first; if invalid, it is read using the system default encoding.</p>
+
+  <h3>3.3 Supported Media Formats</h3>
+  <p><strong>Video</strong>: mp4, mkv, avi, mov, flv, webm, 3gp, 3g2, wmv, asf, vob, mts, m2ts, ts, mpeg, mpg, m4v</p>
+  <p><strong>Audio</strong>: wav, mp3, ogg, flac, aac, wma, m4a, aiff, aif, alac, wavpack, ape, mid, midi</p>
+
+  <h3>3.4 Waveform Cache</h3>
+  <p>The .wfm file is a 4 kHz mono PCM cache generated with the following command:</p>
+  <pre>ffmpeg.exe -i mediafile -ar 4000 -ac 1 -acodec pcm_s16le -f wav -y output.wfm</pre>
+  <p>Generation waits up to 30 seconds. If generation fails, the waveform area is left empty and subtitle editing is unaffected.</p>
+</section>
+
+<!-- ============== 4 ============== -->
+<section id="s4">
+  <h2>4. Toolbar Buttons in Detail</h2>
+  <p>The toolbar is divided from left to right into 5 groups, separated by dividers.</p>
+
+  <h3>4.1 File Group (Far Left)</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Show/hide file list</td><td>Toggles between auto-dock and hidden</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Playback Group</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Shortcut</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Previous sentence</td><td></td><td>Switch to the previous subtitle and play</td></tr>
+      <tr><td>Play / Pause</td><td><span class="key">Space</span></td><td>Toggle playback state</td></tr>
+      <tr><td>Next sentence</td><td></td><td>Switch to the next subtitle and play</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">The play button icon changes with state: a pause icon while playing, a play icon while paused.</div>
+
+  <h3>4.3 Learning Group</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Shadowing</td><td>Expands the recording panel and enters shadowing mode</td></tr>
+      <tr><td>Dictation</td><td>Enters dictation mode, hiding the original text</td></tr>
+      <tr><td>Playback mode</td><td>Hover to show a panel for playback mode, pause time, repeat count, volume</td></tr>
+      <tr><td>Playback speed</td><td>Hover to show a panel; choose from 0.25x to 3.00x in 0.25 steps</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.4 Subtitle Editing Group</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Shortcut</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Insert</td><td><span class="key">Ctrl+N</span></td><td>Insert an empty subtitle after the current line</td></tr>
+      <tr><td>Delete</td><td><span class="key">Ctrl+L</span></td><td>Delete the current line or selection</td></tr>
+      <tr><td>Merge</td><td><span class="key">Ctrl+M</span></td><td>Merge the current line with the next</td></tr>
+      <tr><td>Modify time</td><td></td><td>Hover to show a panel; shift start/end times by milliseconds</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 Save and Undo</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Shortcut</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Save</td><td><span class="key">Ctrl+S</span></td><td>Save SRT / SNT / DIC</td></tr>
+      <tr><td>Undo</td><td><span class="key">Ctrl+Z</span></td><td>Undo the last operation</td></tr>
+      <tr><td>Redo</td><td><span class="key">Ctrl+Y</span></td><td>Redo an undone operation</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">The undo stack is cleared after saving. Batch operations are undone as a single batch.</div>
+
+  <h3>4.6 Tools Group (Far Right)</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Search</td><td>Hover to show a search box; supports normal find and regex</td></tr>
+      <tr><td>Waveform width</td><td>Left-click to zoom in (reduce time per page), right-click to zoom out</td></tr>
+      <tr><td>Waveform amplitude</td><td>Left-click to increase, right-click to decrease</td></tr>
+      <tr><td>Theme</td><td>Hover to show the theme list</td></tr>
+      <tr><td>Options</td><td>Open the options window</td></tr>
+      <tr><td>Help</td><td>Open the VlsPlayer.html help file</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 5 ============== -->
+<section id="s5">
+  <h2>5. Subtitle Table</h2>
+
+  <h3>5.1 Column Definitions</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Width</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Index</td><td>Fixed</td><td>Starts from 1</td></tr>
+      <tr><td>Start time</td><td>Fixed</td><td>Format switchable (see options)</td></tr>
+      <tr><td>End time</td><td>Optional</td><td>Toggle display in options</td></tr>
+      <tr><td>Paragraph marker</td><td>Narrow column</td><td>Speaker indicated by bar color</td></tr>
+      <tr><td>Subtitle 1</td><td>Elastic</td><td>Original text; supports color flags</td></tr>
+      <tr><td>Subtitle 2</td><td>Elastic</td><td>Translation; can be hidden</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Display Modes</h3>
+  <p>Cycle through the three with the "Show subtitles" button at the far right of the toolbar:</p>
+  <ul>
+    <li>Subtitle 1 only</li>
+    <li>Subtitle 2 only</li>
+    <li>Subtitle 1 + Subtitle 2 (default, ratio 3:2)</li>
+  </ul>
+
+  <h3>5.3 Time Format</h3>
+  <p>Set in options:</p>
+  <table>
+    <thead><tr><th>No.</th><th>Format</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>Full</td><td>00:12:34,567</td></tr>
+      <tr><td>1</td><td>Hour leading 0 omitted</td><td>0:12:34,567</td></tr>
+      <tr><td>2</td><td>No hours</td><td>12:34,567</td></tr>
+      <tr><td>3</td><td>No hours, 1-digit ms</td><td>12:34,5</td></tr>
+      <tr><td>4</td><td>Minutes and seconds only</td><td>12:34</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 Row Colors</h3>
+  <table>
+    <thead><tr><th>Color</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td>Selected row</td><td>The row where the cursor is (always highlighted)</td></tr>
+      <tr><td>Selection</td><td>Multiple selected rows (background slightly different)</td></tr>
+      <tr><td>Playing row</td><td>The subtitle currently playing (visible when different from the selected row)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 Paragraph Marker Column</h3>
+  <p>Speaker is indicated by color and fill style:</p>
+  <table>
+    <thead><tr><th>Speaker</th><th>Color</th><th>Style</th></tr></thead>
+    <tbody>
+      <tr><td>Narration (Speaker 0)</td><td>Gray</td><td>Filled</td></tr>
+      <tr><td>Role 1 (Speaker 1)</td><td>Orange</td><td>Filled</td></tr>
+      <tr><td>Role 2 (Speaker 2)</td><td>Orange</td><td>Hollow</td></tr>
+    </tbody>
+  </table>
+  <p>The speaker number is inferred automatically from paragraph tags (ParTag); see Section 8 for the rules.</p>
+
+  <h3>5.6 Mouse Operations</h3>
+  <table>
+    <thead><tr><th>Operation</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Single click</td><td>Select the row and play</td></tr>
+      <tr><td>Double click</td><td>In floating mode, show the subtitle edit box</td></tr>
+      <tr><td>Ctrl + click</td><td>Multi-select</td></tr>
+      <tr><td>Shift + click</td><td>Range select</td></tr>
+      <tr><td>Wheel</td><td>Scroll content or lines per the toolbar setting</td></tr>
+      <tr><td>Right click</td><td>Show the main menu</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.7 Wheel Mode</h3>
+  <p>The "Wheel" button on the toolbar cycles through three modes:</p>
+  <ul>
+    <li>Scroll content (default)</li>
+    <li>Scroll current line</li>
+    <li>Smooth scroll (with performance optimization)</li>
+  </ul>
+</section>
+
+<!-- ============== 6 ============== -->
+<section id="s6">
+  <h2>6. Subtitle Editing Area</h2>
+  <p>Located at the upper right of the detail area, this is a RichEdit control.</p>
+
+  <h3>6.1 Display Rules</h3>
+  <ul>
+    <li>The first paragraph shows Subtitle 1 (original text); if the original text contains color flags, they are rendered in the corresponding colors</li>
+    <li>The second paragraph shows Subtitle 2 (translation) in a smaller font</li>
+    <li>In dictation mode, Subtitle 1 is shown as a line of dashes (hiding the original text)</li>
+  </ul>
+
+  <h3>6.2 Editing Behavior</h3>
+  <ul>
+    <li>Edit directly; input is saved to the SRT on focus loss or after 1 second of inactivity</li>
+    <li>Pressing Enter splits into two paragraphs: the first is Subtitle 1, the second is Subtitle 2</li>
+    <li>Input during editing is not written to disk immediately; it is committed after the cooldown, avoiding frequent disk writes</li>
+  </ul>
+
+  <h3>6.3 Floating Edit Box</h3>
+  <p>When the "Floating subtitle edit box" option is enabled:</p>
+  <ul>
+    <li>The edit box detaches from the panel and floats above the table</li>
+    <li>Double-clicking a table row opens it</li>
+    <li>It hides automatically when the mouse moves away or loses focus</li>
+    <li>Its position adjusts automatically with the row height</li>
+    <li>Its height adjusts automatically with the content, up to two-thirds of the screen</li>
+  </ul>
+
+  <h3>6.4 Context Menu</h3>
+  <p>Right-click in the edit box to show the following menu items:</p>
+  <table>
+    <thead><tr><th>Menu Item</th><th>Shortcut</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Cut</td><td>Ctrl+X</td><td>Cut the selected text</td></tr>
+      <tr><td>Copy</td><td>Ctrl+C</td><td>Copy the selected text</td></tr>
+      <tr><td>Paste</td><td>Ctrl+V</td><td>Paste at the cursor position</td></tr>
+      <tr><td>Copy main subtitle</td><td></td><td>Copy Subtitle 1 (without translation)</td></tr>
+      <tr><td>Export media clip</td><td></td><td>Export the video clip for the selected subtitle with ffmpeg</td></tr>
+      <tr><td>Dictionary</td><td>Ctrl+D</td><td>Look up the definition of the selected word</td></tr>
+      <tr><td>AI analysis</td><td>Ctrl+I</td><td>Send the selected text to AI for analysis</td></tr>
+      <tr><td>TTS read-aloud</td><td>Ctrl+T</td><td>Read the selected text aloud with Edge TTS</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 7 ============== -->
+<section id="s7">
+  <h2>7. Remark, Dictation and Proofreading Area</h2>
+  <p>Located at the lower right of the detail area. This area switches to display one of the following depending on the current state:</p>
+  <ul>
+    <li>Remark</li>
+    <li>Dictation</li>
+    <li>Proofreading display (Proof)</li>
+    <li>ASR recognition result</li>
+  </ul>
+
+  <h3>7.1 Switching the Display Source</h3>
+  <p>The button bar above decides which one is shown:</p>
+  <table>
+    <thead><tr><th>Button</th><th>Display</th></tr></thead>
+    <tbody>
+      <tr><td>Remark</td><td>The current subtitle's Remark</td></tr>
+      <tr><td>Proof 0~3</td><td>The match result of the corresponding proofreading file</td></tr>
+      <tr><td>Dictation</td><td>The current subtitle's Dictation (switched automatically in dictation mode)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.2 Editing Remarks</h3>
+  <ul>
+    <li>Remarks can be multi-line; type directly in the box</li>
+    <li>Input is saved to the .snt file on focus loss or after 1 second of inactivity</li>
+    <li>Remarks trigger the "has remark" filter</li>
+  </ul>
+
+  <h3>7.3 Proofreading Display</h3>
+  <p>Match results are displayed using RTF color coding:</p>
+  <table>
+    <thead><tr><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Gray</td><td>Context (one sentence before and after the matched sentence)</td></tr>
+      <tr><td>Green</td><td>Exact match</td></tr>
+      <tr><td>Red</td><td>Mismatch or difference</td></tr>
+      <tr><td>Blue</td><td>Differing characters</td></tr>
+    </tbody>
+  </table>
+
+  <h3>7.4 Browsing Proofreading Context</h3>
+  <p>Right-click in the proofreading display area and choose "Browse more subtitles" to show the 10 subtitles before and after the current time point in the proofreading file.</p>
+</section>
+
+<!-- ============== 8 ============== -->
+<section id="s8">
+  <h2>8. Flags</h2>
+
+  <h3>8.1 Seven Colors</h3>
+  <p>Corresponding to the formatted text tags <code>&lt;f1&gt;</code> ~ <code>&lt;f7&gt;</code>; the meanings can be customized in options (by default: key point, expression, pronunciation, grammar, slang, phrase, vocabulary).</p>
+
+  <h3>8.2 Adding a Flag</h3>
+  <ol>
+    <li>Select the text to flag in the subtitle edit box</li>
+    <li>Click the flag of the corresponding color on the flag bar</li>
+    <li>The selected text is wrapped as <code>&lt;fN&gt;text&lt;/fN&gt;</code> and written to the .snt file</li>
+  </ol>
+
+  <h3>8.3 Clearing a Flag</h3>
+  <p>Select the flagged text and click the last "X" icon on the flag bar to clear it.</p>
+
+  <h3>8.4 Display Modes</h3>
+  <p>Set in options:</p>
+  <table>
+    <thead><tr><th>Mode</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Colored text</td><td>Flagged text is displayed in the corresponding color</td></tr>
+      <tr><td>Colored underline</td><td>Flagged text keeps its original color with a colored underline below</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.5 Filtered Display</h3>
+  <p>Click any flag on the flag bar to toggle filtered display for that flag, e.g. show only subtitles containing <code>&lt;f1&gt;</code>.</p>
+
+  <h3>8.6 Paragraph Tags</h3>
+  <p>Besides the 7 color flags, there are three paragraph tags used to mark sentence structure:</p>
+  <table>
+    <thead><tr><th>Tag</th><th>Meaning</th><th>Effect on Speaker Inference</th></tr></thead>
+    <tbody>
+      <tr><td>s</td><td>New scene begins</td><td>Resets Speaker to Role 1</td></tr>
+      <tr><td>n</td><td>Narration</td><td>Speaker = 0</td></tr>
+      <tr><td>a</td><td>Continuation (same role)</td><td>Keeps the previous line's Speaker</td></tr>
+    </tbody>
+  </table>
+  <p>Full inference rule:</p>
+  <pre>if contains n → Speaker = 0
+else if first line or contains s → Speaker = 1
+else if contains a → Speaker = previous line's Speaker
+else if previous line's Speaker ≠ 1 → Speaker = 1
+else → Speaker = 2</pre>
+
+  <h3>8.7 Toggling Paragraph Tags</h3>
+  <p>Right-click in the edit box to toggle:</p>
+  <ul>
+    <li>Toggle new/old scene (s)</li>
+    <li>Toggle narration/lyrics (n)</li>
+    <li>Toggle continuation/single line (a)</li>
+  </ul>
+</section>
+
+<!-- ============== 9 ============== -->
+<section id="s9">
+  <h2>9. Waveform Editor</h2>
+  <p>Located at the bottom of the window, about 120 pixels high, divided into upper (waveform) and lower (handle) parts.</p>
+
+  <h3>9.1 Layout</h3>
+  <table>
+    <thead><tr><th>Area</th><th>Height</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Waveform area</td><td>ClientHeight - 12</td><td>Waveform, center line, selection, click line, play line</td></tr>
+      <tr><td>Handle area</td><td>12</td><td>Left/right handles, middle handle, time ruler</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 Waveform Area Elements</h3>
+  <table>
+    <thead><tr><th>Element</th><th>Color</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Center line</td><td>Waveform color</td><td>Horizontally centered</td></tr>
+      <tr><td>Waveform</td><td>Waveform color</td><td>Each column takes the max amplitude in its interval</td></tr>
+      <tr><td>Selection background</td><td>Selection background color</td><td>Loop interval created by dragging</td></tr>
+      <tr><td>Waveform inside selection</td><td>Selection waveform color</td><td>Distinguished from waveform outside the selection</td></tr>
+      <tr><td>Play line</td><td>Play line color</td><td>Solid line moving with the playback position</td></tr>
+      <tr><td>Click line</td><td>Click line color</td><td>Dashed line marking the last click position</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 Subtitle Handles</h3>
+  <p>Each subtitle is represented by three geometric figures in the handle area:</p>
+  <table>
+    <thead><tr><th>Figure</th><th>Position</th><th>Color</th></tr></thead>
+    <tbody>
+      <tr><td>└ Left handle</td><td>At the start time</td><td>Normal orange / current green / disabled olive / hover cyan</td></tr>
+      <tr><td>┘ Right handle</td><td>At the end time</td><td>Same as above</td></tr>
+      <tr><td>▂ Middle handle</td><td>At the midpoint of the subtitle interval</td><td>Same as above</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.4 Color Meanings</h3>
+  <table>
+    <thead><tr><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Orange</td><td>Not the current subtitle</td></tr>
+      <tr><td>Green</td><td>Current subtitle and editable</td></tr>
+      <tr><td>Olive</td><td>Current subtitle but not editable (filter mode)</td></tr>
+      <tr><td>Cyan</td><td>Mouse hovering over the handle</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.5 Mouse Operations Reference</h3>
+  <table>
+    <thead><tr><th>Operation</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Left-click left handle and drag</td><td>Modify the subtitle start time</td></tr>
+      <tr><td>Left-click right handle and drag</td><td>Modify the subtitle end time</td></tr>
+      <tr><td>Left-click middle handle and drag</td><td>Shift the subtitle as a whole</td></tr>
+      <tr><td>Drag middle handle below the handle area</td><td>Delete that subtitle (cursor becomes crDumpSubtitle)</td></tr>
+      <tr><td>Drag in the waveform area</td><td>Create a selection and loop-play it automatically</td></tr>
+      <tr><td>Click in the waveform area</td><td>Play from the click position to the nearest sentence end</td></tr>
+      <tr><td>Right-click on the selection</td><td>Clear the selection</td></tr>
+      <tr><td>Right-click in the current subtitle's waveform area</td><td>Split the subtitle at that position</td></tr>
+      <tr><td>Right-click on an empty area</td><td>Insert a new subtitle (default 1 second)</td></tr>
+      <tr><td>Move the mouse to the leftmost/rightmost 10 pixels</td><td>Page flip (1 second overlap on each side)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.6 Page Flipping</h3>
+  <ul>
+    <li>The page duration is determined by the toolbar's waveform width, 20 seconds per page by default</li>
+    <li>Pages overlap by 5 seconds to avoid losing subtitles across pages</li>
+    <li>When reaching the last page, it shifts back automatically so the audio fills the whole page</li>
+  </ul>
+
+  <h3>9.7 Drag Constraints</h3>
+  <ul>
+    <li>The left handle is not less than the previous subtitle's end time + 1 ms</li>
+    <li>The right handle is not greater than the next subtitle's start time − 1 ms</li>
+    <li>The minimum subtitle duration is twice the handle width (the time corresponding to about 12 px)</li>
+    <li>When shifting as a whole, both front and back boundaries are constrained at the same time</li>
+  </ul>
+  <div class="note">During dragging, only temporary changes are made; the operation is recorded as undoable only when the mouse button is released.</div>
+</section>
+
+<!-- ============== 10 ============== -->
+<section id="s10">
+  <h2>10. Player and Playback Modes</h2>
+
+  <h3>10.1 Playback Engines</h3>
+  <table>
+    <thead><tr><th>Engine</th><th>Pros</th><th>Cons</th></tr></thead>
+    <tbody>
+      <tr><td>MPV (default)</td><td>High time precision, smooth playback</td><td>Requires the mpv runtime</td></tr>
+      <tr><td>VLC</td><td>Good compatibility</td><td>Time precision about 150 ms</td></tr>
+    </tbody>
+  </table>
+  <p>After switching engines, the media file needs to be reloaded.</p>
+
+  <h3>10.2 Playback Modes</h3>
+  <table>
+    <thead><tr><th>Mode</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Normal</td><td>Plays from the current position to the end of the media</td></tr>
+      <tr><td>Single sentence</td><td>Plays sentence by sentence; after each sentence, follows the pause setting</td></tr>
+      <tr><td>Role-play Role 1</td><td>Mutes Role 2's lines; plays only Role 1 and narration</td></tr>
+      <tr><td>Role-play Role 2</td><td>Mutes Role 1's lines; plays only Role 2 and narration</td></tr>
+      <tr><td>Selection loop</td><td>Loops the selected interval (triggered by dragging in the waveform area)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 Pause Settings</h3>
+  <p>Effective only in single-sentence mode. Pause duration after each sentence:</p>
+  <table>
+    <thead><tr><th>Option</th><th>Duration</th></tr></thead>
+    <tbody>
+      <tr><td>Pause</td><td>No pause; go directly to the next sentence</td></tr>
+      <tr><td>Sentence length</td><td>The playback duration of this sentence</td></tr>
+      <tr><td>1s / 2s / 3s / 9s</td><td>Fixed duration</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.4 Repeat Count</h3>
+  <p>Effective in single-sentence mode: 1, 2, 3, 6, 9, infinite.</p>
+
+  <h3>10.5 Volume</h3>
+  <ul>
+    <li><strong>Media volume</strong>: 0 ~ 100%</li>
+    <li><strong>Noise volume</strong>: 0 ~ 100% (mixed with the media volume)</li>
+    <li><strong>Mix toggle</strong>: when on, background noise plays along with the media</li>
+  </ul>
+  <p>The noise source comes from mp3 files in the program directory's <code>lib\noises\</code>, chosen at random.</p>
+
+  <h3>10.6 Action at End of Playback</h3>
+  <table>
+    <thead><tr><th>Option</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Pause</td><td>Stop at the end</td></tr>
+      <tr><td>Replay</td><td>Play again from the beginning</td></tr>
+      <tr><td>Play next episode</td><td>Switch to the next SRT in the file list</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.7 Fullscreen</h3>
+  <ul>
+    <li>Shortcut <span class="key">Ctrl+Enter</span> enters fullscreen</li>
+    <li>In fullscreen all panels are hidden and the video fills the screen</li>
+    <li>Press <span class="key">Esc</span> or <span class="key">Ctrl+Enter</span> again to exit</li>
+    <li>The original panel layout is restored on exit</li>
+  </ul>
+
+  <h3>10.8 Playback Position Precision</h3>
+  <ul>
+    <li>MPV: uses mpv's native time, with negligible error</li>
+    <li>VLC: uses a self-maintained high-precision timer, with about 50 ms error during playback; reads the native time after pausing</li>
+  </ul>
+</section>
+
+<!-- ============== 11 ============== -->
+<section id="s11">
+  <h2>11. Shadowing and Recording</h2>
+
+  <h3>11.1 Enabling</h3>
+  <p>Click the "Shadowing" button on the toolbar; the recording panel expands at the bottom of the window and the waveform editor moves up.</p>
+
+  <h3>11.2 Recording Panel</h3>
+  <table>
+    <thead><tr><th>Button</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Record</td><td>Start / stop recording. The icon turns red while recording</td></tr>
+      <tr><td>Play recording</td><td>Play back the audio recorded this time</td></tr>
+      <tr><td>Auto shadow</td><td>Loop-play the current sentence for repeated shadowing</td></tr>
+      <tr><td>Export</td><td>Merge all recordings of the selected subtitles into one MP3</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.3 Recording Parameters</h3>
+  <table>
+    <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Sample rate</td><td>16 kHz</td></tr>
+      <tr><td>Channels</td><td>2 (a mono copy is also output for ASR when saving)</td></tr>
+      <tr><td>Bit depth</td><td>16 bit</td></tr>
+      <tr><td>Max duration</td><td>5 times the current subtitle's duration</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.4 Automatic Recognition</h3>
+  <p>After recording stops:</p>
+  <ol>
+    <li>The program calls the ASR model to recognize the recording</li>
+    <li>The result is compared with the subtitle's original text to compute word-level similarity</li>
+    <li>Similarity ≥ 0.85 is shown in green, otherwise in red</li>
+    <li>The result is displayed in the remark area</li>
+  </ol>
+
+  <h3>11.5 Recording Files</h3>
+  <p>Recordings are saved at:</p>
+  <pre>Program directory\record\subtitle file name\subtitle name_index.wav</pre>
+  <p>For example: <code>record\SomeSeries\SomeSeries_0001.wav</code>.</p>
+
+  <h3>11.6 Exporting MP3</h3>
+  <ol>
+    <li>Select a range of subtitles in the table</li>
+    <li>Click the "Export" button on the recording panel</li>
+    <li>Choose the save location</li>
+    <li>The program concatenates the recordings into a 192 kbps MP3 with ffmpeg</li>
+  </ol>
+  <p>Only subtitles with recording files are exported; missing ones are skipped.</p>
+</section>
+
+<!-- ============== 12 ============== -->
+<section id="s12">
+  <h2>12. Dictation Mode</h2>
+
+  <h3>12.1 Entering</h3>
+  <p>Click the "Dictation" button on the toolbar (the icon is highlighted).</p>
+
+  <h3>12.2 Interface Changes</h3>
+  <ul>
+    <li>Subtitle 1 in the table is replaced by a line of dashes matching the original length</li>
+    <li>The remark area switches to a dictation input box showing the current subtitle's dictation content</li>
+    <li>The subtitle editing area becomes an editable blank area</li>
+  </ul>
+
+  <h3>12.3 Usage</h3>
+  <ol>
+    <li>Play the current sentence</li>
+    <li>Type what you hear in the editing area</li>
+    <li>Input is saved to the .dic file on focus loss or after 1 second of inactivity</li>
+    <li>Click "Next sentence" to continue</li>
+  </ol>
+
+  <h3>12.4 Exiting</h3>
+  <p>Click the "Dictation" button again to exit; the table shows the original text again.</p>
+
+  <h3>12.5 Where Dictation Content Is Saved</h3>
+  <p>Dictation content is saved in a .dic file with the same name as the SRT, in the format:</p>
+  <pre>@t@:time in milliseconds
+dictation content</pre>
+  <p>Each dictation entry is separated by an <code>@t@</code> line; the program matches it to the corresponding subtitle by the median time.</p>
+</section>
+
+<!-- ============== 13 ============== -->
+<section id="s13">
+  <h2>13. ASR Speech Recognition</h2>
+
+  <h3>13.1 System Architecture</h3>
+  <pre>Delphi program
+   │
+   ├─ Launch sherpa-onnx-offline-websocket-server.exe (port 6006)
+   │
+   ├─ Launch asr_engine.py (Python bridge, port 9001)
+   │
+   └─ HTTP POST WAV → 9001 → WebSocket → 6006 → return JSON</pre>
+
+  <h3>13.2 Prerequisites</h3>
+  <ul>
+    <li>Python installed, with <code>pip install numpy websockets</code> already run</li>
+    <li>In the program directory's <code>sherpa\</code>:
+      <ul>
+        <li><code>sherpa-onnx-offline-websocket-server.exe</code></li>
+        <li><code>asr_engine.py</code></li>
+        <li>Model directory (small/medium/large, selected per options)</li>
+      </ul>
+    </li>
+    <li>Ports 6006 and 9001 not occupied by other programs</li>
+  </ul>
+
+  <h3>13.3 Model Selection</h3>
+  <table>
+    <thead><tr><th>Model</th><th>Size</th><th>Load Time</th></tr></thead>
+    <tbody>
+      <tr><td>Small</td><td>120 MB</td><td>About 30 seconds</td></tr>
+      <tr><td>Medium</td><td>420 MB</td><td>About 90 seconds</td></tr>
+      <tr><td>Large</td><td>1.2 GB</td><td>About 5 minutes</td></tr>
+    </tbody>
+  </table>
+  <p>The larger the model, the more accurate but slower. After the first load it stays in memory, so subsequent calls need no reload.</p>
+
+  <h3>13.4 Recognizing Subtitle Segments</h3>
+  <ol>
+    <li>Select the subtitle lines to recognize in the table (multi-select merges the audio)</li>
+    <li>Click the "ASR" button above the remark box</li>
+    <li>The program extracts the segment audio with ffmpeg and calls ASR to recognize it</li>
+    <li>The result is displayed in the remark area, including the recognized text and similarity</li>
+  </ol>
+
+  <h3>13.5 Meaning of Results</h3>
+  <table>
+    <thead><tr><th>Color</th><th>Similarity</th></tr></thead>
+    <tbody>
+      <tr><td>Green</td><td>≥ 0.85</td></tr>
+      <tr><td>Red</td><td>&lt; 0.85</td></tr>
+    </tbody>
+  </table>
+
+  <h3>13.6 Applying Recognized Times</h3>
+  <p>After recognition, the precise start/end times returned by ASR can be applied to the current subtitle (available only when the recognition result matches the current subtitle).</p>
+
+  <h3>13.7 Singleton Protection</h3>
+  <p>ASR resources are singleton; only one program can use them at a time. If one program is already using them, another will fail to start and show a prompt.</p>
+</section>
+
+<!-- ============== 14 ============== -->
+<section id="s14">
+  <h2>14. Proofreading Subtitles</h2>
+
+  <h3>14.1 Proofreading File List</h3>
+  <p>Create <code>ProofSrt.lst</code> in the same directory as the SRT, one entry per line:</p>
+  <pre>identifier|folder path|subtitle type number</pre>
+  <ul>
+    <li><strong>Identifier</strong>: a single character shown on the button (A, B, C, D recommended)</li>
+    <li><strong>Folder path</strong>: the directory containing the proofreading subtitle; a trailing slash is recommended</li>
+    <li><strong>Subtitle type number</strong>: 0~4, corresponding to the subtitle types in Section 5</li>
+  </ul>
+  <p>Up to 4 proofreading files can be loaded at the same time.</p>
+
+  <h3>14.2 Adding via Options</h3>
+  <ol>
+    <li>Open Options → General</li>
+    <li>In the "Proofreading folders" area, click <span class="btn">+</span></li>
+    <li>Select the directory, enter the identifier and subtitle type</li>
+    <li>Confirm to write it into ProofSrt.lst</li>
+  </ol>
+
+  <h3>14.3 Using Proofreading</h3>
+  <ol>
+    <li>Open the main SRT file</li>
+    <li>Click a proofreading button (0~3) above the remark area</li>
+    <li>The program searches the proofreading file using the current line of the main subtitle</li>
+    <li>The match result is displayed in colored RTF</li>
+  </ol>
+
+  <h3>14.4 Matching Algorithm</h3>
+  <p>The proofreading process uses the same search algorithm as timeline alignment:</p>
+  <ol>
+    <li>Locate using the head string of the current sentence in the main subtitle</li>
+    <li>Aid location using the tail string of the previous sentence</li>
+    <li>Locate using the word count of the current sentence</li>
+    <li>Fall back level by level to find the best match</li>
+  </ol>
+
+  <h3>14.5 Display Area Colors</h3>
+  <table>
+    <thead><tr><th>Color</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Gray</td><td>Context before and after the matched sentence</td></tr>
+      <tr><td>Green</td><td>Exact match</td></tr>
+      <tr><td>Red</td><td>Mismatched part</td></tr>
+      <tr><td>Blue</td><td>Character-level difference</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.6 Browsing Context</h3>
+  <p>Right-click in the proofreading display area and choose "Browse more subtitles" to show the original text of the 10 subtitles before and after the current time point in the proofreading file.</p>
+</section>
+
+<!-- ============== 15 ============== -->
+<section id="s15">
+  <h2>15. Filtered Display</h2>
+
+  <h3>15.1 Filtering by Remark</h3>
+  <p>The "Remark" button on the toolbar:</p>
+  <ul>
+    <li>Pressed: show only subtitles with remarks</li>
+    <li>Released: show all subtitles</li>
+  </ul>
+
+  <h3>15.2 Filtering by Flag</h3>
+  <p>The flag bar on the toolbar can activate multiple flag filters at the same time. Rules:</p>
+  <ul>
+    <li>Showing requires containing at least one of the selected flags</li>
+    <li>Multiple flags are in an "OR" relationship</li>
+  </ul>
+
+  <h3>15.3 Combined Filtering</h3>
+  <p>Remark and flag filters can be active at the same time, also in an "OR" relationship.</p>
+
+  <h3>15.4 Restrictions in Filter Mode</h3>
+  <div class="note">
+    In filter mode (FUseMapping = True) the following operations are prohibited:
+    <ul>
+      <li>Insert subtitle</li>
+      <li>Delete subtitle</li>
+      <li>Merge subtitles</li>
+      <li>Split subtitle</li>
+      <li>Batch modify time</li>
+    </ul>
+    Only editing existing subtitles' text, remarks, flags, dictation, and time is allowed.
+  </div>
+  <p>When violated, the corresponding buttons are grayed out and cannot be clicked.</p>
+
+  <h3>15.5 Exiting Filter Mode</h3>
+  <p>Cancel all filter conditions to return to the full view. Filter state is saved to the INI.</p>
+</section>
+
+<!-- ============== 16 ============== -->
+<section id="s16">
+  <h2>16. Dictionary / AI / TTS</h2>
+
+  <h3>16.1 Dictionary</h3>
+  <p>Select the word or phrase to look up in the subtitle or remark, then:</p>
+  <ul>
+    <li>Right-click → Dictionary</li>
+    <li>Or click the "Dictionary" button on the toolbar</li>
+    <li>Or press <span class="key">Ctrl+D</span></li>
+  </ul>
+
+  <h4>Local Dictionary</h4>
+  <p>Opens a local dictionary program (such as Eudic) using a URL Scheme:</p>
+  <pre>eudic://dict/%s</pre>
+  <p>%s is replaced with the query word.</p>
+
+  <h4>Online Dictionary</h4>
+  <p>When checked, opens in the browser in sequence. Supports 8 preset URLs and can be customized.</p>
+
+  <h3>16.2 AI Analysis</h3>
+  <p>Operation is the same as the dictionary. The program will:</p>
+  <ol>
+    <li>Put the AI Prompt + selected text into the clipboard</li>
+    <li>Open the corresponding AI site (or reuse an already open tab)</li>
+    <li>Paste and send automatically</li>
+  </ol>
+
+  <h4>Preset AI Sites</h4>
+  <ul>
+    <li>ChatGPT (chatgpt.com)</li>
+    <li>Claude (claude.ai)</li>
+    <li>Gemini (gemini.google.com)</li>
+    <li>Tongyi Qianwen</li>
+    <li>Doubao</li>
+    <li>DeepSeek</li>
+    <li>Kimi</li>
+  </ul>
+
+  <h4>AI Prompt</h4>
+  <p>The default Prompt asks the AI to translate literally and analyze English knowledge points, outputting plain text. It can be modified in options.</p>
+
+  <h3>16.3 Built-in Browser</h3>
+  <p>When "Use built-in browser" is checked:</p>
+  <ul>
+    <li>Dictionary and AI are opened in the program's embedded Edge WebView2</li>
+    <li>It does not jump out to an external browser</li>
+    <li>Multiple AI sites are switched with the top buttons</li>
+    <li>The browser window can be moved independently of the main window or snapped to the main window's edge</li>
+  </ul>
+
+  <h3>16.4 TTS Read-Aloud</h3>
+  <p>Select text, right-click → TTS, or press <span class="key">Ctrl+T</span>.</p>
+  <p>How it works:</p>
+  <ol>
+    <li>Generate an HTML file containing the selected text</li>
+    <li>Open it with Microsoft Edge</li>
+    <li>Simulate <span class="key">Ctrl+Shift+U</span> to trigger Edge's read-aloud feature</li>
+  </ol>
+  <p>The first call opens an Edge window; subsequent calls reuse that window and refresh the content.</p>
+</section>
+
+<!-- ============== 17 ============== -->
+<section id="s17">
+  <h2>17. Toolboxes</h2>
+
+  <h3>17.1 SRT Toolbox</h3>
+  <p>Opened by clicking the SRT Toolbox button on the subtitle list panel; it is a separate external program, VlsSrtTools.exe. Features include batch subtitle processing, AI translation text generation, splitting video by subtitle, Anki export, and more. See the companion SRT Toolbox User Manual for details.</p>
+
+  <h3>17.2 TXT Toolbox</h3>
+  <p>Opens a small window within the program. Function: split a plain text file by sentence to generate SRT subtitles.</p>
+
+  <h4>Steps</h4>
+  <ol>
+    <li>Select the TXT file to process</li>
+    <li>Select the SRT output directory</li>
+    <li>Set the split criterion (e.g. <code>Chapter</code>; a new file starts when this prefix is encountered)</li>
+    <li>Click OK</li>
+  </ol>
+
+  <h4>Output</h4>
+  <ul>
+    <li>No split: generates one SRT with the same name as the TXT</li>
+    <li>Split by marker: generates multiple SRTs with numbered file names <code>_01.srt</code>, <code>_02.srt</code>, ...</li>
+  </ul>
+
+  <h4>Time Allocation</h4>
+  <p>Each sentence defaults to 10 seconds with a 1-second gap. The generated timeline is only a placeholder and can be corrected with ASR alignment.</p>
+
+  <h3>17.3 ASR Toolbox</h3>
+  <p>Opened by clicking the ASR Toolbox button on the subtitle list panel; it is a separate external program, VlsAsrTools.exe. Features include segmented ASR subtitle generation, timeline alignment, and more. See the companion ASR Toolbox User Manual for details.</p>
+</section>
+
+<!-- ============== 18 ============== -->
+<section id="s18">
+  <h2>18. Options</h2>
+  <p>The gear button at the far right of the toolbar opens options. It is divided into three panels: General, Dictionary and AI, and Theme.</p>
+
+  <h3>18.1 General Panel</h3>
+
+  <h4>Language and Models</h4>
+  <table>
+    <thead><tr><th>Option</th><th>Values</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Language</td><td>English / Simplified Chinese / Traditional Chinese / Japanese</td><td>English</td></tr>
+      <tr><td>ASR model</td><td>Small / Medium / Large</td><td>Small</td></tr>
+      <tr><td>Player</td><td>MPV / VLC</td><td>MPV</td></tr>
+    </tbody>
+  </table>
+  <p>After switching the language, some parts of the interface require restarting the program to take full effect.</p>
+
+  <h4>Playback</h4>
+  <table>
+    <thead><tr><th>Option</th><th>Values</th></tr></thead>
+    <tbody>
+      <tr><td>At end of playback</td><td>Pause / Replay / Play next episode</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Display</h4>
+  <table>
+    <thead><tr><th>Option</th><th>Values</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Show subtitles</td><td>Subtitle 1 / Subtitle 2 / Subtitle 1+2</td><td>Subtitle 1</td></tr>
+      <tr><td>Table row spacing</td><td>Small / Medium / Large / Largest</td><td>Medium</td></tr>
+      <tr><td>Text horizontal alignment</td><td>Left / Center / Justified</td><td>Justified</td></tr>
+      <tr><td>Text vertical alignment</td><td>Top / Middle / Bottom</td><td>Top</td></tr>
+      <tr><td>Color annotation display</td><td>Colored text / Colored underline</td><td>Colored text</td></tr>
+      <tr><td>Time format</td><td>5 types</td><td>Full format</td></tr>
+      <tr><td>Show subtitle end time</td><td>Toggle</td><td>Off</td></tr>
+      <tr><td>Single-line subtitle display</td><td>Toggle</td><td>Off</td></tr>
+      <tr><td>Floating subtitle edit box</td><td>Toggle</td><td>Off</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Save and Backup</h4>
+  <table>
+    <thead><tr><th>Option</th><th>Range</th><th>Default</th></tr></thead>
+    <tbody>
+      <tr><td>Auto-save interval</td><td>3 ~ 999 minutes</td><td>3 minutes</td></tr>
+      <tr><td>Max backups</td><td>3 ~ 999</td><td>99</td></tr>
+      <tr><td>Confirm before delete</td><td>Toggle</td><td>Off</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Flag Hints</h4>
+  <p>Customize the meanings of the 7 flags, shown in the toolbar hover tooltip. Default: Key point / Expression / Pronunciation / Grammar / Slang / Phrase / Vocabulary.</p>
+
+  <h4>Proofreading Folders</h4>
+  <ul>
+    <li>Lists all entries currently in ProofSrt.lst</li>
+    <li><span class="btn">+</span> add a directory</li>
+    <li><span class="btn">−</span> delete the selected one</li>
+    <li>Double-click an entry to modify it</li>
+    <li>Up to 4</li>
+  </ul>
+
+  <h3>18.2 Dictionary and AI Panel</h3>
+  <table>
+    <thead><tr><th>Item</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Local dictionary URL</td><td>e.g. <code>eudic://dict/%s</code></td></tr>
+      <tr><td>Online dictionary URL list</td><td>Enabled when checked; can be reordered by dragging</td></tr>
+      <tr><td>AI chat URL list</td><td>Enabled when checked</td></tr>
+      <tr><td>AI Prompt</td><td>The prefix prompt sent to AI</td></tr>
+      <tr><td>Use built-in browser</td><td>Toggle</td></tr>
+    </tbody>
+  </table>
+
+  <h3>18.3 Theme Panel</h3>
+  <p>See the next section.</p>
+</section>
+
+<!-- ============== 19 ============== -->
+<section id="s19">
+  <h2>19. Theme System</h2>
+
+  <h3>19.1 Built-in Themes</h3>
+  <p>16 in total, main categories:</p>
+  <table>
+    <thead><tr><th>Category</th><th>Themes</th></tr></thead>
+    <tbody>
+      <tr><td>Classic</td><td>Light, Dark, Money Green</td></tr>
+      <tr><td>Solarized</td><td>Solarized Light, Solarized Dark</td></tr>
+      <tr><td>Dark</td><td>Charcoal, Nebula, Greeny, Choco, Purpy, Nord, Tokyo Night, Palenight, Gruvbox, GitHub Dark</td></tr>
+      <tr><td>Light</td><td>Light Warm</td></tr>
+    </tbody>
+  </table>
+
+  <h3>19.2 Theme Content</h3>
+  <p>Each theme defines:</p>
+  <ul>
+    <li><strong>15 font settings</strong>:
+      <ul>
+        <li>Main interface, highlight</li>
+        <li>Table index column, time column, Subtitle 1 column, Subtitle 2 column</li>
+        <li>Selected row, selection, playing row</li>
+        <li>Subtitle box's Subtitle 1, Subtitle 2, remark</li>
+        <li>Proofreading context, correct, incorrect</li>
+      </ul>
+    </li>
+    <li><strong>24 colors</strong>:
+      <ul>
+        <li>Icons: enabled, disabled, selected</li>
+        <li>Window: border, button, hover</li>
+        <li>Waveform: background, waveform, handles (normal/active/read-only/hover), timeline (click/play), selection (background/waveform)</li>
+        <li>Flag colors 1~8</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>19.3 Switching Themes</h3>
+  <p>Hover over the "Theme" button on the toolbar; a theme list pops up, and clicking switches. After switching, all controls update their colors and fonts immediately.</p>
+
+  <h3>19.4 Custom Themes</h3>
+  <ol>
+    <li>Select a base theme in options</li>
+    <li>Click the "Customize" button and enter a new theme name</li>
+    <li>Modify fonts, sizes, colors, and backgrounds in the new theme</li>
+    <li>Click "Preview" to see the effect in real time</li>
+    <li>Click OK to save</li>
+  </ol>
+  <p>Custom themes are saved in the INI's <code>[Theme]</code> section.</p>
+
+  <h3>19.5 Theme Editing Table</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Operation</th></tr></thead>
+    <tbody>
+      <tr><td>Font</td><td>Select from a drop-down</td></tr>
+      <tr><td>Size</td><td>Numeric box, 8~24</td></tr>
+      <tr><td>Color</td><td>Click to open the color picker</td></tr>
+      <tr><td>Background color</td><td>Click to open the color picker</td></tr>
+      <tr><td>Sample</td><td>Preview the effect</td></tr>
+    </tbody>
+  </table>
+
+  <h3>19.6 Theme Inheritance</h3>
+  <p>Some built-in themes (such as Light Warm) inherit from the Light theme, overriding only the foreground and background colors while using the parent theme for the rest. Custom themes do not inherit; they are independent and complete.</p>
+</section>
+
+<!-- ============== 20 ============== -->
+<section id="s20">
+  <h2>20. File Formats and Directory Structure</h2>
+
+  <h3>20.1 Associated Files</h3>
+  <table>
+    <thead><tr><th>Extension</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>.srt</td><td>Subtitle body</td></tr>
+      <tr><td>.snt</td><td>Remarks + paragraph tags + formatted text</td></tr>
+      <tr><td>.dic</td><td>Dictation content</td></tr>
+      <tr><td>.wfm</td><td>Waveform cache</td></tr>
+      <tr><td>ProofSrt.lst</td><td>Proofreading file list (optional)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>20.2 SNT File Format</h3>
+  <pre>@t@:median time in milliseconds
+@p@:paragraph tag
+@f@:formatted text
+remark first line
+remark second line
+@t@:next entry's median time
+...</pre>
+  <ul>
+    <li><code>@t@:</code> marks the beginning of a subtitle entry</li>
+    <li><code>@p@:</code> paragraph tag (s/n/a)</li>
+    <li><code>@f@:</code> formatted text (containing &lt;f1&gt;~&lt;f7&gt; flags)</li>
+    <li>All other lines are remark body text</li>
+  </ul>
+  <p>If a subtitle has no remark, no tag, and no formatted text, it is not written to .snt. If the whole .snt is empty, it is deleted automatically.</p>
+
+  <h3>20.3 DIC File Format</h3>
+  <pre>@t@:median time in milliseconds
+dictation first line
+dictation second line
+@t@:next entry...</pre>
+
+  <h3>20.4 Directory Structure Example</h3>
+  <pre>Subtitle directory\
+├── SomeSeries.srt
+├── SomeSeries.snt
+├── SomeSeries.dic
+├── SomeSeries.wfm
+├── SomeSeries.mp4
+├── ProofSrt.lst
+└── backup\
+    ├── SomeSeries_20240101_1200.srt
+    └── SomeSeries_20240101_1200.snt</pre>
+
+  <h3>20.5 INI Configuration File</h3>
+  <p>Located at <code>VlsPlayer.ini</code> in the program directory. Main sections:</p>
+  <table>
+    <thead><tr><th>Section</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>[Main]</td><td>Language, theme, player, ASR model, auto-save, backup count, AI settings</td></tr>
+      <tr><td>[Display]</td><td>Subtitle display mode, filter, row spacing, alignment, time format</td></tr>
+      <tr><td>[Play]</td><td>Playback mode, speed, repeat, pause, volume, noise</td></tr>
+      <tr><td>[SrtDir]</td><td>List of recently used SRT directories</td></tr>
+      <tr><td>[Theme]</td><td>Custom themes</td></tr>
+      <tr><td>[WfEditor]</td><td>Waveform page duration, amplitude</td></tr>
+      <tr><td>[Last]</td><td>Window position, last opened subtitle, playback time</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 21 ============== -->
+<section id="s21">
+  <h2>21. Shortcut Key Reference</h2>
+
+  <h3>21.1 Global</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Space</span></td><td>Play / Pause</td></tr>
+      <tr><td><span class="key">Ctrl+Enter</span></td><td>Fullscreen / Exit fullscreen</td></tr>
+      <tr><td><span class="key">Esc</span></td><td>Exit fullscreen when in fullscreen</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.2 File and Editing</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+S</span></td><td>Save subtitles</td></tr>
+      <tr><td><span class="key">Ctrl+Z</span></td><td>Undo</td></tr>
+      <tr><td><span class="key">Ctrl+Y</span></td><td>Redo</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.3 Subtitle Operations</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+N</span></td><td>Insert subtitle</td></tr>
+      <tr><td><span class="key">Ctrl+L</span></td><td>Delete subtitle</td></tr>
+      <tr><td><span class="key">Ctrl+M</span></td><td>Merge subtitles</td></tr>
+      <tr><td><span class="key">Ctrl+P</span></td><td>Play / Pause (equivalent to Space)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.4 Learning Tools</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+D</span></td><td>Dictionary lookup</td></tr>
+      <tr><td><span class="key">Ctrl+I</span></td><td>AI analysis</td></tr>
+      <tr><td><span class="key">Ctrl+T</span></td><td>TTS read-aloud</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.5 Paragraph Tag Toggles</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+Shift+1</span></td><td>Toggle new/old scene (s)</td></tr>
+      <tr><td><span class="key">Ctrl+Shift+2</span></td><td>Toggle continuation/single line (a)</td></tr>
+      <tr><td><span class="key">Ctrl+Shift+3</span></td><td>Toggle narration/lyrics (n)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>21.6 Edit Box Common</h3>
+  <table>
+    <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="key">Ctrl+X</span></td><td>Cut</td></tr>
+      <tr><td><span class="key">Ctrl+C</span></td><td>Copy</td></tr>
+      <tr><td><span class="key">Ctrl+V</span></td><td>Paste</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============== 22 ============== -->
+<section id="s22">
+  <h2>22. FAQ and Troubleshooting</h2>
+
+  <div class="qa">
+    <div class="q">Q1: No files visible in the subtitle list</div>
+    <div class="a">Check whether the SRT directory is correct and whether there are .srt files in it. To refresh: switch the directory away and back.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q2: The waveform area is empty</div>
+    <div class="a">
+      Usually one of the following:
+      <ul>
+        <li>There is no media file in the same directory</li>
+        <li>The media file name differs from the SRT name</li>
+        <li>There is no ffmpeg.exe in the program directory's lib folder</li>
+        <li>ffmpeg failed when generating the wfm (unsupported media format or too long)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q3: Subtitle time changes are lost after restarting the program</div>
+    <div class="a">They were not saved. After modifying the SRT, save manually (Ctrl+S) or wait for auto-save. You can also use the "auto-save on exit" option.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q4: Cannot insert subtitles in filter mode</div>
+    <div class="a">This is by design. Filter mode prohibits changing the subtitle structure; cancel the filter first (click off the toolbar's remark/flag filters).</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q5: ASR recognition fails</div>
+    <div class="a">
+      Check the following:
+      <ul>
+        <li>Whether the model has been downloaded to <code>sherpa\model name\</code></li>
+        <li>Whether <code>sherpa\sherpa-onnx-offline-websocket-server.exe</code> exists</li>
+        <li>Whether <code>sherpa\asr_engine.py</code> exists</li>
+        <li>Whether Python is installed and <code>pip install numpy websockets</code> has been run</li>
+        <li>Whether ports 6006 and 9001 are occupied</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q6: Dictionary / AI fails to open</div>
+    <div class="a">
+      Check in options whether the URL is valid. When using the built-in browser, the Edge WebView2 runtime must be installed.
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q7: Shadowing scores are always low</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>Whether the microphone works properly and the volume is appropriate</li>
+        <li>Whether the recording environment is quiet</li>
+        <li>Whether the ASR model is loaded correctly</li>
+        <li>Whether the language of the subtitle's original text matches the recording content (the model is an English model and performs poorly on Chinese)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q8: Color flags are lost</div>
+    <div class="a">Color flags are saved in the .snt file. If the .snt is not saved or is lost, the flags degrade to plain text. Try to recover from the backup subdirectory.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q9: Auto-save overwrote my changes</div>
+    <div class="a">The program automatically backs up to the backup subdirectory before saving; you can find historical versions there by timestamp.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q10: Some control colors are wrong after switching themes</div>
+    <div class="a">Some third-party controls are not controlled by the theme. You can fine-tune colors in the options' theme panel. Some controls require restarting the program to take full effect.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q11: I don't know how to exit fullscreen</div>
+    <div class="a">Press <span class="key">Esc</span> or <span class="key">Ctrl+Enter</span>.</div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q12: Subtitles are not aligned with the audio after time adjustment</div>
+    <div class="a">
+      Check:
+      <ul>
+        <li>With VLC as the playback engine the error is larger; try switching to MPV</li>
+        <li>Use the waveform editor to drag the handles to the precise position</li>
+        <li>Use the ASR Toolbox's "Align timeline" feature to correct automatically</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q13: Subtitle scrolling stutters during playback</div>
+    <div class="a">
+      This may be due to high row-height calculation or redraw overhead. Try:
+      <ul>
+        <li>Turning off "Single-line subtitle display"</li>
+        <li>Reducing the table row spacing</li>
+        <li>Turning off color flag display</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="q">Q14: The built-in browser won't open</div>
+    <div class="a">Microsoft Edge WebView2 Runtime must be installed. It can be downloaded from the Microsoft website.</div>
+  </div>
+</section>
+
+<footer>
+  VlsPlayer User Manual · Version 1.0 (Detailed Edition)
+</footer>
+
+</div>
+</body>
+</html>
