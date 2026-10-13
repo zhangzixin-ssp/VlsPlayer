@@ -1,39 +1,43 @@
 # VlsPlayer
 
-**[English](#english) · [简体中文](#简体中文)**
+**[English](#english) · [简体中文](#chinese)**
 
 ---
 
 <a id="english"></a>
 ## English
 
-> A video subtitle player built for language learning.
+> A player built for language learning.
+- Goal: intensive listening, intensive reading, careful proofreading, elegance.
+- Solves: rough subtitles that cannot be edited, no way to add tags or notes, inefficient workflows.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)]()
-[![Release](https://img.shields.io/github/v/release/你的用户名/VlsPlayer)](https://github.com/你的用户名/VlsPlayer/releases)
+[![Release](https://img.shields.io/github/v/release/zhangzixin-ssp/VlsPlayer)](https://github.com/zhangzixin-ssp/VlsPlayer/releases)
 
-### ✨ Features
+### ✨ Main Features
 
-- 🎬 **Audio & Video Playback** — Built-in MPV / VLC engines, switchable on the fly
-- 📝 **Subtitle Editing & Proofreading** — SRT grid editing, batch operations, Anki export
-- 🎯 **ASR** — Powered by NVIDIA Parakeet-TDT-0.6B-V2; auto-generate subtitles and re-align timelines
-- 🌊 **Waveform Visualization** — Intuitive timeline positioning; drag to select playback ranges
-- 🔁 **Multiple Playback Modes** — Single sentence, role-play dialogue, loop selection, variable speed
-- 🎙️ **Shadowing & Recording** — Record your own voice and compare with the original
-- 📓 **Notes & Tags** — 7-color tags; filter by tag or note anytime
-- 🤖 **AI Assist** — One-click sentence analysis and translation
+- 🎬 **Audio & Video Playback**: Built-in MPV / VLC dual engines, supports all media formats
+- 📝 **Subtitle Editor**: Full-featured subtitle editor, an efficient productivity tool
+- 🎯 **ASR Auto Recognition**: Automatically generates high-accuracy subtitles and corrects subtitle timelines
+- 🔁 **Multiple Playback Modes**: Single sentence, role-play dialogue, selection loop, variable speed
+- 🎙️ **Dialogue & Recording**: Simulate real conversations, record your voice, and compare with the original
+- 📓 **Notes & Tags**: Multiple tags and notes for easy filtering and review
+- 📤 **Anki Cards**: One-click export to Anki, supports both sentence cards and full-series cards
+- 🤖 **AI Assist**: One-click sentence analysis and translation
 
 ### 📸 Screenshots
 
+Main UI
 ![Main UI](docs/main.jpg)
+SRT Tool
 ![SRT Toolbox](docs/srt0.jpg)
-![SRT Toolbox detail](docs/srt.jpg)
-![Anki export](docs/anki.jpg)
+Anki Cards!
+![Anki Decks](docs/anki.jpg)
 
 ### ⬇️ Download
 
-Download the latest release from the [Releases page](https://github.com/你的用户名/VlsPlayer/releases):
+Download the latest release from the [Releases page](https://github.com/zhangzixin-ssp/VlsPlayer/releases):
 
 | File | Description |
 |------|-------------|
@@ -42,7 +46,7 @@ Download the latest release from the [Releases page](https://github.com/你的�
 
 **Unzip and double-click `VlsPlayer.exe` — no installation required.**
 
-### 📦 ASR Models
+### 📦 ASR Model Download
 
 Model files are large and **not bundled** in the main package. On first use of ASR, the program shows the download links:
 
@@ -50,25 +54,20 @@ Model files are large and **not bundled** in the main package. On first use of A
 - [sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000](https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000.tar.bz2)
 - [sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000-int8](https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet_tdt_ctc_110m-en-36000-int8.tar.bz2) — Smallest, fastest
 
-After downloading, **extract the whole folder into the `sherpa\` directory**:
+**After downloading, extract the whole folder into the `sherpa\` directory**:
 
-```
-VlsPlayer\
-  └─ sherpa\
-       └─ sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-fp16\
-            ├─ encoder.fp16.onnx
-            ├─ decoder.fp16.onnx
-            ├─ joiner.fp16.onnx
-            └─ tokens.txt
-```
+    VlsPlayer\
+      └─ sherpa\
+           └─ sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-fp16\
+                ├─ encoder.fp16.onnx
+                ├─ decoder.fp16.onnx
+                ├─ joiner.fp16.onnx
+                └─ tokens.txt
 
 ### 🚀 Quick Start
 
 1. Unzip the program and double-click `VlsPlayer.exe`
-2. Move the mouse to the left edge to reveal the file list, add the folder containing your SRT, then click the SRT file
-3. For high-quality subtitles, use the **ASR Toolbox** to generate SRT automatically
-
-See **Help → User Guide** (`VlsPlayer.html`) inside the program for details.
+2. See the built-in **Help → User Guide** (`VlsPlayer.html`) for details.
 
 ### 💻 Requirements
 
@@ -80,22 +79,9 @@ Everything else is bundled in the release package. You only need to prepare the 
 
 | Item | Purpose | Where to get |
 |------|---------|--------------|
-| **ASR model** | Speech recognition | See [ASR Models](#-asr-models) above |
+| **ASR model** | Speech recognition | See [ASR Model Download](#-asr-model-download) above |
 | **Python 3.8+** | Runtime for the ASR bridge | [python.org](https://www.python.org/downloads/) |
 | `numpy`, `websockets` | Python modules | `pip install numpy websockets` |
-
-If you don't need ASR, just unzip and run — nothing else required.
-
-### ❓ FAQ
-
-**Q: "Missing ASR model" is shown.**
-A: Download from the links above and extract into the `sherpa\` folder.
-
-**Q: In single-sentence mode, audio and position are out of sync.**
-A: Bluetooth headphones introduce latency. Use wired headphones, or fine-tune the offset in Settings (Anki).
-
-**Q: Waveform generation is slow.**
-A: The first time an SRT is opened it takes a few seconds; afterwards it is cached.
 
 ### 📄 License
 
@@ -114,7 +100,6 @@ This project bundles and/or depends on the following third-party components. Sin
 - **Playback engines** — [MPV / libmpv](https://mpv.io/) (LGPL/GPL), [VLC / libvlc](https://www.videolan.org/) (LGPL/GPL), [BASS](https://www.un4seen.com/) (Un4seen)
 - **ASR** — [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) (Apache-2.0); NVIDIA Parakeet-TDT-0.6B-V2 model
 - **Media** — [FFmpeg](https://ffmpeg.org/) (LGPL/GPL)
-- **Delphi** — TDiff by Angus Johnson
 
 Full third-party license texts are in [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NOTICES.txt).
 
@@ -122,36 +107,40 @@ Full third-party license texts are in [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NO
 
 ---
 
-<a id="简体中文"></a>
+<a id="chinese"></a>
 ## 简体中文
 
-> 一款专为语言学习设计的视频字幕播放器。
+> 一款专为语言学习设计的播放器。
+- 目标：精听、精读、精校、优雅。
+- 解决：粗糙且无法修改的字幕，无法做标记或笔记，低效的操作模式
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)]()
-[![Release](https://img.shields.io/github/v/release/你的用户名/VlsPlayer)](https://github.com/你的用户名/VlsPlayer/releases)
+[![Release](https://img.shields.io/github/v/release/zhangzixin-ssp/VlsPlayer)](https://github.com/zhangzixin-ssp/VlsPlayer/releases)
 
-### ✨ 功能亮点
+### ✨ 主要功能
 
-- 🎬 **音视频播放**：内置 MPV / VLC 双引擎，可随时切换
-- 📝 **字幕编辑与校对**：SRT 表格编辑、批量操作、Anki 导出
-- 🎯 **ASR 自动识别**：基于 NVIDIA Parakeet-TDT-0.6B-V2，自动生成字幕、自动校正时间轴
-- 🌊 **波形可视化**：直观定位句子时间轴，拖拽选段播放
+- 🎬 **音视频播放**：内置 MPV / VLC 双引擎，支持所有媒体格式
+- 📝 **字幕编辑器**：全功能字幕编辑器，高效生产率工具
+- 🎯 **ASR自动识别**：自动生成高精度字幕、自动校正字幕时间轴
 - 🔁 **多种播放模式**：单句、角色对话、选区循环、变速
-- 🎙️ **跟读与录音**：录制发音，对比原声
-- 📓 **笔记与标记**：7 色标记，随时按标签/笔记筛选
+- 🎙️ **对话与录音**：可模拟真实对话，支持录音，对比原声
+- 📓 **笔记与标记**：多种标记及笔记，方便筛选与复习
+- 📤 **Anki卡片**：一键导出到Anki, 支持句子及整剧
 - 🤖 **AI 辅助**：一键分析句子、翻译
 
 ### 📸 截图
 
-![主界面](docs/main.jpg)
-![SRT 工具箱](docs/srt0.jpg)
-![SRT 工具箱细节](docs/srt.jpg)
-![Anki 导出](docs/anki.jpg)
+主界面
+![Main UI](docs/main.jpg)
+SRT工具
+![SRT Toolbox](docs/srt0.jpg)
+Anki卡片!
+![Anki Decks](docs/anki.jpg)
 
 ### ⬇️ 下载
 
-从 [Releases 页面](https://github.com/你的用户名/VlsPlayer/releases) 下载最新版本：
+从 [Releases 页面](https://github.com/zhangzixin-ssp/VlsPlayer/releases) 下载最新版本：
 
 | 文件 | 说明 |
 |------|------|
@@ -170,23 +159,18 @@ Full third-party license texts are in [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NO
 
 **下载后解压整个文件夹到 `sherpa\` 目录下**：
 
-```
-VlsPlayer\
-  └─ sherpa\
-       └─ sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-fp16\
-            ├─ encoder.fp16.onnx
-            ├─ decoder.fp16.onnx
-            ├─ joiner.fp16.onnx
-            └─ tokens.txt
-```
+    VlsPlayer\
+      └─ sherpa\
+           └─ sherpa-onnx-nemo-parakeet-tdt-0.6b-v2-fp16\
+                ├─ encoder.fp16.onnx
+                ├─ decoder.fp16.onnx
+                ├─ joiner.fp16.onnx
+                └─ tokens.txt
 
 ### 🚀 快速上手
 
 1. 解压程序，双击 `VlsPlayer.exe`
-2. 鼠标移到左侧边缘，显示文件列表，添加 SRT 所在文件夹，然后点击 SRT 文件
-3. 若需要高质量字幕：用 **ASR 工具箱** 自动生成 SRT
-
-详细说明见程序内置的 **帮助 → 使用说明**（`VlsPlayer.html`）。
+2. 详细说明见程序内置的 **帮助 → 使用说明**（`VlsPlayer.html`）。
 
 ### 💻 系统要求
 
@@ -198,22 +182,9 @@ VlsPlayer\
 
 | 项目 | 用途 | 获取方式 |
 |------|------|----------|
-| **ASR 模型** | 语音识别 | 见上方 [ASR 模型下载](#-asr-模型下载) |
+| **ASR 模型** | 语音识别 | 见上方 ASR 模型下载 |
 | **Python 3.8+** | ASR 桥接运行环境 | [python.org](https://www.python.org/downloads/) |
 | `numpy`、`websockets` | Python 模块 | `pip install numpy websockets` |
-
-**不需要 ASR 功能的话，解压即用，无需任何额外准备。**
-
-### ❓ 常见问题
-
-**Q：提示缺少 ASR 模型？**
-A：从上方"ASR 模型下载"链接下载，解压到 `sherpa\` 目录。
-
-**Q：单句模式声音和位置对不上？**
-A：蓝牙耳机有延迟，建议用有线耳机，或在设置中微调偏移（Anki）。
-
-**Q：波形生成很慢？**
-A：首次打开 SRT 需要几秒，之后会缓存。
 
 ### 📄 许可
 
@@ -231,7 +202,6 @@ A：首次打开 SRT 需要几秒，之后会缓存。
 - **播放引擎** —— [MPV / libmpv](https://mpv.io/)（LGPL/GPL）、[VLC / libvlc](https://www.videolan.org/)（LGPL/GPL）、[BASS](https://www.un4seen.com/)（Un4seen）
 - **语音识别** —— [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)（Apache-2.0）；NVIDIA Parakeet-TDT-0.6B-V2 模型
 - **媒体处理** —— [FFmpeg](https://ffmpeg.org/)（LGPL/GPL）
-- **Delphi 组件** —— TDiff，作者 Angus Johnson
 
 完整的第三方许可文本见 [`THIRD-PARTY-NOTICES.txt`](THIRD-PARTY-NOTICES.txt)。
 
